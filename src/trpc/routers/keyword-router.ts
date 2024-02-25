@@ -4,12 +4,12 @@ import { openai } from "@/lib/openai";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/lib/db";
 import { keywords } from "@/lib/db/schema/keyword";
+import { and, eq } from "drizzle-orm";
+import { redditCampaigns } from "@/lib/db/schema/reddit";
 
 export const keywordRouter = router({
     createKeywords: privateProcedure.input(z.object({ projectId: z.string(), projectDescription: z.string() })).mutation(async ({ input, ctx }) => {
         const { projectId, projectDescription } = input
-
-        console.log(`project id is: ${projectId}. And project description is ${projectDescription}`)
 
         // Create keywords
         const response = await openai.createChatCompletion({
@@ -18,7 +18,8 @@ export const keywordRouter = router({
                 { 
                     role: 'system',
                     content: 'You are a helpful AI embedded in a keyword generator app' +
-                    'AI can only answer with keywords and other things that are not relevant keywords must not be added in the response'
+                    'AI can only answer with keywords and other things that are not relevant keywords must not be added in the response' + 
+                    'Always generate a list of 5 keywords'
                 },
                 {
                     role: 'user',
@@ -48,49 +49,83 @@ export const keywordRouter = router({
           const trimmedFourthKeyword = keywordsOpenai[3].trim();
           const trimmedFifthKeyword = keywordsOpenai[4].trim();
 
+          console.log(trimmedFirstKeyword)
+          console.log(trimmedSecondKeyword)
+          console.log(trimmedThirdKeyword)
+          console.log(trimmedFourthKeyword)
+          console.log(trimmedFifthKeyword)
+
          const insertedKeyword = await db.insert(keywords).values({
               redditCampaignId: projectId,
               columnId: '2',
-              order: 1,
+              order: 0,
               content: trimmedFirstKeyword,
          })
 
          const insertedKeywordS = await db.insert(keywords).values({
             redditCampaignId: projectId,
             columnId: '2',
-            order: 2,
+            order: 1,
             content: trimmedSecondKeyword,
         })
 
          const insertedKeywordT = await db.insert(keywords).values({
             redditCampaignId: projectId,
             columnId: '2',
-            order: 3,
+            order: 2,
             content: trimmedThirdKeyword,
         })
 
         const insertedKeywordF = await db.insert(keywords).values({
             redditCampaignId: projectId,
             columnId: '2',
-            order: 4,
+            order: 3,
             content: trimmedFourthKeyword,
         })
 
        const insertedKeywordFi = await db.insert(keywords).values({
           redditCampaignId: projectId,
           columnId: '2',
-          order: 5,
+          order: 4,
           content: trimmedFifthKeyword,
        })
 
           return { message: 'Ok' }
     }),
 
-    updateKeywordOrder: privateProcedure.input (z.object({ columnId: z.string(), items: z.any()})).mutation(async ({ ctx, input }) => {
-       try {
-         const { columnId, items } = input
-       } catch (error) {
+    updateKeywordOrder: privateProcedure.input (z.object({ projectId: z.string(), items: z.any()})).mutation(async ({ ctx, input }) => {
+      
+         const { projectId, items } = input
+
+         const project = await db.query.redditCampaigns.findFirst({
+            columns: {
+                id: true,
+                userId: true
+            },
+            where: and(
+                eq(redditCampaigns.userId, ctx.userId),
+                eq(redditCampaigns.id, projectId)
+            ),
+         })
+
+         if (!project) {
+            return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
+         }
          
-       }
+         try {
+            const transaction = items.map(async(keyword: any) => {
+                return await db.update(keywords).set({ 
+                    order: keyword.order,
+                    columnId: keyword.columnId
+                 }).where(and(
+                    eq(keywords.id, keyword.id),
+                    eq(keywords.redditCampaignId, projectId)
+                 ))
+             })
+
+             return { message: transaction }
+         } catch (error) {
+            return new TRPCError({ message: 'Could not update keyword order ', code: 'BAD_REQUEST' })
+         }
     })
 })

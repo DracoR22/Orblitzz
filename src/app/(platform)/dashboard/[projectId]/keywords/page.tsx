@@ -55,6 +55,7 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
       order: true,
       content: true
     },
+    where: eq(keywords.redditCampaignId, params.projectId),
     orderBy: (keywords, { asc }) => [asc(keywords.order)]
    })
 
@@ -70,7 +71,7 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
       </div>
       {/* DRAG AND DROP */}
       <div className="flex justify-center dark:bg-neutral-800 bg-neutral-100 mx-10 rounded-md py-6">
-        <KeywordsContainer columns={columns} keywords={serverKeywords}/>
+        <KeywordsContainer columns={columns} keywords={serverKeywords} projectId={params.projectId}/>
       </div>
     </>
   )
