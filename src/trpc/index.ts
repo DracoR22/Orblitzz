@@ -6,7 +6,7 @@ import { router } from "./trpc"
 export const appRouter = router({
    auth: authRouter,
    reddit: redditRouter,
-   keword: keywordRouter
+   keyword: keywordRouter
 })
  
  export type AppRouter = typeof appRouter

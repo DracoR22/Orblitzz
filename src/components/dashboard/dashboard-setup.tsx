@@ -21,7 +21,7 @@ const DashboardSetup = () => {
 
    const router = useRouter()
 
-   const { mutate: keywordMutation } = trpc.keword.createKeywords.useMutation({
+   const { mutate: keywordMutation } = trpc.keyword.createKeywords.useMutation({
       onError: (err) => {
          if (err.data?.code === "UNAUTHORIZED") {
            return toast.error('Please Login to do this action')
@@ -43,6 +43,7 @@ const DashboardSetup = () => {
      // Redirect or perform other actions as needed
      router.push(`/dashboard/${projectId}/keywords`);
      toast.success('Your project has been created')
+     router.refresh()
     };
 
    const { mutate, isPending } = trpc.reddit.createRedditProject.useMutation({

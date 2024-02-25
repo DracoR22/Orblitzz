@@ -7,10 +7,15 @@ import { InfoIcon } from 'lucide-react'
 import Hint from '../global/hint'
 import { useState } from 'react'
 import { KeywordType } from '@/lib/db/schema/keyword'
+import { trpc } from '@/trpc/client'
+import { toast } from 'sonner'
+import { ZodError } from 'zod'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   columns: any
   keywords: any
+  projectId: string
 }
 
 function reorder<T>(column: T[], startIndex: number, endIndex: number) {
@@ -21,9 +26,25 @@ function reorder<T>(column: T[], startIndex: number, endIndex: number) {
   return result
 }
 
-const KeywordsContainer = ({ columns, keywords }: Props) => {
+const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
 
   const [orderedData, setOrderedData] = useState(keywords)
+
+  const router = useRouter()
+
+   const { mutate: updateKeywordMutation } = trpc.keyword.updateKeywordOrder.useMutation({
+    onError: (err) => {
+      if (err.data?.code === "UNAUTHORIZED") {
+        return toast.error('Please Login to do this action')
+      }
+
+      if (err instanceof ZodError) {
+        return toast.error(err.issues[0].message)
+      }
+
+     toast.error('Something went wrong while generating keywords. Please try again later.')
+    }
+   })
 
    const onDragEnd = (result: DropResult) => {
     const { destination, source, type } = result
@@ -37,35 +58,46 @@ const KeywordsContainer = ({ columns, keywords }: Props) => {
        let newOrderedData = [...orderedData]
 
        // Source and destination keyword
-       const sourceColumn = newOrderedData.find(keyword => keyword.columnId === source.droppableId)
-       
-       const destColumn = newOrderedData.find(keyword => keyword.columnId === destination.droppableId)
+       let sourceColumn = newOrderedData.filter(keyword => keyword.columnId === source.droppableId)
+       let destColumn = newOrderedData.filter(keyword => keyword.columnId === destination.droppableId)
 
        if (!sourceColumn || !destColumn) return
 
-       // Check if keywords exists on the source keyword
-       if (!sourceColumn.keywords) {
-        sourceColumn.keywords = []
-       }
-
-       // Check if keywords exists on the destkeyword
-       if (!destColumn.keywords) {
-        destColumn.keywords = []
-       }
-
        // Moving the keyword in the same column
        if (source.droppableId === destination.droppableId) {
-        const reorderedKeywords = reorder(sourceColumn.keywords, source.index, destination.index)
+        const reorderedKeywords = reorder(sourceColumn, source.index, destination.index);
 
-        reorderedKeywords.forEach((keyword: any, idx) => {
-          keyword.order = idx
-        })
+        // Combine reorderedKeywords and newOrderedData
+        const updatedOrderedData = [...reorderedKeywords, ...newOrderedData];
 
-        sourceColumn.keywords = reorderedKeywords
+        // Create a set of unique keywords based on their id
+        const uniqueKeywords = Array.from(new Set(updatedOrderedData.map(keyword => keyword.id))).map(id => updatedOrderedData.find(keyword => keyword.id === id));
 
-        setOrderedData(newOrderedData)
+        setOrderedData(uniqueKeywords);
 
         // Trigger Backend
+        // updateKeywordMutation({ projectId, items: reorderedKeywords })
+
+       } else { // User moves keyword to another column
+          const [movedKeyword] = sourceColumn.splice(source.index, 1)
+
+          // Assign the new ColumnId to the keyword
+          movedKeyword.columnId = destination.droppableId
+
+          destColumn.splice(destination.index, 0, movedKeyword)
+
+           sourceColumn.forEach((keyword: any, idx) => {
+            keyword.order = idx
+          })
+
+          destColumn.forEach((keyword, idx) => {
+            keyword.order = idx
+          })
+
+          setOrderedData(newOrderedData)
+
+          // Trigger backend
+          updateKeywordMutation({ projectId, items: destColumn })
        }
     }
    }
@@ -74,7 +106,7 @@ const KeywordsContainer = ({ columns, keywords }: Props) => {
     <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex w-[700px] h-[400px]">
         {columns.map((column: any) => {
-          const columnKeywords = keywords.filter((keyword: any) => keyword.columnId === column.id);
+          const columnKeywords = orderedData.filter((keyword: any) => keyword.columnId === column.id);
           return (
           <div key={column.id} className="flex-1">
           <div className='flex items-center gap-x-4'>
@@ -94,7 +126,7 @@ const KeywordsContainer = ({ columns, keywords }: Props) => {
           </div>
             <div className='border-t w-full'/>
              <div>
-               <Droppable droppableId={column.id} type='keyword'>
+               <Droppable droppableId={column.id} type='keyword' direction='vertical'>
                   {(provided) => (
                     <ol ref={provided.innerRef} {...provided.droppableProps}
                     className={cn(` px-4 py-0.5 flex flex-col gap-y-2`, 
