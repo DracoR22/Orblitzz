@@ -78,7 +78,7 @@ const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
         // Trigger Backend
         // updateKeywordMutation({ projectId, items: reorderedKeywords })
 
-       }  else { // User moves keyword to another column
+       } else { // User moves keyword to another column
         const [movedKeyword] = sourceColumn.splice(source.index, 1);
       
         // Assign the new ColumnId to the keyword
