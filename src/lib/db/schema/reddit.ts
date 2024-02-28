@@ -1,7 +1,5 @@
 import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { users } from "./user";
-import { relations } from "drizzle-orm";
-import { keywords } from "./keyword";
 
 export const redditCampaigns = pgTable("redditCampaign", {
     id: uuid("id").defaultRandom().notNull().primaryKey(),

@@ -1,4 +1,4 @@
-import { BotIcon, BrainIcon, CreditCardIcon, InfoIcon, MailIcon, ReplyIcon, SettingsIcon } from "lucide-react"
+import { BotIcon, BrainIcon, CreditCardIcon, GlobeIcon, InfoIcon, MailIcon, ReplyIcon, SettingsIcon } from "lucide-react"
 import { useParams, usePathname } from "next/navigation"
 import { useMemo } from "react"
 
@@ -7,6 +7,12 @@ export const useRoutes = () => {
     const params = useParams()
 
     const routes = useMemo(() => [
+          {
+            name: 'Posts',
+            href: `/dashboard/${params.projectId}/posts`,
+            icon: GlobeIcon,
+            isActive: pathname === `/dashboard/${params.projectId}/posts`
+          },
           {
             name: 'Keywords',
             href: `/dashboard/${params.projectId}/keywords`,

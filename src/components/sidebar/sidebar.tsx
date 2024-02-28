@@ -116,8 +116,8 @@ const Sidebar = () => {
               <Separator className="my-3"/>
 
               <div className="mt-2">
-                {routes.map((route) => (
-                 <SidebarItem active={route.isActive} name={route.name} icon={route.icon} href={route.href}/>
+                {routes.map((route, i) => (
+                 <SidebarItem key={i} active={route.isActive} name={route.name} icon={route.icon} href={route.href}/>
                 ))}
               </div>
            </div>

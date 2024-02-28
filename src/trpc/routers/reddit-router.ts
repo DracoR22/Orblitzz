@@ -58,7 +58,7 @@ export const redditRouter = router({
                  continue;
               }
               // Fetch the latest posts from the subreddit
-              const posts = await reddit.getSubreddit(subredditName).getNew({ limit: 5 }); // Adjust the limit as needed
+              const posts = await reddit.getSubreddit(subredditName).getNew({ limit: 4 }); // Adjust the limit as needed
 
              // Extract relevant information from each post, filtering out posts without content
              const formattedPosts = posts
