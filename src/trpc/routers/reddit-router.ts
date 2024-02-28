@@ -5,13 +5,14 @@ import { Submission } from "snoowrap";
 import { RedditCampaignSchema } from "@/lib/validations/reddit-campaign-schema";
 import { db } from "@/lib/db";
 import { redditCampaigns } from "@/lib/db/schema/reddit";
-import { openai } from "@/lib/openai";
-import { and, eq } from "drizzle-orm";
-import { KeywordType } from "@/lib/db/schema/keyword";
+import { z } from "zod";
 
 export const redditRouter = router({
     //-------------------------------------------------//GET POSTS ON KEYBOARDS//------------------------------------//
-    getSubredditsAndPosts: publicProcedure.query(async() => {
+    getSubredditsAndPosts: publicProcedure.input(z.object({ keywords: z.string() })).query(async({ input }) => {
+
+        const { keywords } = input
+
         try {
             // Get The Keywords
             const keywords = 'programming'
@@ -57,7 +58,7 @@ export const redditRouter = router({
                  continue;
               }
               // Fetch the latest posts from the subreddit
-              const posts = await reddit.getSubreddit(subredditName).getNew({ limit: 2 }); // Adjust the limit as needed
+              const posts = await reddit.getSubreddit(subredditName).getNew({ limit: 5 }); // Adjust the limit as needed
 
              // Extract relevant information from each post, filtering out posts without content
              const formattedPosts = posts

@@ -78,27 +78,34 @@ const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
         // Trigger Backend
         // updateKeywordMutation({ projectId, items: reorderedKeywords })
 
-       } else { // User moves keyword to another column
-          const [movedKeyword] = sourceColumn.splice(source.index, 1)
+       }  else { // User moves keyword to another column
+        const [movedKeyword] = sourceColumn.splice(source.index, 1);
+      
+        // Assign the new ColumnId to the keyword
+        movedKeyword.columnId = destination.droppableId;
+      
+        // Update order for the source column
+        sourceColumn.forEach((keyword: any, idx) => {
+          keyword.order = idx;
+        });
+      
+        // Update order for the destination column
+        destColumn.splice(destination.index, 0, movedKeyword);
+        destColumn.forEach((keyword, idx) => {
+          keyword.order = idx;
+        });
+      
+        // Concatenate the updated source and destination columns
+        const updatedColumns = [...sourceColumn, ...destColumn];
+      
+        // Sort the combined array based on order
+        updatedColumns.sort((a, b) => a.order - b.order);
+      
+        setOrderedData(updatedColumns);
 
-          // Assign the new ColumnId to the keyword
-          movedKeyword.columnId = destination.droppableId
-
-          destColumn.splice(destination.index, 0, movedKeyword)
-
-           sourceColumn.forEach((keyword: any, idx) => {
-            keyword.order = idx
-          })
-
-          destColumn.forEach((keyword, idx) => {
-            keyword.order = idx
-          })
-
-          setOrderedData(newOrderedData)
-
-          // Trigger backend
-          updateKeywordMutation({ projectId, items: destColumn })
-       }
+         // Trigger backend
+         updateKeywordMutation({ projectId, items: destColumn })
+      }
     }
    }
 
@@ -125,12 +132,13 @@ const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
               )}
           </div>
             <div className='border-t w-full'/>
-             <div>
+             <div className={cn('', column.id === '1' && 'border-r h-[300px]')}>
                <Droppable droppableId={column.id} type='keyword' direction='vertical'>
                   {(provided) => (
                     <ol ref={provided.innerRef} {...provided.droppableProps}
-                    className={cn(` px-4 py-0.5 flex flex-col gap-y-2`, 
-                    columnKeywords && columnKeywords.length > 0 ? 'mt-2' : 'mt-0')}>
+                    className={cn(`px-4 py-0.5 flex flex-col gap-y-2`, 
+                    columnKeywords && columnKeywords.length > 0 ? 'mt-2' : 'mt-0',
+                    )}>
                        {columnKeywords.map((keyword: any, index: number) => (
                          <KeywordItem key={keyword.id} index={index} keyword={keyword}/>
                        ))}
