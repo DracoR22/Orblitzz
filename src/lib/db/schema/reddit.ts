@@ -17,4 +17,17 @@ export const redditCampaigns = pgTable("redditCampaign", {
     userId: uuid("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
 })
 
+export const redditReplies = pgTable("redditReplies", {
+    id: uuid("id").defaultRandom().notNull().primaryKey(),
+    postId: text("postId"),
+    content: text("content"),
+    postAuthor: text("postAuthor"),
+    reply: text("reply"),
+
+    createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+
+    projectId: uuid("projectId").notNull().references(() => redditCampaigns.id, { onDelete: "cascade" })
+})
+
+export type RedditReplyType = typeof redditReplies.$inferInsert
 export type RedditCampaignType = typeof redditCampaigns.$inferInsert

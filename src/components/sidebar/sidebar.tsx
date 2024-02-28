@@ -5,18 +5,21 @@ import SidebarHeader from "./sidebar-header"
 import { useMediaQuery } from "usehooks-ts"
 import { useParams, usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { ChevronsLeftIcon, ContactIcon, CreditCardIcon, InfoIcon, MailIcon, MenuIcon, MoveRightIcon, SettingsIcon } from "lucide-react"
+import { BrainIcon, ChevronsLeftIcon, ContactIcon, CreditCardIcon, InfoIcon, MailIcon, MenuIcon, MoveRightIcon, SettingsIcon } from "lucide-react"
 import { Separator } from "../ui/separator"
 import Image from "next/image"
 import { Accordion } from "../ui/accordion"
 import SidebarItem from "./sidebar-item"
 import PlanUsage from "./plan-usage"
+import Link from "next/link"
+import { useRoutes } from "@/hooks/use-routes"
 
 const Sidebar = () => {
 
   const isMobile = useMediaQuery("(max-width: 768px)")
   const pathname = usePathname()
   const params = useParams()
+  const routes = useRoutes()
 
   const sidebarRef = useRef<ElementRef<"aside">>(null)
   const navbarRef = useRef<ElementRef<"div">>(null)
@@ -106,32 +109,16 @@ const Sidebar = () => {
            <div className="mt-4 mx-2">
               <p className="text-xs text-neutral-400 mb-3 mt-6">CAMPAIGNS</p>
               {/* CAMPAIGNS */}
-              <Accordion type="multiple" defaultValue={['1', '2']} className="space-y-2">
+              {/* <Accordion type="multiple" defaultValue={['1', '2']} className="space-y-2">
                 <SidebarItem/>
-              </Accordion>
+              </Accordion> */}
 
               <Separator className="my-3"/>
 
               <div className="mt-2">
-                <div className="flex items-center gap-x-4 hover:bg-[#363636] rounded-sm p-1 cursor-pointer">
-                   <SettingsIcon className="w-5 h-5 dark:text-neutral-400"/>
-                    Settings
-                </div>
-
-                <div className="flex items-center gap-x-4 mt-2 hover:bg-[#363636] rounded-sm p-1 cursor-pointer">
-                   <CreditCardIcon className="w-5 h-5 dark:text-neutral-400"/>
-                   Billing
-                </div>
-
-                <div className="flex items-center gap-x-4 mt-2 hover:bg-[#363636] rounded-sm p-1 cursor-pointer">
-                   <InfoIcon className="w-5 h-5 dark:text-neutral-400"/>
-                    Info
-                </div>
-
-                <div className="flex items-center gap-x-4 mt-2 hover:bg-[#363636] rounded-sm p-1 cursor-pointer">
-                   <MailIcon className="w-5 h-5 dark:text-neutral-400"/>
-                    Contact
-                </div>
+                {routes.map((route) => (
+                 <SidebarItem active={route.isActive} name={route.name} icon={route.icon} href={route.href}/>
+                ))}
               </div>
            </div>
          </div>

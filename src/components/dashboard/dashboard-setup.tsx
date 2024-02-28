@@ -32,6 +32,12 @@ const DashboardSetup = () => {
          }
 
         toast.error('Something went wrong while generating keywords. Please try again later.')
+    },
+    onSuccess: ({ projectId }) => {
+      // Redirect or perform other actions as needed
+     router.push(`/dashboard/${projectId}/keywords`);
+     toast.success('Your project has been created')
+     router.refresh()
     }
    })
 
@@ -39,11 +45,6 @@ const DashboardSetup = () => {
       // Call the keyword mutation here with the projectId
       await keywordMutation({ projectId, projectDescription });
 
-      
-     // Redirect or perform other actions as needed
-     router.push(`/dashboard/${projectId}/keywords`);
-     toast.success('Your project has been created')
-     router.refresh()
     };
 
    const { mutate, isPending } = trpc.reddit.createRedditProject.useMutation({

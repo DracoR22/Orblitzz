@@ -8,6 +8,7 @@ import { and, eq } from "drizzle-orm";
 import { redditCampaigns } from "@/lib/db/schema/reddit";
 
 export const keywordRouter = router({
+    //----------------------------------------------//CREATE KEYWORDS WITH AI//--------------------------------------//
     createKeywords: privateProcedure.input(z.object({ projectId: z.string(), projectDescription: z.string() })).mutation(async ({ input, ctx }) => {
         const { projectId, projectDescription } = input
 
@@ -18,20 +19,16 @@ export const keywordRouter = router({
                 { 
                     role: 'system',
                     content: 'You are a helpful AI embedded in a keyword generator app' +
-                    'AI can only answer with keywords and other things that are not relevant keywords must not be added in the response' + 
-                    'Always generate a list of 5 keywords'
+                    'AI can only answer with keywords, NEVER reply with a non list of keywords or a message besides the keywords' + 
+                    'Keywords must be the closest to possible Reddit communities' +
+                    'Always generate a list of 5 keywords' 
                 },
                 {
                     role: 'user',
-                    content: `Generate 5 relevant keywords on '${projectDescription}'`
+                    content: `Generate a list of 5 relevant keywords on '${projectDescription}'`
                 }
             ]
         })
-
-        if (!response) {
-            return new TRPCError({ code: 'BAD_REQUEST', message: 'No response from OpenAI' })
-        }
-        
 
          // Get the keywords array and push them into the database
           const data = await response.json()
@@ -90,11 +87,11 @@ export const keywordRouter = router({
           content: trimmedFifthKeyword,
        })
 
-          return { message: 'Ok' }
+          return { projectId }
     }),
 
-    updateKeywordOrder: privateProcedure.input (z.object({ projectId: z.string(), items: z.any()})).mutation(async ({ ctx, input }) => {
-      
+    //---------------------------------------------------//UPDATE KEYWORD ORDER AND POSITION//------------------------//
+    updateKeywordOrder: privateProcedure.input(z.object({ projectId: z.string(), items: z.any()})).mutation(async ({ ctx, input }) => {
          const { projectId, items } = input
 
          const project = await db.query.redditCampaigns.findFirst({
@@ -103,12 +100,11 @@ export const keywordRouter = router({
                 userId: true
             },
             where: and(
-                eq(redditCampaigns.userId, ctx.userId),
                 eq(redditCampaigns.id, projectId)
             ),
          })
 
-         if (!project) {
+         if (project?.userId !== ctx.userId) {
             return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
          }
          
@@ -127,5 +123,35 @@ export const keywordRouter = router({
          } catch (error) {
             return new TRPCError({ message: 'Could not update keyword order ', code: 'BAD_REQUEST' })
          }
+    }),
+
+    //--------------------------------------------------//GET ACTIVE KEYWORDS//------------------------------------//
+    getActiveKeywords: privateProcedure.input(z.object({ projectId: z.string() })).query(async ({ ctx, input }) => {
+
+        const { projectId } = input
+
+        const project = await db.query.redditCampaigns.findFirst({
+            columns: {
+                id: true,
+                userId: true
+            },
+            where: and(
+                eq(redditCampaigns.id, projectId)
+            ),
+         })
+
+         if (project?.userId !== ctx.userId) {
+            return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
+         }
+
+        const activeKeywords = await db.select({
+            id: keywords.id,
+            columnId: keywords.columnId
+        }).from(keywords).where(and(
+            eq(keywords.redditCampaignId, projectId),
+            eq(keywords.columnId, '1')
+        ))
+
+        return { activeKeywords }
     })
 })
