@@ -140,18 +140,25 @@ export const keywordRouter = router({
             ),
          })
 
-         if (project?.userId !== ctx.userId) {
-            return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
+         if (!project) {
+            return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED'})
+         }
+
+         if (project.userId !== ctx.userId) {
+            return new TRPCError({ message: 'You dont have permission to access this resource', code: 'UNAUTHORIZED' })
          }
 
         const activeKeywords = await db.select({
             id: keywords.id,
-            columnId: keywords.columnId
+            columnId: keywords.columnId,
+            content: keywords.content
         }).from(keywords).where(and(
             eq(keywords.redditCampaignId, projectId),
             eq(keywords.columnId, '1')
         ))
 
-        return { activeKeywords }
-    })
+        const randomKeyword = activeKeywords[0].content
+
+        return { randomKeyword }
+    }),
 })

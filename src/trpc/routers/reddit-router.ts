@@ -2,10 +2,13 @@ import { createRedditInstance } from "@/lib/reddit";
 import { privateProcedure, publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { Submission } from "snoowrap";
-import { RedditCampaignSchema } from "@/lib/validations/reddit-campaign-schema";
+import { CreateReplySchema, RedditCampaignSchema } from "@/lib/validations/reddit-campaign-schema";
 import { db } from "@/lib/db";
-import { redditCampaigns } from "@/lib/db/schema/reddit";
+import { redditCampaigns, redditReplies } from "@/lib/db/schema/reddit";
 import { z } from "zod";
+import { openai } from "@/lib/openai";
+import { and, eq } from "drizzle-orm";
+import { ResponseTypes } from "openai-edge";
 
 export const redditRouter = router({
     //-------------------------------------------------//GET POSTS ON KEYBOARDS//------------------------------------//
@@ -14,9 +17,6 @@ export const redditRouter = router({
         const { keywords } = input
 
         try {
-            // Get The Keywords
-            const keywords = 'programming'
-
             // Get the keys of the account we want to use. TODO: I think this should be better if we pass it from the frontend
             const userAgent = process.env.FIRST_REDDIT_USER_AGENT
             const clientId = process.env.FIRST_REDDIT_CLIENT_ID
@@ -57,6 +57,7 @@ export const redditRouter = router({
               if (visitedSubreddits.has(subredditName)) {
                  continue;
               }
+              // TODO: CHANGE THIS LINE
               // Fetch the latest posts from the subreddit
               const posts = await reddit.getSubreddit(subredditName).getNew({ limit: 4 }); // Adjust the limit as needed
 
@@ -117,5 +118,106 @@ export const redditRouter = router({
         console.log(project)
 
          return { projectId: project[0].insertedId, projectDescription: project[0].description }
+    }),
+
+    //--------------------------------------------//CREATE REPLY//------------------------------------------//
+    createReply: privateProcedure.input(CreateReplySchema).mutation(async ({ ctx, input }) => {
+        const { userCredentials, postId, projectId, postContent } = input
+        const { userId } = ctx
+
+        // Get the Reddit project
+        const project = await db.query.redditCampaigns.findFirst({
+            columns: {
+              id: true, 
+              tone: true, 
+              title: true,
+              description: true
+            },
+            where: and(
+                eq(redditCampaigns.id, projectId),
+                eq(redditCampaigns.userId, userId)
+            )
+        })
+
+        if (!project) {
+            return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
+        }
+
+        // Check if already replied to the same post
+        const alreadyReplied = await db.query.redditReplies.findFirst({
+            columns: {
+              postId: true
+            },
+            where: and(
+                eq(redditReplies.postId, postId)
+            )
+        })
+
+        if (alreadyReplied) {
+            return new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
+        }
+
+        // Create Reddit instance
+        const reddit = createRedditInstance({ clientId: userCredentials.clientId, clientSecret: userCredentials.clientSecret, userAgent: userCredentials.userAgent, username: userCredentials.username, password: userCredentials.password })
+
+        // OpenAI reponse
+        const response = await openai.createChatCompletion({
+            model: 'gpt-3.5-turbo',
+            messages: [
+                {
+                    role: 'system',
+                    content: `You are a ${project.tone} Reddit user. You are actively involved
+                     in diverse communities, providing helpful and insightful responses.
+                     Incorporate mentions of a specific product, ${project.title}, into your
+                     replies. Here's a brief description of the product: ${project.description}.
+                     Your objective is to share valuable information while subtly promoting
+                     this product.`,
+                },
+                {
+                    role: 'user',
+                    content: `You come across this Reddit post: ${postContent}. 
+                    Respond to it as you typically would, providing relevant and insightful
+                    information. Also, feel free to incorporate your thoughts on different aspects
+                    and mention ${project.title} if it fits naturally.`
+                }
+            ]
+        })
+
+        if (!response) {
+            return new TRPCError({ message: 'No Openai response', code: 'BAD_REQUEST' })
+        }
+
+        const responseData = (await response.json() as ResponseTypes["createChatCompletion"])
+        const cleanedAiResponse = responseData.choices[0].message?.content
+
+        if (!cleanedAiResponse) {
+            return new TRPCError({ message: 'Could not clean the AI response', code: 'BAD_REQUEST' })
+        }
+
+        // Get the post to reply
+        const post = reddit.getSubmission(postId)
+
+        if (!post) {
+            return new TRPCError({ message: 'Could not find the post to reply', code: 'BAD_REQUEST' })
+        }
+
+        // Reply to the post
+        const redditReply = post.reply(cleanedAiResponse)
+
+        if (!redditReply) {
+            return new TRPCError({ message: 'Could not reply to post', code: 'BAD_REQUEST' })
+        }
+
+        // Save reply into database
+        const dbReply = await db.insert(redditReplies).values({
+            projectId,
+            content: postContent,
+            postAuthor: post.author.name,
+            postId,
+            reply: cleanedAiResponse
+        })
+
+        // Save reply to database
+         return dbReply
     })
 })
