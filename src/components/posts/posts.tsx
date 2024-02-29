@@ -2,20 +2,82 @@
 
 import Hint from "@/components/global/hint"
 import { Button } from "@/components/ui/button"
+import { KeywordType } from "@/lib/db/schema/keyword"
+import { userOne } from "@/lib/reddit"
 import { trpc } from "@/trpc/client"
-import { LinkIcon } from "lucide-react"
-import Image from "next/image"
+import { LinkIcon, Loader2Icon } from "lucide-react"
+import Image from "next/image"  
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { ZodError } from "zod"
 
-const Posts = () => {
+interface Props {
+    projectId: string
+    alreadyRepliedId?: string | undefined | null
+}
 
-    const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ keywords: '' })
-   
+const Posts = ({ projectId, alreadyRepliedId }: Props) => {
+
+    const router = useRouter()
+
+    const { data: activeKeywordData, isPending: isActiveKeywordPending } = trpc.keyword.getActiveKeywords.useQuery({ projectId })
+
+    if (!activeKeywordData && !isActiveKeywordPending) {
+        return(
+            <div>
+               Select your keyowrds to access this page
+            </div>
+        )
+    }
+
+    //@ts-ignore
+    const keywordContent = activeKeywordData?.randomKeyword 
+
+    console.log(keywordContent)
+
+    const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ keywords: keywordContent })
+
+    const { mutate, isPending: isReplyPending } = trpc.reddit.createReply.useMutation({
+        onError: (err) => {
+            if (err.data?.code === "UNAUTHORIZED") {
+              return toast.error('You are not authorized to perform this action')
+            }
+
+            if (err instanceof ZodError) {
+              return toast.error(err.issues[0].message)
+            }
+
+           toast.error('Something went wrong while creating your project. Please try again later.')
+       },
+        onSuccess: () => {
+          toast.success('Replied to post!')
+          router.refresh()
+        }
+    })
+
     if (isPending) {
       return(
         <div>
           Fetching posts...
         </div>
       )
+    }
+
+    const handleClick = (postId: string, postContent: string) => {
+        const input = {
+            userCredentials: {
+              userAgent: userOne.userAgent,
+              clientId: userOne.clientId,
+              clientSecret: userOne.clientSecret,
+              username: userOne.username,
+              password: userOne.password,
+            },
+            postId: postId,
+            projectId: projectId,
+            postContent: postContent,
+           };
+
+          return mutate(input)
     }
 
   return (
@@ -45,8 +107,9 @@ const Posts = () => {
                         </a>
                     </Hint>
                     <div className="flex justify-end">
-                        <Button className="text-white">
-                            Reply
+                        <Button disabled={isReplyPending || alreadyRepliedId === post.postId} className="text-white" onClick={() => handleClick(post.postId, post.content)}>
+                           {isReplyPending && <Loader2Icon className='mr-2 h-4 w-4 animate-spin'/>}
+                            {alreadyRepliedId && alreadyRepliedId === post.postId ? 'Replied' : 'Reply'}
                         </Button>
                     </div>
                 </div>

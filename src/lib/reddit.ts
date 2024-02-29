@@ -21,3 +21,11 @@ export const createRedditInstance = ({ userAgent, clientId, clientSecret, userna
 };
 
 // Example usage: const redditInstance = createRedditInstance(userAgent, clientId, clientSecret, username, password);
+
+export const userOne = {
+    userAgent: process.env.NEXT_PUBLIC_FIRST_REDDIT_USER_AGENT!,
+    clientId: process.env.NEXT_PUBLIC_FIRST_REDDIT_CLIENT_ID!,
+    clientSecret: process.env.NEXT_PUBLIC_FIRST_REDDIT_CLIENT_SECRET!,
+    username: process.env.NEXT_PUBLIC_FIRST_REDDIT_USERNAME!,
+    password: process.env.NEXT_PUBLIC_FIRST_REDDIT_PASSWORD!
+}
