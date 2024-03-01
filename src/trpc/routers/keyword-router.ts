@@ -25,7 +25,7 @@ export const keywordRouter = router({
                 },
                 {
                     role: 'user',
-                    content: `Generate a list of 5 relevant keywords on '${projectDescription}'`
+                    content: `Generate a list of 5 Subreddits based on '${projectDescription}'`
                 }
             ]
         })
@@ -157,8 +157,6 @@ export const keywordRouter = router({
             eq(keywords.columnId, '1')
         ))
 
-        const randomKeyword = activeKeywords[0].content
-
-        return { randomKeyword }
+        return { activeKeywords }
     }),
 })

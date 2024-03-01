@@ -43,6 +43,9 @@ const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
       }
 
      toast.error('Something went wrong while generating keywords. Please try again later.')
+    },
+    onSuccess: () => {
+      router.refresh()
     }
    })
 

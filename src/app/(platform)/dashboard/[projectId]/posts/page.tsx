@@ -3,20 +3,31 @@ import Posts from "@/components/posts/posts"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { db } from "@/lib/db"
+import { keywords } from "@/lib/db/schema/keyword"
 import { redditReplies } from "@/lib/db/schema/reddit"
 import { and, eq } from "drizzle-orm"
 
 const PostsPage = async ({ params }: { params: { projectId: string }}) => {
 
     // Check if already replied to the same post
-    const alreadyReplied = await db.query.redditReplies.findFirst({
+    const alreadyReplied = await db.query.redditReplies.findMany({
       columns: {
         postId: true
       },
       where: and(
-          eq(redditReplies.id, params.projectId)
+          eq(redditReplies.projectId, params.projectId)
       )
   })
+
+  // Active keywords
+  const activeKeywords = await db.select({
+    id: keywords.id,
+    columnId: keywords.columnId,
+    content: keywords.content
+}).from(keywords).where(and(
+    eq(keywords.redditCampaignId, params.projectId),
+    eq(keywords.columnId, '1')
+))
 
   return (
     <>
@@ -26,7 +37,7 @@ const PostsPage = async ({ params }: { params: { projectId: string }}) => {
          best matches your project description"/>
         <Separator className="mt-3"/>
       </div>
-      <Posts projectId={params.projectId} alreadyRepliedId={alreadyReplied?.postId}/>
+      <Posts projectId={params.projectId} alreadyReplied={alreadyReplied} activeKeywordData={activeKeywords}/>
      </ScrollArea>
     </>
   )
