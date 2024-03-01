@@ -2,7 +2,7 @@ import { createRedditInstance } from "@/lib/reddit";
 import { privateProcedure, publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { Submission } from "snoowrap";
-import { CreateReplySchema, RedditCampaignSchema } from "@/lib/validations/reddit-campaign-schema";
+import { CreateReplySchema, GetPostsSchema, RedditCampaignSchema } from "@/lib/validations/reddit-campaign-schema";
 import { db } from "@/lib/db";
 import { redditCampaigns, redditReplies } from "@/lib/db/schema/reddit";
 import { z } from "zod";
@@ -11,90 +11,66 @@ import { and, eq } from "drizzle-orm";
 import { ResponseTypes } from "openai-edge";
 
 export const redditRouter = router({
-    //-------------------------------------------------//GET POSTS ON KEYBOARDS//------------------------------------//
-    getSubredditsAndPosts: publicProcedure.input(z.object({ keywords: z.string() })).query(async({ input }) => {
+    //-------------------------------------------------//GET POSTS ON KEYWORDS//------------------------------------//
+    getSubredditsAndPosts: publicProcedure.input(GetPostsSchema).query(async({ input }) => {
 
-        const { keywords } = input
+        const { allKeywords, userCredentials } = input
 
-        try {
-            // Get the keys of the account we want to use. TODO: I think this should be better if we pass it from the frontend
-            const userAgent = process.env.FIRST_REDDIT_USER_AGENT
-            const clientId = process.env.FIRST_REDDIT_CLIENT_ID
-            const clientSecret = process.env.FIRST_REDDIT_CLIENT_SECRET
-            const username = process.env.FIRST_REDDIT_USERNAME
-            const password = process.env.FIRST_REDDIT_PASSWORD
-
-            if (!userAgent || !clientId || !clientSecret || !username || !password) {
-                throw new TRPCError({ code: 'BAD_REQUEST' })
-            }
-
+        try { 
             // Create our Reddit instance
-            const reddit = createRedditInstance({ userAgent, clientId, clientSecret, username, password })
+            const reddit = createRedditInstance({ clientId: userCredentials.clientId,clientSecret : userCredentials.clientSecret, userAgent: userCredentials.userAgent, username: userCredentials.username, password: userCredentials.password })
 
-            // Get the subreddits that match our keywords
-            const subredditResults = await reddit.search({
-                query: keywords,
-                subreddit: 'all',
-                sort: 'relevance',
-                time: 'all',
-                syntax: 'plain'
-            })
-
-            if (!subredditResults || subredditResults.length < 1) {
-                return new TRPCError({ code: 'NOT_FOUND' })
+            const postIdsSet = new Set();
+            // Array of latest posts
+            const latestPosts = [];
+            
+          if (allKeywords) {
+            for (const oneKeyword of allKeywords) {
+                // Fetch the latest posts from the subreddit
+                const posts = await reddit.getSubreddit(oneKeyword).getNew({ limit: 4 });
+              
+                // Extract relevant information from each post, filtering out posts without content
+                const formattedPosts = posts
+                  .filter((post: Submission) => post.selftext.trim().length > 0)
+                  .map((post: Submission) => ({
+                    postId: post.id,
+                    subreddit: post.subreddit_name_prefixed,
+                    title: post.title,
+                    url: post.url,
+                    content: post.selftext,
+                    author: post.author.name,
+                    createdAt: new Date(post.created_utc * 1000).toLocaleString(),
+                  }))
+                  .filter((post) => {
+                    // Check if the post ID is not already in the set
+                    if (!postIdsSet.has(post.postId)) {
+                      // Add the post ID to the set and return true to include the post
+                      postIdsSet.add(post.postId);
+                      return true;
+                    }
+                    return false;
+                  });
+              
+                  // Only add the subreddit if there are unique posts with content
+                  if (formattedPosts.length > 0) {
+                    latestPosts.push({
+                    posts: formattedPosts,
+                    });
+                   }
+                 }
+                
+                  // Exclude subreddits with no posts
+                  const filteredLatestPosts = latestPosts.filter((subreddit) => subreddit.posts.length > 0);
+  
+                  return filteredLatestPosts;
             }
 
-            // Get the subreddit names
-            const subredditNames = subredditResults.map(result => result.subreddit.display_name);
-
-            // Array of latest posts
-            const latestPosts = []
-
-            const visitedSubreddits = new Set<string>();
-              
-            for (const subredditName of subredditNames) {
-              // Skip the subreddit if it has been visited already
-              if (visitedSubreddits.has(subredditName)) {
-                 continue;
-              }
-              // TODO: CHANGE THIS LINE
-              // Fetch the latest posts from the subreddit
-              const posts = await reddit.getSubreddit(subredditName).getNew({ limit: 4 }); // Adjust the limit as needed
-
-             // Extract relevant information from each post, filtering out posts without content
-             const formattedPosts = posts
-            .filter((post: Submission) => post.selftext.trim().length > 0) // Filter out posts without content
-            .map((post: Submission) => ({
-              postId: post.id,
-              title: post.title,
-              url: post.url,
-              content: post.selftext,
-              author: post.author.name,
-              createdAt: new Date(post.created_utc * 1000).toLocaleString(),
-             }));
-
-               
-             // Add the subreddit to the set of visited subreddits
-             visitedSubreddits.add(subredditName);
-
-            // Only add the subreddit if there are posts with content
-            if (formattedPosts.length > 0) {
-            latestPosts.push({
-             subreddit: subredditName,
-             posts: formattedPosts,
-             });
-             }
-           }
-
-            // Exclude subreddits with no posts
-            const filteredLatestPosts = latestPosts.filter((subreddit) => subreddit.posts.length > 0);
-
-             return filteredLatestPosts;
-          } catch (error) {
-             console.log('GET_SUBREDDITS_ERROR', error)
-             throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
-          }
-    }),
+               return []
+            } catch (error) {
+               console.log('GET_SUBREDDITS_ERROR', error)
+               throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+         }
+    }), 
 
     //---------------------------------------------//CREATE REDDIT PROJECT//---------------------------------//
     createRedditProject: privateProcedure.input(RedditCampaignSchema).mutation(async ({ input, ctx }) => {

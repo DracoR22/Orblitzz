@@ -3,6 +3,7 @@
 import Hint from "@/components/global/hint"
 import { Button } from "@/components/ui/button"
 import { KeywordType } from "@/lib/db/schema/keyword"
+import { RedditReplyType } from "@/lib/db/schema/reddit"
 import { userOne } from "@/lib/reddit"
 import { trpc } from "@/trpc/client"
 import { LinkIcon, Loader2Icon } from "lucide-react"
@@ -13,16 +14,17 @@ import { ZodError } from "zod"
 
 interface Props {
     projectId: string
-    alreadyRepliedId?: string | undefined | null
+    alreadyReplied?: any[] | undefined | null
+    activeKeywordData: any
 }
 
-const Posts = ({ projectId, alreadyRepliedId }: Props) => {
+const Posts = ({ projectId, alreadyReplied, activeKeywordData }: Props) => {
 
     const router = useRouter()
 
-    const { data: activeKeywordData, isPending: isActiveKeywordPending } = trpc.keyword.getActiveKeywords.useQuery({ projectId })
+   
 
-    if (!activeKeywordData && !isActiveKeywordPending) {
+    if (!activeKeywordData) {
         return(
             <div>
                Select your keyowrds to access this page
@@ -31,11 +33,9 @@ const Posts = ({ projectId, alreadyRepliedId }: Props) => {
     }
 
     //@ts-ignore
-    const keywordContent = activeKeywordData?.randomKeyword 
-
-    console.log(keywordContent)
-
-    const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ keywords: keywordContent })
+    const allKeywords = activeKeywordData.map((k) => k.content)
+console.log(allKeywords)
+    const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ userCredentials: userOne, allKeywords })
 
     const { mutate, isPending: isReplyPending } = trpc.reddit.createReply.useMutation({
         onError: (err) => {
@@ -84,8 +84,8 @@ const Posts = ({ projectId, alreadyRepliedId }: Props) => {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
     {subredditData && Array.isArray(subredditData) && subredditData.map((item, i) => (
         item.posts.map((post, j) => (
-            <div key={post.url} className="dark:bg-neutral-800 bg-neutral-100 mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between">
-                <h2 className="text-neutral-400 flex justify-end">{item.subreddit}</h2>
+            <div key={post.url} className="dark:bg-neutral-800 bg-neutral-100 mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between border">
+                <h2 className="text-neutral-400 flex justify-end">{post.subreddit}</h2>
                 <div>
                     <h3 className="text-2xl font-medium">
                         {post.title.length > 50 ? `${post.title.slice(0, 50)}...` : post.title}
@@ -107,10 +107,10 @@ const Posts = ({ projectId, alreadyRepliedId }: Props) => {
                         </a>
                     </Hint>
                     <div className="flex justify-end">
-                        <Button disabled={isReplyPending || alreadyRepliedId === post.postId} className="text-white" onClick={() => handleClick(post.postId, post.content)}>
-                           {isReplyPending && <Loader2Icon className='mr-2 h-4 w-4 animate-spin'/>}
-                            {alreadyRepliedId && alreadyRepliedId === post.postId ? 'Replied' : 'Reply'}
-                        </Button>
+                     <Button disabled={isReplyPending || alreadyReplied?.some(reply => reply.postId === post.postId)}
+                       className="text-white" onClick={() => handleClick(post.postId, post.content)}>
+                        {alreadyReplied && alreadyReplied.some(reply => reply.postId === post.postId) ? 'Replied' : 'Reply'}
+                     </Button>
                     </div>
                 </div>
             </div>
