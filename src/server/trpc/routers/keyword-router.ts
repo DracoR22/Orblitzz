@@ -20,12 +20,11 @@ export const keywordRouter = router({
                     role: 'system',
                     content: 'You are a helpful AI embedded in a keyword generator app' +
                     'AI can only answer with keywords, NEVER reply with a non list of keywords or a message besides the keywords' + 
-                    'Keywords must be the closest to possible Reddit communities' +
-                    'Always generate a list of 5 keywords' 
+                    'Always generate a list of keywords' 
                 },
                 {
                     role: 'user',
-                    content: `Generate a list of 5 Subreddits based on '${projectDescription}'`
+                    content: `Generate a list of 5 keywords based on '${projectDescription}'`
                 }
             ]
         })

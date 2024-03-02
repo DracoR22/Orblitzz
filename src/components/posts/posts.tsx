@@ -2,11 +2,9 @@
 
 import Hint from "@/components/global/hint"
 import { Button } from "@/components/ui/button"
-import { KeywordType } from "@/lib/db/schema/keyword"
-import { RedditReplyType } from "@/lib/db/schema/reddit"
 import { userOne } from "@/lib/reddit"
-import { trpc } from "@/trpc/client"
-import { LinkIcon, Loader2Icon } from "lucide-react"
+import { trpc } from "@/server/trpc/client"
+import { LinkIcon } from "lucide-react"
 import Image from "next/image"  
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"

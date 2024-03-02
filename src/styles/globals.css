@@ -80,6 +80,17 @@ body {
   display: none;
 }
 
+.custom-mouse {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 139, 0.2);
+  filter: blur(10px);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
 
 
 
