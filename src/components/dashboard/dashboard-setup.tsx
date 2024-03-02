@@ -13,7 +13,7 @@ import { Switch } from '../ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Button } from '../ui/button'
 import { Loader2Icon } from 'lucide-react'
-import { trpc } from '@/trpc/client'
+import { trpc } from "@/server/trpc/client"
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 

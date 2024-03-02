@@ -24,48 +24,56 @@ export const redditRouter = router({
             // Array of latest posts
             const latestPosts = [];
             
-          if (allKeywords) {
-            for (const oneKeyword of allKeywords) {
-                // Fetch the latest posts from the subreddit
-                const posts = await reddit.getSubreddit(oneKeyword).getNew({ limit: 4 });
-              
-                // Extract relevant information from each post, filtering out posts without content
-                const formattedPosts = posts
-                  .filter((post: Submission) => post.selftext.trim().length > 0)
-                  .map((post: Submission) => ({
-                    postId: post.id,
-                    subreddit: post.subreddit_name_prefixed,
-                    title: post.title,
-                    url: post.url,
-                    content: post.selftext,
-                    author: post.author.name,
-                    createdAt: new Date(post.created_utc * 1000).toLocaleString(),
-                  }))
-                  .filter((post) => {
-                    // Check if the post ID is not already in the set
-                    if (!postIdsSet.has(post.postId)) {
-                      // Add the post ID to the set and return true to include the post
-                      postIdsSet.add(post.postId);
-                      return true;
-                    }
-                    return false;
+            if (allKeywords) {
+                for (const oneKeyword of allKeywords) {
+                  // Search for posts based on the keyword
+                  const searchResults = await reddit.search({
+                    query: oneKeyword,
+                    subreddit: 'all',
+                    sort: 'relevance',
+                    time: 'all',
+                    syntax: 'plain',
                   });
               
-                  // Only add the subreddit if there are unique posts with content
+                  // Extract the first 5 unique posts from the search results
+                  const formattedPosts = searchResults
+                    .slice(0, 5)
+                    .filter((post) => post.selftext.trim().length > 0)
+                    .map((post) => ({
+                      postId: post.id,
+                      subreddit: post.subreddit_name_prefixed,
+                      title: post.title,
+                      url: post.url,
+                      content: post.selftext,
+                      author: post.author.name,
+                      createdAt: new Date(post.created_utc * 1000).toLocaleString(),
+                    }))
+                    .filter((post) => {
+                      // Check if the post ID is not already in the set
+                      if (!postIdsSet.has(post.postId)) {
+                        // Add the post ID to the set and return true to include the post
+                        postIdsSet.add(post.postId);
+                        return true;
+                      }
+                      return false;
+                    });
+              
+                  // Only add the keyword if there are unique posts with content
                   if (formattedPosts.length > 0) {
                     latestPosts.push({
-                    posts: formattedPosts,
+                      keyword: oneKeyword,
+                      posts: formattedPosts,
                     });
-                   }
-                 }
-                
-                  // Exclude subreddits with no posts
-                  const filteredLatestPosts = latestPosts.filter((subreddit) => subreddit.posts.length > 0);
-  
-                  return filteredLatestPosts;
-            }
-
-               return []
+                  }
+                }
+              
+                // Exclude keywords with no posts
+                const filteredLatestPosts = latestPosts.filter((keyword) => keyword.posts.length > 0);
+              
+                return filteredLatestPosts;
+              }
+              
+              return [];
             } catch (error) {
                console.log('GET_SUBREDDITS_ERROR', error)
                throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
