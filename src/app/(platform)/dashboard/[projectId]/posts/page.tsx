@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator"
 import { db } from "@/lib/db"
 import { keywords } from "@/lib/db/schema/keyword"
 import { redditReplies } from "@/lib/db/schema/reddit"
+import { getActiveKeywords } from "@/server/actions/keyword-actions"
 import { and, eq } from "drizzle-orm"
 
 const PostsPage = async ({ params }: { params: { projectId: string }}) => {
@@ -20,14 +21,7 @@ const PostsPage = async ({ params }: { params: { projectId: string }}) => {
   })
 
   // Active keywords
-  const activeKeywords = await db.select({
-    id: keywords.id,
-    columnId: keywords.columnId,
-    content: keywords.content
-}).from(keywords).where(and(
-    eq(keywords.redditCampaignId, params.projectId),
-    eq(keywords.columnId, '1')
-))
+  const activeKeywords = await getActiveKeywords(params.projectId)
 
   return (
     <>

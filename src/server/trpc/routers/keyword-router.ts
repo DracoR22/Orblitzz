@@ -38,7 +38,7 @@ export const keywordRouter = router({
 
           const keywordsOpenai = Array.from(matches, (match: any) => match[1].trim());
 
-          // TODO: I think there is a more efficient way of doing this.
+          // TODO: This is probably the worst way of doing this
           const trimmedFirstKeyword = keywordsOpenai[0].trim();
           const trimmedSecondKeyword = keywordsOpenai[1].trim();
           const trimmedThirdKeyword = keywordsOpenai[2].trim();
@@ -122,40 +122,5 @@ export const keywordRouter = router({
          } catch (error) {
             return new TRPCError({ message: 'Could not update keyword order ', code: 'BAD_REQUEST' })
          }
-    }),
-
-    //--------------------------------------------------//GET ACTIVE KEYWORDS//------------------------------------//
-    getActiveKeywords: privateProcedure.input(z.object({ projectId: z.string() })).query(async ({ ctx, input }) => {
-
-        const { projectId } = input
-
-        const project = await db.query.redditCampaigns.findFirst({
-            columns: {
-                id: true,
-                userId: true
-            },
-            where: and(
-                eq(redditCampaigns.id, projectId)
-            ),
-         })
-
-         if (!project) {
-            return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED'})
-         }
-
-         if (project.userId !== ctx.userId) {
-            return new TRPCError({ message: 'You dont have permission to access this resource', code: 'UNAUTHORIZED' })
-         }
-
-        const activeKeywords = await db.select({
-            id: keywords.id,
-            columnId: keywords.columnId,
-            content: keywords.content
-        }).from(keywords).where(and(
-            eq(keywords.redditCampaignId, projectId),
-            eq(keywords.columnId, '1')
-        ))
-
-        return { activeKeywords }
     }),
 })

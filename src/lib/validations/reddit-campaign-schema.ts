@@ -19,7 +19,10 @@ export const CreateReplySchema = z.object({
     }),
     postId: z.string().min(1, { message: 'PostId is required' }),
     projectId: z.string().min(1, { message: 'ProjectId is required' }),
-    postContent: z.string().min(1, { message: 'PostContent is required' })
+    postContent: z.string().min(1, { message: 'PostContent is required' }),
+    postUrl: z.string().min(1, { message: 'PostUrl is required' }),
+    postAuthor: z.string().min(1, { message: 'PostAuthor is required' }),
+    postTitle: z.string().min(1, { message: 'PostTitle is required' })
 })
 
 export const GetPostsSchema = z.object({

@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils'
 import { DragDropContext, DropResult, Droppable } from '@hello-pangea/dnd'
 import KeywordItem from './keyword-item'
-import { InfoIcon } from 'lucide-react'
+import { BotIcon, InfoIcon, UserIcon } from 'lucide-react'
 import Hint from '../global/hint'
 import { useState } from 'react'
 import { trpc } from "@/server/trpc/client"
@@ -113,24 +113,30 @@ const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex w-[700px] h-[400px]">
+        <div className="flex w-[700px] h-[400px] bg-[#242424] p-4 rounded-md">
         {columns.map((column: any) => {
           const columnKeywords = orderedData.filter((keyword: any) => keyword.columnId === column.id);
           return (
           <div key={column.id} className="flex-1">
           <div className='flex items-center gap-x-4'>
             <div className={cn("w-4 h-4 mb-2 rounded-full", column.id === '1' ? 'bg-blue-500' : 'bg-red-500 ')}/>
-             <h2 className="text-lg font-bold mb-2">{column.title}</h2>
+             <h2 className=" font-bold mb-2">{column.title}</h2>
               {column.id === '1' && (
-                <Hint description='Drag and drop the generated keywords here to add them to your project.'>
+                <div className='flex items-center gap-x-6'>
+                  <small className='mb-3 bg-blue-400/10 text-blue-500 p-2 rounded-full'><UserIcon className='w-5 h-5'/></small>
+                  <Hint description='Drag and drop the generated keywords here to add them to your project.'>
                   <InfoIcon className='h-4 w-4 text-muted-foreground dark:text-neutral-400 mb-6'/>
                 </Hint>
+                </div>
               )}
 
               {column.id === '2' && (
-                <Hint description='These are some AI generated keywords that might fit your project description'>
+                <div className='flex items-center gap-x-6'>
+                  <small className='mb-3 bg-red-400/10 text-red-500 p-2 rounded-full'><BotIcon className='w-5 h-5'/></small>
+                 <Hint description='These are some AI generated keywords that might fit your project description'>
                   <InfoIcon className='h-4 w-4 text-muted-foreground dark:text-neutral-400 mb-6'/>
-                </Hint>
+                 </Hint>
+                </div>
               )}
           </div>
             <div className='border-t w-full'/>

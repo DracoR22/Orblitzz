@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils"
 import { LucideIcon } from "lucide-react"
 import Link from "next/link"
+import { Separator } from "../ui/separator"
 
 interface Props {
   name: string
@@ -13,10 +14,14 @@ interface Props {
 
 const SidebarItem = ({ active, href, icon: Icon, name }: Props) => {
   return (
-    <Link href={href} className={cn("flex items-center gap-x-4 mt-2 hover:bg-[#363636] rounded-sm p-1 cursor-pointer", active && 'bg-[#363636]')}>
-         <Icon className="w-5 h-5 dark:text-neutral-400"/>
-          {name}
-    </Link>
+    <Link href={href} className={cn("flex flex-col mt-2 hover:bg-[#363636] rounded-sm p-1 cursor-pointer", active && 'bg-[#363636]')}>
+    <div className="flex gap-x-4">
+        <Icon className="w-5 h-5 dark:text-neutral-400"/>
+        {name}
+    </div>
+    
+</Link>
+
   )
 }
 
