@@ -61,7 +61,7 @@ console.log(allKeywords)
       )
     }
 
-    const handleClick = (postId: string, postContent: string) => {
+    const handleClick = (postId: string, postContent: string, postUrl: string, postAuthor: string, postTitle: string) => {
         const input = {
             userCredentials: {
               userAgent: userOne.userAgent,
@@ -73,6 +73,9 @@ console.log(allKeywords)
             postId: postId,
             projectId: projectId,
             postContent: postContent,
+            postUrl,
+            postAuthor,
+            postTitle
            };
 
           return mutate(input)
@@ -106,7 +109,7 @@ console.log(allKeywords)
                     </Hint>
                     <div className="flex justify-end">
                      <Button disabled={isReplyPending || alreadyReplied?.some(reply => reply.postId === post.postId)}
-                       className="text-white" onClick={() => handleClick(post.postId, post.content)}>
+                       className="text-white" onClick={() => handleClick(post.postId, post.content, post.url, post.author, post.title)}>
                         {alreadyReplied && alreadyReplied.some(reply => reply.postId === post.postId) ? 'Replied' : 'Reply'}
                      </Button>
                     </div>

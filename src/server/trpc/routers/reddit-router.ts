@@ -37,7 +37,7 @@ export const redditRouter = router({
               
                   // Extract the first 5 unique posts from the search results
                   const formattedPosts = searchResults
-                    .slice(0, 5)
+                    .slice(0, 10)
                     .filter((post) => post.selftext.trim().length > 0)
                     .map((post) => ({
                       postId: post.id,
@@ -106,7 +106,7 @@ export const redditRouter = router({
 
     //--------------------------------------------//CREATE REPLY//------------------------------------------//
     createReply: privateProcedure.input(CreateReplySchema).mutation(async ({ ctx, input }) => {
-        const { userCredentials, postId, projectId, postContent } = input
+        const { userCredentials, postId, projectId, postContent, postAuthor, postUrl, postTitle } = input
         const { userId } = ctx
 
         // Get the Reddit project
@@ -192,13 +192,17 @@ export const redditRouter = router({
             return new TRPCError({ message: 'Could not reply to post', code: 'BAD_REQUEST' })
         }
 
+        // Extract the first 100 letters of the cleanedAiResponse
+         const limitedReply = cleanedAiResponse.slice(0, 100);
+
         // Save reply into database
         const dbReply = await db.insert(redditReplies).values({
             projectId,
-            content: postContent,
-            postAuthor: post.author.name,
+            title: postTitle,
+            postAuthor: postAuthor,
             postId,
-            reply: cleanedAiResponse
+            postUrl: postUrl,
+            reply: limitedReply
         })
 
         // Save reply to database

@@ -16,8 +16,13 @@ import { Loader2Icon } from 'lucide-react'
 import { trpc } from "@/server/trpc/client"
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { RedditCampaignType } from '@/lib/db/schema/reddit'
 
-const DashboardSetup = () => {
+interface Props {
+   data?: Partial<RedditCampaignType>
+}
+
+const DashboardSetup = ({ data }: Props) => {
 
    const router = useRouter()
 
@@ -42,9 +47,8 @@ const DashboardSetup = () => {
    })
 
    const handleCreateKeywordSuccess = async ({ projectId, projectDescription }: { projectId: string, projectDescription: string }) => {
-      // Call the keyword mutation here with the projectId
-      await keywordMutation({ projectId, projectDescription });
-
+         // Call the keyword mutation here with the projectId
+        return await keywordMutation({ projectId, projectDescription });
     };
 
    const { mutate, isPending } = trpc.reddit.createRedditProject.useMutation({
@@ -68,19 +72,23 @@ const DashboardSetup = () => {
     mode: 'onChange',
     resolver: zodResolver(RedditCampaignSchema),
     defaultValues: {
-        image: '',
-        title: '',
-        description: '',
-        url: '',
-        tone: '',
-        autoReply: false
+        image: data?.image || '',
+        title: data?.title || '',
+        description: data?.description || '',
+        url: data?.url || '',
+        tone: data?.tone || '',
+        autoReply: data?.autoReply || false
     },
   })
 
   const isLoading = form.formState.isSubmitting
 
   const handleSubmit = (values: z.infer<typeof RedditCampaignSchema>) => {
-     mutate(values) 
+     if (data) {
+
+     } else {
+      mutate(values)
+     } 
   }
 
   return (

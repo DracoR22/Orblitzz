@@ -17,7 +17,7 @@ const Navbar = () => {
     scrolled && "border-b shadow-sm bg-white/75 dark:bg-[#1e1e1e] backdrop-blur-md")}>
       {/* LOGO */}
        <Link href={'/'} className="hidden md:flex items-center cursor-pointer">
-         <Image draggable="false" src="/logo-orblitzz-bg.png" height={50} width={50} alt="Logo" className="rounded-full"/>
+         <Image draggable="false" src="/logo-orblitzz-bg.png" height={65} width={65} alt="Logo" className="rounded-full"/>
          <p className={cn("font-semibold text-2xl hover:text-blue-200 transition")}>
            Orblitzz
          </p>

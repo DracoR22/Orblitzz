@@ -73,9 +73,10 @@ export const redditCampaigns = pgTable("redditCampaign", {
 export const redditReplies = pgTable("redditReplies", {
   id: uuid("id").defaultRandom().notNull().primaryKey(),
   postId: text("postId"),
-  content: text("content"),
+  title: text("content"),
   postAuthor: text("postAuthor"),
   reply: text("reply"),
+  postUrl: text("postUrl"),
 
   createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 
