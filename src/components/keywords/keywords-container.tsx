@@ -113,7 +113,7 @@ const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex w-[700px] h-[400px] bg-[#242424] p-4 rounded-md">
+        <div className="flex w-[700px] h-[400px] dark:bg-[#242424] bg-[#f6f6f6] p-4 rounded-md">
         {columns.map((column: any) => {
           const columnKeywords = orderedData.filter((keyword: any) => keyword.columnId === column.id);
           return (

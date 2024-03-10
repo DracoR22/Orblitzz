@@ -24,7 +24,7 @@ const SettingsPage = async ({ params }: { params: { projectId: string }}) => {
       </div>
 
       <div className="mt-4">
-        <DashboardSetup data={data}/>
+        <DashboardSetup data={data} projectId={params.projectId}/>
       </div>
     </ScrollArea>
   )

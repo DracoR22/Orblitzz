@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db"
 import { keywords } from "@/lib/db/schema/keyword"
-import { and, eq } from "drizzle-orm"
+import { and, asc, eq } from "drizzle-orm"
 
 export const getActiveKeywords = async (projectId: string) => {
     const activeKeywords = await db.select({
@@ -12,7 +12,7 @@ export const getActiveKeywords = async (projectId: string) => {
     }).from(keywords).where(and(
         eq(keywords.redditCampaignId, projectId),
         eq(keywords.columnId, '1')
-    ))
+    )).orderBy(asc(keywords.order))
 
     return activeKeywords
 }

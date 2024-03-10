@@ -64,6 +64,7 @@ export const redditCampaigns = pgTable("redditCampaign", {
     autoReply: boolean('autoReply'),
     tone: text("tone").notNull(),
     url: text("url").notNull(),
+    autoReplyLimit: integer('autoReplyLimit').notNull().default(0),
 
     createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
     

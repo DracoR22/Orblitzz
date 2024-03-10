@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: Readonly<{children: React
     <SessionProvider session={session}>
     <html lang="en" suppressHydrationWarning>
       <TrpcProviders>
-      <body className={cn('dark:bg-[#1e1e1e]', inter.className)}>
+      <body className={cn('dark:bg-[#1e1e1e] bg-[#ffffff]', inter.className)}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
            {children}
            <Toaster/>

@@ -15,12 +15,11 @@ interface Props {
 const SidebarItem = ({ active, href, icon: Icon, name }: Props) => {
   return (
     <Link href={href} className={cn("flex flex-col mt-2 hover:bg-[#363636] rounded-sm p-1 cursor-pointer", active && 'bg-[#363636]')}>
-    <div className="flex gap-x-4">
+      <div className="flex gap-x-4">
         <Icon className="w-5 h-5 dark:text-neutral-400"/>
         {name}
-    </div>
-    
-</Link>
+      </div>
+    </Link>
 
   )
 }

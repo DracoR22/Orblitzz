@@ -53,6 +53,12 @@ console.log(allKeywords)
         }
     })
 
+    const { mutate: autoReplyMutation } = trpc.reddit.createAutoReply.useMutation({
+      onSuccess: () => {
+        toast.success('Success')
+      }
+    })
+
     if (isPending) {
       return(
         <div>
@@ -81,8 +87,25 @@ console.log(allKeywords)
           return mutate(input)
     }
 
+    const onClickTest = () => {
+      const input = {
+        userCredentials: {
+          userAgent: userOne.userAgent,
+          clientId: userOne.clientId,
+          clientSecret: userOne.clientSecret,
+          username: userOne.username,
+          password: userOne.password,
+        },
+        projectId: projectId,
+        allKeywords
+       };
+
+       return autoReplyMutation(input)
+    }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      <h1 onClick={onClickTest}>Click here to test</h1>
     {subredditData && Array.isArray(subredditData) && subredditData.map((item, i) => (
         item.posts.map((post, j) => (
             <div key={post.url} className="dark:bg-neutral-800 bg-neutral-100 mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between border">

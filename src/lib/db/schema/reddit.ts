@@ -1,4 +1,4 @@
-import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { users } from "./user";
 
 export const redditCampaigns = pgTable("redditCampaign", {
@@ -9,6 +9,7 @@ export const redditCampaigns = pgTable("redditCampaign", {
     autoReply: boolean('autoReply'),
     tone: text("tone").notNull(),
     url: text("url").notNull(),
+    autoReplyLimit: integer('autoReplyLimit').notNull().default(0),
 
     createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
     

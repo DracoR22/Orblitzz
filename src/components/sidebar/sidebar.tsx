@@ -5,14 +5,13 @@ import SidebarHeader from "./sidebar-header"
 import { useMediaQuery } from "usehooks-ts"
 import { useParams, usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { BrainIcon, ChevronsLeftIcon, ContactIcon, CreditCardIcon, InfoIcon, MailIcon, MenuIcon, MoveRightIcon, SettingsIcon } from "lucide-react"
+import { BrainIcon, ChevronsLeftIcon, ContactIcon, CreditCardIcon, InfoIcon, MailIcon, MenuIcon, MoveRightIcon, Plus, SettingsIcon } from "lucide-react"
 import { Separator } from "../ui/separator"
-import Image from "next/image"
-import { Accordion } from "../ui/accordion"
 import SidebarItem from "./sidebar-item"
 import PlanUsage from "./plan-usage"
-import Link from "next/link"
-import { useRoutes } from "@/hooks/use-routes"
+import { useExtraRoutes, useRoutes } from "@/hooks/use-routes"
+import Hint from "../global/hint"
+import AdditionalSidebarItem from "./additional-sidebar-item"
 
 const Sidebar = () => {
 
@@ -20,6 +19,7 @@ const Sidebar = () => {
   const pathname = usePathname()
   const params = useParams()
   const routes = useRoutes()
+  const extraRoutes = useExtraRoutes()
 
   const sidebarRef = useRef<ElementRef<"aside">>(null)
   const navbarRef = useRef<ElementRef<"div">>(null)
@@ -98,27 +98,32 @@ const Sidebar = () => {
   return (
     <>
       <aside ref={sidebarRef} className={cn("group/sidebar flex flex-col h-full w-60 relative dark:bg-[#2a2a2a] bg-[#F2F3F5] ", isResetting && "transition-all ease-in-out duration-300", isMobile && "w-0")}>
-       <div onClick={collapse} role="button" className={cn("h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-100 group-hover/sidebar:opacity-100 transition", isMobile && "opacity-100")}>
-          <ChevronsLeftIcon className="h-6 w-6"/>
-        </div>
-         <div className={cn("mt-12", isCollapsed && "hidden")}>
-           <SidebarHeader/>
-           <div className="mx-3 mt-3">
+         <div className={cn("mt-3", isCollapsed && "hidden")}>
+           <SidebarHeader collapse={collapse} isMobile={isMobile}/>
+           <div className="mx-3 mt-4">
             <PlanUsage/>
            </div>
            <div className="mt-4 mx-2">
-              <p className="text-xs text-neutral-400 mb-3 mt-6">CAMPAIGNS</p>
-              {/* CAMPAIGNS */}
-              {/* <Accordion type="multiple" defaultValue={['1', '2']} className="space-y-2">
-                <SidebarItem/>
-              </Accordion> */}
-
-              <Separator className="my-3"/>
-
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <p className="text-xs text-muted-foreground mb-1 mt-4 font-medium">PROJECT</p>
+                </div>
+               <Hint description="New Project">
+                 <Plus className="h-4 mt-[8px] w-4 text-blue-500 rounded-sm cursor-pointer hover:bg-neutral-300 dark:hover:bg-neutral-600 transition"/>
+               </Hint>
+              </div>
+              
               <div className="mt-2">
                 {routes.map((route, i) => (
                  <SidebarItem key={i} active={route.isActive} name={route.name} icon={route.icon} href={route.href}/>
                 ))}
+              </div>
+
+              <p className="text-xs text-muted-foreground mb-1 mt-6 font-medium">MORE</p>
+              <div className="mt-2">
+               {extraRoutes.map((route, i) => (
+                <AdditionalSidebarItem key={i} active={route.isActive} name={route.name} icon={route.icon} href={route.href}/>
+               ))}
               </div>
            </div>
          </div>
