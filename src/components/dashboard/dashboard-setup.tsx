@@ -17,12 +17,15 @@ import { trpc } from "@/server/trpc/client"
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { RedditCampaignType } from '@/lib/db/schema/reddit'
+import { Slider } from '../ui/slider'
+import { cn } from '@/lib/utils'
 
 interface Props {
    data?: Partial<RedditCampaignType>
+   projectId?: string
 }
 
-const DashboardSetup = ({ data }: Props) => {
+const DashboardSetup = ({ data, projectId }: Props) => {
 
    const router = useRouter()
 
@@ -51,7 +54,7 @@ const DashboardSetup = ({ data }: Props) => {
         return await keywordMutation({ projectId, projectDescription });
     };
 
-   const { mutate, isPending } = trpc.reddit.createRedditProject.useMutation({
+   const { mutate: createMutation, isPending: isCreatePending } = trpc.reddit.createRedditProject.useMutation({
         onError: (err) => {
              if (err.data?.code === "UNAUTHORIZED") {
                return toast.error('Please Login to do this action')
@@ -68,6 +71,24 @@ const DashboardSetup = ({ data }: Props) => {
         }
    })
 
+   const { mutate: updateMutation, isPending: isUpdatePending } = trpc.reddit.updateRedditProject.useMutation({
+      onError: (err) => {
+         if (err.data?.code === "UNAUTHORIZED") {
+           return toast.error('Please Login to do this action')
+         }
+
+         if (err instanceof ZodError) {
+           return toast.error(err.issues[0].message)
+         }
+
+        toast.error('Something went wrong while updating your project. Please try again later.')
+    },
+    onSuccess: () => {
+       router.refresh()
+       toast.success('Project updated!')
+    }
+   })
+
   const form = useForm<z.infer<typeof RedditCampaignSchema>>({
     mode: 'onChange',
     resolver: zodResolver(RedditCampaignSchema),
@@ -77,17 +98,18 @@ const DashboardSetup = ({ data }: Props) => {
         description: data?.description || '',
         url: data?.url || '',
         tone: data?.tone || '',
-        autoReply: data?.autoReply || false
+        autoReply: data?.autoReply || false,
+        autoReplyLimit: data?.autoReplyLimit || 1
     },
   })
 
   const isLoading = form.formState.isSubmitting
 
   const handleSubmit = (values: z.infer<typeof RedditCampaignSchema>) => {
-     if (data) {
-
+     if (data && projectId) {
+      return updateMutation({ id: projectId, autoReply: values.autoReply, autoReplyLimit: values.autoReplyLimit, description: values.description, title: values.title, tone: values.tone, url: values.url, image: values.image })
      } else {
-      mutate(values)
+      return createMutation(values)
      } 
   }
 
@@ -103,19 +125,7 @@ const DashboardSetup = ({ data }: Props) => {
         </CardHeader>
         <CardContent>
             <Form {...form}>
-               <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
-                  {/* PROJECT IMAGE */}
-                  <FormField disabled={isLoading} control={form.control} name='image' render={({ field }) => (
-                    <FormItem>
-                       <FormLabel>
-                          Campaign Image <span className='text-xs text-muted-foreground'>(Optional)</span>
-                       </FormLabel>
-                       <FormControl>
-                          {/* TODO: upload image */}
-                       </FormControl>
-                       <FormMessage/>
-                    </FormItem>
-                  )}/>
+               <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>           
                   {/* PROJECT TITLE */}
                   <div className='flex md:flex-row gap-4'>
                      <FormField disabled={isLoading} control={form.control} name='title' render={({ field }) => (
@@ -153,7 +163,7 @@ const DashboardSetup = ({ data }: Props) => {
                               We will generate some keywords based on the description you provided
                             </small>
                             <FormControl>
-                               <Textarea placeholder='Type a short description of your project' {...field}/>
+                               <Textarea readOnly={!!data} placeholder='Type a short description of your project' {...field}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -174,6 +184,22 @@ const DashboardSetup = ({ data }: Props) => {
                        </div>
                     </FormItem>
                   )}/>
+                  {/* AUTO REPLY LIMIT */}
+                   <FormField disabled={isLoading} control={form.control} name='autoReplyLimit' render={({ field }) => (
+                     <FormItem className='flex-1 rounded-lg border p-4'>
+                        <FormLabel>Auto Reply Daily Limit</FormLabel>
+                        <div>
+                           <div className='mb-4'>
+                             <FormDescription>
+                                {field.value} Daily AI Replies
+                             </FormDescription>
+                           </div>
+                           <Slider 
+                           disabled={!form.watch('autoReply')} onValueChange={(value: number[]) => field.onChange(value[0])} defaultValue={[field.value]} max={100} step={1} />
+                        </div>
+                        <FormMessage/>
+                     </FormItem>
+                   )}/>
                   <FormField disabled={isLoading} control={form.control} name='tone' render={({ field }) => (
                     <FormItem className='flex-1'>
                        <FormLabel>Pick the tone AI replies will have</FormLabel>
@@ -198,7 +224,7 @@ const DashboardSetup = ({ data }: Props) => {
                             </SelectItem>
                           </SelectContent>
                        </Select>
-                       <div className='pt-2 text-xs'>
+                       <div className='pt-2 px-2 text-xs bg-green-400/20 text-green-500 p-1 font-medium rounded-md'>
                          {field.value === 'formal' && 'Professional and business-like language. Suitable for serious or formal contexts.'}
                          {field.value === 'humorous' && 'Light-hearted and funny language. Adds a touch of humor to the replies.'}
                          {field.value === 'inspirational' && 'Motivational and uplifting language. Suitable for encouraging users to try new things.'}
@@ -206,9 +232,9 @@ const DashboardSetup = ({ data }: Props) => {
                        </div>
                     </FormItem>
                   )}/>
-                  <Button type='submit' disabled={isLoading || isPending} className='text-white w-full'>
-                      {isLoading || isPending && <Loader2Icon className='mr-2 h-4 w-4 animate-spin'/>}
-                       Submit
+                  <Button type='submit' disabled={isLoading || isCreatePending || isUpdatePending} className='text-white w-full'>
+                      {isLoading || isCreatePending || isUpdatePending && <Loader2Icon className='mr-2 h-4 w-4 animate-spin'/>}
+                       {data ? 'Update' : 'Create'}
                   </Button>
                </form>
             </Form>

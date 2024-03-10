@@ -31,19 +31,29 @@ export const useRoutes = () => {
             icon: SettingsIcon,
             isActive: pathname === `/dashboard/${params.projectId}/settings`,
           },
-          {
-            name: 'Billing',
-            href: `/dashboard/billing`,
-            icon: CreditCardIcon,
-            isActive: pathname === `/dashboard/billing`,
-          },
-          {
-            name: 'Contact',
-            href: '/dashboard/contact',
-            icon: MailIcon,
-            isActive: pathname === `/dashboard/contact`,
-          },
     ], [pathname])
 
     return routes
+}
+
+export const useExtraRoutes = () => {
+  const pathname = usePathname()
+  const params = useParams()
+
+  const routes = useMemo(() => [
+        {
+          name: 'Billing',
+          href: `/dashboard/billing`,
+          icon: CreditCardIcon,
+          isActive: pathname === `/dashboard/billing`,
+        },
+        {
+          name: 'Contact',
+          href: '/dashboard/contact',
+          icon: MailIcon,
+          isActive: pathname === `/dashboard/contact`,
+        },
+  ], [pathname])
+
+  return routes
 }

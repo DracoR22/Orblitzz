@@ -25,12 +25,12 @@ export const getRedditReplies = async (projectId: string) => {
 export const getRedditCampaignDetails = async (projectId: string, userId: string) => {
     const campaign = await db.query.redditCampaigns.findFirst({
         columns: {
-            image: true,
             title: true,
             description: true,
             autoReply: true,
             tone: true,
             url: true,
+            autoReplyLimit: true
         },
         where: and(
             eq(redditCampaigns.id, projectId),
