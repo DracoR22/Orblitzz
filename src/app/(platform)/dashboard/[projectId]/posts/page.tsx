@@ -16,7 +16,7 @@ const PostsPage = async ({ params }: { params: { projectId: string }}) => {
         postId: true
       },
       where: and(
-          eq(redditReplies.projectId, params.projectId)
+          eq(redditReplies.projectId, params.projectId),
       )
   })
 

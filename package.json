@@ -50,6 +50,7 @@
     "react-hook-form": "^7.50.1",
     "snoowrap": "^1.23.0",
     "sonner": "^1.4.1",
+    "stripe": "^14.20.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^2.14.0",

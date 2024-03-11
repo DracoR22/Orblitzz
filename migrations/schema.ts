@@ -83,3 +83,13 @@ export const redditReplies = pgTable("redditReplies", {
 
   projectId: uuid("projectId").notNull().references(() => redditCampaigns.id, { onDelete: "cascade" })
 })
+
+export const subscriptions =  pgTable("subscription", {
+  id: uuid("id").defaultRandom().notNull().primaryKey(),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  stripePriceId: text("stripe_price_id"),
+  stripeCurrentPeriodEnd: timestamp("stripe_current_period_end", { withTimezone: true }),
+
+  userId: uuid("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+})
