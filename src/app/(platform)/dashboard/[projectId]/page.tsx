@@ -1,7 +1,11 @@
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 
-const ProjectIdPage = () => {
+const ProjectIdPage = async () => {
+  const subscription = await getUserSubscriptionPlan()
   return (
-    <div>ProjectIdPage</div>
+    <div>
+      {subscription.name} plan
+    </div>
   )
 }
 

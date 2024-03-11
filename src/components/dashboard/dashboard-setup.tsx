@@ -19,13 +19,15 @@ import { useRouter } from 'next/navigation'
 import { RedditCampaignType } from '@/lib/db/schema/reddit'
 import { Slider } from '../ui/slider'
 import { cn } from '@/lib/utils'
+import { getUserSubscriptionPlan } from '@/lib/stripe/stripe'
 
 interface Props {
    data?: Partial<RedditCampaignType>
    projectId?: string
+   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
 }
 
-const DashboardSetup = ({ data, projectId }: Props) => {
+const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
 
    const router = useRouter()
 
@@ -194,8 +196,9 @@ const DashboardSetup = ({ data, projectId }: Props) => {
                                 {field.value} Daily AI Replies
                              </FormDescription>
                            </div>
-                           <Slider 
-                           disabled={!form.watch('autoReply')} onValueChange={(value: number[]) => field.onChange(value[0])} defaultValue={[field.value]} max={100} step={1} />
+                           <Slider disabled={!form.watch('autoReply')}
+                            onValueChange={(value: number[]) => field.onChange(value[0])} 
+                            defaultValue={[field.value]} max={subscriptionPlan.name === 'Free' ? 3 : 3} step={1} />
                         </div>
                         <FormMessage/>
                      </FormItem>

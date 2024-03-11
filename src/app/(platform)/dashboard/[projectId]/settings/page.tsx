@@ -3,6 +3,7 @@ import Heading from "@/components/global/heading"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { currentUser } from "@/lib/auth/get-server-session"
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { getRedditCampaignDetails } from "@/server/actions/reddit-actions"
 
 const SettingsPage = async ({ params }: { params: { projectId: string }}) => {
@@ -15,6 +16,8 @@ const SettingsPage = async ({ params }: { params: { projectId: string }}) => {
 
    const data = await getRedditCampaignDetails(params.projectId, user.id)
 
+   const subscriptionPlan = await getUserSubscriptionPlan()
+
   return (
     <ScrollArea className="h-[650px] w-full px-10">
       <div className="pb-2 pt-6">
@@ -24,7 +27,7 @@ const SettingsPage = async ({ params }: { params: { projectId: string }}) => {
       </div>
 
       <div className="mt-4">
-        <DashboardSetup data={data} projectId={params.projectId}/>
+        <DashboardSetup data={data} projectId={params.projectId} subscriptionPlan={subscriptionPlan}/>
       </div>
     </ScrollArea>
   )
