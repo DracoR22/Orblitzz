@@ -33,7 +33,7 @@ const Posts = ({ projectId, alreadyReplied, activeKeywordData }: Props) => {
     //@ts-ignore
     const allKeywords = activeKeywordData.map((k) => k.content)
 console.log(allKeywords)
-    const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ userCredentials: userOne, allKeywords })
+    const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ allKeywords })
 
     const { mutate, isPending: isReplyPending } = trpc.reddit.createReply.useMutation({
         onError: (err) => {
@@ -69,13 +69,6 @@ console.log(allKeywords)
 
     const handleClick = (postId: string, postContent: string, postUrl: string, postAuthor: string, postTitle: string) => {
         const input = {
-            userCredentials: {
-              userAgent: userOne.userAgent,
-              clientId: userOne.clientId,
-              clientSecret: userOne.clientSecret,
-              username: userOne.username,
-              password: userOne.password,
-            },
             postId: postId,
             projectId: projectId,
             postContent: postContent,
@@ -89,13 +82,6 @@ console.log(allKeywords)
 
     const onClickTest = () => {
       const input = {
-        userCredentials: {
-          userAgent: userOne.userAgent,
-          clientId: userOne.clientId,
-          clientSecret: userOne.clientSecret,
-          username: userOne.username,
-          password: userOne.password,
-        },
         projectId: projectId,
         allKeywords
        };

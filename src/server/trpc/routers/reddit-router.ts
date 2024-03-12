@@ -18,7 +18,15 @@ export const redditRouter = router({
     //-------------------------------------------------//GET POSTS ON KEYWORDS//------------------------------------//
     getSubredditsAndPosts: publicProcedure.input(GetPostsSchema).query(async({ input }) => {
 
-        const { allKeywords, userCredentials } = input
+        const { allKeywords } = input
+
+        const userCredentials = {
+          userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
+          clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
+          clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
+          username: process.env.FIRST_REDDIT_USERNAME!,
+          password: process.env.FIRST_REDDIT_PASSWORD!
+      }
 
         try { 
             // Create our Reddit instance
@@ -110,8 +118,16 @@ export const redditRouter = router({
 
     //--------------------------------------------//CREATE REPLY//------------------------------------------//
     createReply: privateProcedure.input(CreateReplySchema).mutation(async ({ ctx, input }) => {
-        const { userCredentials, postId, projectId, postContent, postAuthor, postUrl, postTitle } = input
+        const { postId, projectId, postContent, postAuthor, postUrl, postTitle } = input
         const { userId } = ctx
+
+        const userCredentials = {
+          userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
+          clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
+          clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
+          username: process.env.FIRST_REDDIT_USERNAME!,
+          password: process.env.FIRST_REDDIT_PASSWORD!
+       }
 
         // Get the Reddit project
         const project = await db.query.redditCampaigns.findFirst({
@@ -245,8 +261,16 @@ export const redditRouter = router({
 
     //---------------------------------------------//CREATE AUTOMATIC REPLIES//---------------------------------//
     createAutoReply: privateProcedure.input(CreateAutoReplySchema).mutation(async ({ ctx, input }) => {
-      const { userCredentials, projectId, allKeywords } = input
+      const { projectId, allKeywords } = input
       const { userId } = ctx
+
+      const userCredentials = {
+        userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
+        clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
+        clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
+        username: process.env.FIRST_REDDIT_USERNAME!,
+        password: process.env.FIRST_REDDIT_PASSWORD!
+      }
 
       const subscriptionPlan = await getUserSubscriptionPlan()
 
@@ -271,7 +295,7 @@ export const redditRouter = router({
       })
 
       if (!project) {
-          return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
+          throw new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
       }
 
       // Replies created this month
@@ -282,7 +306,7 @@ export const redditRouter = router({
       console.log(repliesCreatedToday)
 
       if (repliesCreatedToday.length >= project.autoReplyLimit) {
-        return new TRPCError({ message: 'Reply limit reached for today.', code: 'TOO_MANY_REQUESTS' })
+        throw new TRPCError({ message: 'Reply limit reached for today.', code: 'TOO_MANY_REQUESTS' })
       }
 
       console.log(repliesCreatedThisMonth)
@@ -290,9 +314,9 @@ export const redditRouter = router({
       // Plan Limits
       const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
 
-      // Check if the reply limit is exceeded TODO: THIS IS MONTHLY
+      // Check if the reply limit is exceeded TODO: DO THE SAME FOR ALL PLANS
       if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
-        return new TRPCError({ message: 'You have reached the maximum amount of replies for your plan', code: 'TOO_MANY_REQUESTS' })
+        throw new TRPCError({ message: 'You have reached the maximum amount of replies for your plan', code: 'TOO_MANY_REQUESTS' })
       }
 
       // Create Reddit instance
@@ -348,11 +372,18 @@ export const redditRouter = router({
       const filteredLatestPosts = latestPosts.filter((keyword) => keyword.posts.length > 0);
 
       // Function to get a random element from an array
-      const getRandomElement = (array: any[]) => array[Math.floor(Math.random() * array.length)];
+      const getRandomElement = (array: any[], seed: number) => {
+        const randomIndex = Math.floor(Math.abs(Math.sin(seed)) * array.length);
+        return array[randomIndex];
+      };
 
-      // Get a random post from the filteredLatestPosts array
-      const randomPost = getRandomElement(filteredLatestPosts);
+      // Generate a random seed (you can use any number)
+      const randomSeed = Math.random();
 
+     // Get a random post from the filteredLatestPosts array with the seed
+     const randomPost = getRandomElement(filteredLatestPosts, randomSeed);
+     console.log(randomPost.posts[0].content);
+     
       // Check if already replied to post
       const alreadyReplied = await db.query.redditReplies.findFirst({
         columns: {
@@ -366,10 +397,10 @@ export const redditRouter = router({
       })
 
       if (alreadyReplied) {
-        return new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
+        throw new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
       }
 
-      console.log(randomPost.posts[0].content)
+      
  
       // OpenAI reponse
     //   const response = await openai.createChatCompletion({
@@ -434,13 +465,29 @@ export const redditRouter = router({
           projectId,
           title: 'test',
           postAuthor: 'test',
-          postId: '1',
+          postId: randomPost.posts[0].postId,
           postUrl: 'test',
-          reply: 'test'
+          reply: randomPost.posts[0].content
       })
 
     //   // Save reply to database
        return { message: 'OK'}
   }),
 
+  getProjectReplies: privateProcedure.input(z.object({ projectId: z.string() })).query(async ({ ctx, input }) => {
+    const { projectId } = input
+
+    const projectReplies = await db.query.redditReplies.findMany({
+      columns: {
+        id: true
+      },
+      where: eq(redditReplies.projectId, projectId)
+    })
+
+    if (!projectReplies) {
+       return []
+    }
+
+    return projectReplies
+  })
 })
