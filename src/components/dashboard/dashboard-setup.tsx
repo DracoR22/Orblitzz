@@ -198,7 +198,8 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
                            </div>
                            <Slider disabled={!form.watch('autoReply')}
                             onValueChange={(value: number[]) => field.onChange(value[0])} 
-                            defaultValue={[field.value]} max={subscriptionPlan.name === 'Free' ? 3 : 3} step={1} />
+                            defaultValue={[field.value]} step={1} 
+                            max={subscriptionPlan.repliesPerMonth}/>
                         </div>
                         <FormMessage/>
                      </FormItem>

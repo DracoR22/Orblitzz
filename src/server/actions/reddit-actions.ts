@@ -41,6 +41,21 @@ export const getRedditCampaignDetails = async (projectId: string, userId: string
     return campaign
 }
 
+export const getProjectAutoreplyLimit = async (projectId: string, userId: string) => {
+  const campaign = await db.query.redditCampaigns.findFirst({
+    columns: {
+      autoReplyLimit: true,
+      autoReply: true
+    },
+    where: and(
+      eq(redditCampaigns.id, projectId),
+      eq(redditCampaigns.userId, userId)
+    )
+  })
+
+  return campaign
+}
+
 export const getMonthlyReplies = async (projectId: string) => {
     // Check the ammount of replies. 
     const allProjectReplies = await db.query.redditReplies.findMany({

@@ -5,15 +5,19 @@ import SidebarHeader from "./sidebar-header"
 import { useMediaQuery } from "usehooks-ts"
 import { useParams, usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { BrainIcon, ChevronsLeftIcon, ContactIcon, CreditCardIcon, InfoIcon, MailIcon, MenuIcon, MoveRightIcon, Plus, SettingsIcon } from "lucide-react"
-import { Separator } from "../ui/separator"
+import { MenuIcon, Plus } from "lucide-react"
 import SidebarItem from "./sidebar-item"
 import PlanUsage from "./plan-usage"
 import { useExtraRoutes, useRoutes } from "@/hooks/use-routes"
 import Hint from "../global/hint"
 import AdditionalSidebarItem from "./additional-sidebar-item"
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 
-const Sidebar = () => {
+interface SidebarProps {
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
+}
+
+const Sidebar = ({ subscriptionPlan }: SidebarProps) => {
 
   const isMobile = useMediaQuery("(max-width: 768px)")
   const pathname = usePathname()
@@ -101,7 +105,7 @@ const Sidebar = () => {
          <div className={cn("mt-3", isCollapsed && "hidden")}>
            <SidebarHeader collapse={collapse} isMobile={isMobile}/>
            <div className="mx-3 mt-4">
-            <PlanUsage/>
+            <PlanUsage subscriptionPlan={subscriptionPlan}/>
            </div>
            <div className="mt-4 mx-2">
               <div className="flex items-center">
