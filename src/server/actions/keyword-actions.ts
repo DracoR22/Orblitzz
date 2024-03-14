@@ -16,3 +16,18 @@ export const getActiveKeywords = async (projectId: string) => {
 
     return activeKeywords
 }
+
+export const getAllKeyowords = async (projectId: string) => {
+    const allKeywords = await db.query.keywords.findMany({
+        columns: {
+            id: true,
+            columnId: true,
+            order: true,
+            content: true
+          },
+          where: eq(keywords.redditCampaignId, projectId),
+          orderBy: (keywords, { asc }) => [asc(keywords.order)]
+    })
+
+    return allKeywords
+}

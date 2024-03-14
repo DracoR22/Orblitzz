@@ -5,7 +5,7 @@ const LandingPageLayout = ({ children }: PropsWithChildren) => {
   return (
     <div className='h-full'>
       <Navbar/>
-      <main className='h-full pt-[200px] mx-auto md:px-20'>
+      <main className='h-full pt-[180px] mx-auto md:px-[100px]'>
          {children}
       </main>
     </div>

@@ -45,7 +45,8 @@ export const getProjectAutoreplyLimit = async (projectId: string, userId: string
   const campaign = await db.query.redditCampaigns.findFirst({
     columns: {
       autoReplyLimit: true,
-      autoReply: true
+      autoReply: true,
+      title: true
     },
     where: and(
       eq(redditCampaigns.id, projectId),

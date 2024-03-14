@@ -12,12 +12,14 @@ import { useExtraRoutes, useRoutes } from "@/hooks/use-routes"
 import Hint from "../global/hint"
 import AdditionalSidebarItem from "./additional-sidebar-item"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
+import { RedditCampaignType } from "@/lib/db/schema/reddit"
 
 interface SidebarProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
+  project?: Pick<RedditCampaignType, 'title' | 'autoReply' | 'autoReplyLimit'>
 }
 
-const Sidebar = ({ subscriptionPlan }: SidebarProps) => {
+const Sidebar = ({ subscriptionPlan, project }: SidebarProps) => {
 
   const isMobile = useMediaQuery("(max-width: 768px)")
   const pathname = usePathname()
@@ -103,7 +105,7 @@ const Sidebar = ({ subscriptionPlan }: SidebarProps) => {
     <>
       <aside ref={sidebarRef} className={cn("group/sidebar flex flex-col h-full w-60 relative dark:bg-[#2a2a2a] bg-[#F2F3F5] ", isResetting && "transition-all ease-in-out duration-300", isMobile && "w-0")}>
          <div className={cn("mt-3", isCollapsed && "hidden")}>
-           <SidebarHeader collapse={collapse} isMobile={isMobile}/>
+           <SidebarHeader projectTitle={project?.title} collapse={collapse} isMobile={isMobile}/>
            <div className="mx-3 mt-4">
             <PlanUsage subscriptionPlan={subscriptionPlan}/>
            </div>

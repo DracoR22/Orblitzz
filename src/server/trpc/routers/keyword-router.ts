@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { privateProcedure, router } from "../trpc";
-import { openai } from "@/lib/openai";
+import { openai } from "@/lib/openai/openai";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/lib/db";
 import { keywords } from "@/lib/db/schema/keyword";
