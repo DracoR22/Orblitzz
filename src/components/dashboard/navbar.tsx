@@ -9,6 +9,8 @@ import { getMonthlyReplies, getProjectAutoreplyLimit } from "@/server/actions/re
 import { PLANS } from "@/lib/stripe/plans"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { useEffect, useState } from "react"
+import ColoredText from "../global/colored-text"
+import { AlertTriangleIcon } from "lucide-react"
 
 interface NavbarProps {
   projectId: string
@@ -52,8 +54,23 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
       }
     },
   });
+
+  const canPlanReply = () => {
+    if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
+      return false
+    }
+
+    return true
+  }
+
+  const isReplyPossible = canPlanReply()
+  // console.log(isReplyPossible)
   
   const handleAutoReply = async () => {
+      // Check if activeKeywords.length is less than 5
+    if (allKeywords.length < 5) {
+        return; // Exit the function early if the condition is not met
+    }
     // TODO: CHECK FOR ALL THE PLANS
     if ((replyLimitReached === false) && (projectAutoReplyLimit.autoReply) && (repliesCreatedToday.length <= projectAutoReplyLimit.autoReplyLimit) && (subscriptionPlan.name === 'Free' && !isFreeExceeded)) {
       await autoReplyMutation({ projectId, allKeywords });
@@ -69,6 +86,20 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
   return (
     <nav className="hidden sm:flex w-full h-[60px] dark:bg-[#363636] bg-[#f6f6f6]">
       <div className="flex flex-1 justify-end items-center">
+        {projectAutoReplyLimit.autoReply && allKeywords.length < 5 && isReplyPossible && (
+          <div className="mx-6">
+            <ColoredText variant="alert" icon={AlertTriangleIcon}>
+              You need at least 5 active keywords in order to use the auto-reply functionality. This way AI will have more posts to reply to.
+            </ColoredText>
+          </div>
+        )}
+        {!isReplyPossible && (
+          <div className="mx-6">
+          <ColoredText variant="error" icon={AlertTriangleIcon}>
+            You ran out of replies for this month. Upgrade your plan form more replies
+          </ColoredText>
+        </div>
+        )}
         <div className="pt-1">
             <UserMenu/>
         </div>

@@ -10,6 +10,7 @@ import { trpc } from "@/server/trpc/client"
 import { toast } from 'sonner'
 import { ZodError } from 'zod'
 import { useRouter } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 
 interface Props {
   columns: any
@@ -44,7 +45,7 @@ const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
      toast.error('Something went wrong while generating keywords. Please try again later.')
     },
     onSuccess: () => {
-      router.refresh()
+     
     }
    })
 

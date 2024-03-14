@@ -1,4 +1,4 @@
-import { createRedditInstance } from "@/lib/reddit";
+import { createRedditInstance } from "@/lib/reddit/reddit";
 import { privateProcedure, publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { Submission } from "snoowrap";
@@ -6,7 +6,7 @@ import { CreateAutoReplySchema, CreateReplySchema, GetPostsSchema, RedditCampaig
 import { db } from "@/lib/db";
 import { redditCampaigns, redditReplies } from "@/lib/db/schema/reddit";
 import { z } from "zod";
-import { openai } from "@/lib/openai";
+import { openai } from "@/lib/openai/openai";
 import { and, eq } from "drizzle-orm";
 import { ResponseTypes } from "openai-edge";
 import { endOfDay, isToday, startOfDay } from "date-fns";
@@ -26,7 +26,9 @@ export const redditRouter = router({
           clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
           username: process.env.FIRST_REDDIT_USERNAME!,
           password: process.env.FIRST_REDDIT_PASSWORD!
-      }
+        }
+
+        const subscriptionPlan = await getUserSubscriptionPlan()
 
         try { 
             // Create our Reddit instance
@@ -129,6 +131,21 @@ export const redditRouter = router({
           password: process.env.FIRST_REDDIT_PASSWORD!
        }
 
+       const subscriptionPlan = await getUserSubscriptionPlan()
+
+       // Replies created this month
+       const repliesCreatedThisMonth = await getMonthlyReplies(projectId)
+
+       console.log(repliesCreatedThisMonth)
+
+       // Plan Limits
+       const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
+
+       // TODO: CHECK THIS FOR ALL PLANS
+       if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
+         throw new TRPCError({ message: 'You have reached the maximum amount of replies for your plan', code: 'TOO_MANY_REQUESTS' })
+       }
+
         // Get the Reddit project
         const project = await db.query.redditCampaigns.findFirst({
             columns: {
@@ -136,7 +153,8 @@ export const redditRouter = router({
               tone: true, 
               title: true,
               description: true,
-              url: true
+              url: true,
+              autoReplyLimit: true
             },
             where: and(
                 eq(redditCampaigns.id, projectId),

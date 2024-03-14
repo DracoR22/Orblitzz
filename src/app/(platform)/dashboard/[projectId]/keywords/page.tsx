@@ -3,6 +3,7 @@ import KeywordsContainer from "@/components/keywords/keywords-container"
 import { Separator } from "@/components/ui/separator"
 import { db } from "@/lib/db"
 import { keywords } from "@/lib/db/schema/keyword"
+import { getAllKeyowords } from "@/server/actions/keyword-actions"
 import { eq } from "drizzle-orm"
 
 const columns = [
@@ -18,27 +19,6 @@ const columns = [
   }
 ]
 
-// const keywords = [
-//   {
-//     id: '1',
-//     content: 'This one is added',
-//     order: 1,
-//     columnId: '1'
-//   },
-//   {
-//     id: '2',
-//     content: 'This one is not added',
-//     order: 1,
-//     columnId: '2'
-//   },
-//   {
-//     id: '3',
-//     content: 'This one is added as well',
-//     order: 2,
-//     columnId: '1'
-//   },
-// ]
-
 const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
 
   //  const serverKeywords = await db.select({
@@ -48,16 +28,7 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
   //    columnId: keywords.columnId
   //  }).from(keywords).where(eq(keywords.redditCampaignId, params.projectId)).orderBy(keywords.order.asc())
 
-   const serverKeywords = await db.query.keywords.findMany({
-    columns: {
-      id: true,
-      columnId: true,
-      order: true,
-      content: true
-    },
-    where: eq(keywords.redditCampaignId, params.projectId),
-    orderBy: (keywords, { asc }) => [asc(keywords.order)]
-   })
+   const serverKeywords = await getAllKeyowords(params.projectId)
 
   return (
     <>

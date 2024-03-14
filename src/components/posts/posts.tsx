@@ -2,7 +2,7 @@
 
 import Hint from "@/components/global/hint"
 import { Button } from "@/components/ui/button"
-import { userOne } from "@/lib/reddit"
+import { userOne } from "@/lib/reddit/reddit"
 import { trpc } from "@/server/trpc/client"
 import { LinkIcon } from "lucide-react"
 import Image from "next/image"  

@@ -13,8 +13,8 @@ const Navbar = () => {
     const router = useRouter()  
 
   return (
-    <nav className={cn("z-50 bg-transparent fixed top-0 flex w-full p-4 transition-all md:px-20",
-    scrolled && "border-b shadow-sm bg-white/75 dark:bg-[#1e1e1e] backdrop-blur-md")}>
+    <nav className={cn("z-50 bg-transparent fixed top-0 flex w-full p-4 transition-all md:px-20" ,
+    scrolled && "border-b shadow-sm bg-white/75 dark:bg-[#1e1e1e] dark:bg-opacity-50 backdrop-blur-md")}>
       {/* LOGO */}
        <Link href={'/'} className="hidden md:flex items-center cursor-pointer">
          <Image draggable="false" src="/logo-orblitzz-bg.png" height={65} width={65} alt="Logo" className="rounded-full"/>
