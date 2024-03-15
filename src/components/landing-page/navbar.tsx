@@ -35,13 +35,25 @@ const Navbar = () => {
         
           <div>
              <Button variant='ghost' className="font-semibold" onClick={() => router.push('/log-in')}>
-               Login
+               Features
              </Button>
           </div>
 
           <div>
-             <Button className="font-semibold text-white" onClick={() => router.push('/sign-up')}>
-               Register
+             <Button variant='ghost' className="font-semibold" onClick={() => router.push('/log-in')}>
+               How it Works?
+             </Button>
+          </div>
+
+          <div>
+             <Button variant='ghost' className="font-semibold" onClick={() => router.push('/')}>
+               Contact
+             </Button>
+          </div>
+
+          <div>
+             <Button className="font-semibold text-white" onClick={() => router.push('/login')}>
+               Sign In
              </Button>
           </div>
        </div>

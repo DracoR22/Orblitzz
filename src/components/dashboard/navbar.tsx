@@ -72,13 +72,17 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
         return; // Exit the function early if the condition is not met
     }
     // TODO: CHECK FOR ALL THE PLANS
-    if ((replyLimitReached === false) && (projectAutoReplyLimit.autoReply) && (repliesCreatedToday.length <= projectAutoReplyLimit.autoReplyLimit) && (subscriptionPlan.name === 'Free' && !isFreeExceeded)) {
+    if ((replyLimitReached === false) && (projectAutoReplyLimit.autoReply) && (repliesCreatedToday.length <= projectAutoReplyLimit.autoReplyLimit) && (isReplyPossible)) {
       await autoReplyMutation({ projectId, allKeywords });
       console.log('AI replying')
     }
   };
   
   useEffect(() => {
+    if (!projectAutoReplyLimit || !projectAutoReplyLimit.autoReplyLimit) {
+      return
+    }
+    
     handleAutoReply();
   }, [repliesCreatedToday, projectAutoReplyLimit, subscriptionPlan, isFreeExceeded]);
   
