@@ -14,7 +14,7 @@ const Home = () => {
      <div>
      <div className="hidden dark:block w-full blur-[120px] rounded-full h-32 absolute bg-blue-500 -z-10 top-0"/>
         <TitleSection title="Instantly get users for you app" 
-        subheading="Orblitzz is an AI tool that naturally mentions your product in social media conversations"
+        subheading="Get an army of AIs that casually mentions your product in social media conversations"
          pill="✨ How many people know your product?"/>
          <Button className="w-[200px] text-white bg-blue-500 clear-start mt-4">
            Get Started Free
