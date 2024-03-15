@@ -43,7 +43,7 @@ export const useExtraRoutes = () => {
   const routes = useMemo(() => [
         {
           name: 'Billing',
-          href: `/dashboard/billing`,
+          href: `/dashboard/${params.projectId}/billing`,
           icon: CreditCardIcon,
           isActive: pathname === `/dashboard/billing`,
         },

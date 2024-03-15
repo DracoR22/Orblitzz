@@ -5,17 +5,15 @@ import { DragDropContext, DropResult, Droppable } from '@hello-pangea/dnd'
 import KeywordItem from './keyword-item'
 import { BotIcon, InfoIcon, UserIcon } from 'lucide-react'
 import Hint from '../global/hint'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { trpc } from "@/server/trpc/client"
 import { toast } from 'sonner'
 import { ZodError } from 'zod'
 import { useRouter } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
 
 interface Props {
   columns: any
-  keywords: any
-  projectId: string
+  projectId: string,
 }
 
 function reorder<T>(column: T[], startIndex: number, endIndex: number) {
@@ -26,11 +24,11 @@ function reorder<T>(column: T[], startIndex: number, endIndex: number) {
   return result
 }
 
-const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
+const KeywordsContainer = ({ columns, projectId }: Props) => {
 
-  const [orderedData, setOrderedData] = useState(keywords)
+  const [orderedData, setOrderedData] = useState<any>(null)
 
-  const router = useRouter()
+  const { data } = trpc.keyword.getAllKeywords.useQuery({ projectId })
 
    const { mutate: updateKeywordMutation } = trpc.keyword.updateKeywordOrder.useMutation({
     onError: (err) => {
@@ -48,6 +46,14 @@ const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
      
     }
    })
+
+   useEffect(() => {
+    if (data) {
+      setOrderedData(data.allKeywords); // Assuming data structure contains allKeywords
+    }
+  }, [data]);
+
+  // console.log(data?.allKeywords)
 
    const onDragEnd = (result: DropResult) => {
     const { destination, source, type } = result
@@ -112,9 +118,13 @@ const KeywordsContainer = ({ columns, keywords, projectId }: Props) => {
     }
    }
 
+   if (orderedData === null) {
+    return <div>Loading...</div>; // or any loading indicator
+  }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex w-[700px] h-[400px] dark:bg-[#242424] bg-[#f6f6f6] p-4 rounded-md">
+        <div className="flex w-[700px] h-[400px]  p-4 rounded-md">
         {columns.map((column: any) => {
           const columnKeywords = orderedData.filter((keyword: any) => keyword.columnId === column.id);
           return (

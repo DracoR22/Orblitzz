@@ -115,7 +115,7 @@ const Sidebar = ({ subscriptionPlan, project }: SidebarProps) => {
                   <p className="text-xs text-muted-foreground mb-1 mt-4 font-medium">PROJECT</p>
                 </div>
                <Hint description="New Project">
-                 <Plus className="h-4 mt-[8px] w-4 text-blue-500 rounded-sm cursor-pointer hover:bg-neutral-300 dark:hover:bg-neutral-600 transition"/>
+                 <Plus className="h-4 mt-[8px] w-4 text-blue-500 rounded-sm cursor-pointer hover:bg-[#e3e3e3] dark:hover:bg-neutral-600 transition"/>
                </Hint>
               </div>
               
@@ -133,7 +133,7 @@ const Sidebar = ({ subscriptionPlan, project }: SidebarProps) => {
               </div>
            </div>
          </div>
-       <div onMouseDown={handleMouseDown} onClick={resetWidth} className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-[#555555] right-0 top-0"/>
+       <div onMouseDown={handleMouseDown} onClick={resetWidth} className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 dark:bg-[#555555] bg-[#d4d4d4] right-0 top-0"/>
       </aside>
 
     <div ref={navbarRef} className={cn("absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]", isResetting && "transition-all ease-in-out duration-300", isMobile && "left-0 w-full")}>

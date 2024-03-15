@@ -2,7 +2,6 @@ export const PLANS = [
     {
       name: 'Free',
       slug: 'free',
-      quota: 10,
       projects: 1,
       repliesPerMonth: 3,
       keywords: 5,
@@ -17,7 +16,6 @@ export const PLANS = [
     {
       name: 'Starter',
       slug: 'starter',
-      quota: 9,
       projects: 1,
       repliesPerMonth: 20,
       keywords: 5,
@@ -32,7 +30,6 @@ export const PLANS = [
     {
       name: 'Pro',
       slug: 'pro',
-      quota: 49,
       projects: 1,
       repliesPerMonth: 100,
       keywords: 10,
