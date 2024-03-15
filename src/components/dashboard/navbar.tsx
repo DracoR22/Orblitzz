@@ -75,14 +75,12 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
     if ((replyLimitReached === false) && (projectAutoReplyLimit.autoReply) && (repliesCreatedToday.length <= projectAutoReplyLimit.autoReplyLimit) && (isReplyPossible)) {
       await autoReplyMutation({ projectId, allKeywords });
       console.log('AI replying')
+    } else {
+      return
     }
   };
   
   useEffect(() => {
-    if (!projectAutoReplyLimit || !projectAutoReplyLimit.autoReplyLimit) {
-      return
-    }
-    
     handleAutoReply();
   }, [repliesCreatedToday, projectAutoReplyLimit, subscriptionPlan, isFreeExceeded]);
   
