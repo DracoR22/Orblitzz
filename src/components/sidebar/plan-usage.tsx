@@ -26,7 +26,7 @@ const PlanUsage = ({ subscriptionPlan }: PlanUsageProps) => {
           {/* <Image src={'/sidebar/reddit-logo.svg'} height={18} width={18} alt="" /> */}
           <DiamondIcon/>
         </div>
-        <div className="text-sm">Free Plan</div>
+        <div className="text-sm">{subscriptionPlan.name} Plan</div>
         <small>0 / {subscriptionPlan.repliesPerMonth as number} Replies</small>
       </div>
     </div>

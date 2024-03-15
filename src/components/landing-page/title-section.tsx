@@ -13,8 +13,8 @@ const TitleSection = ({ title, subheading, pill }: TitleSectionProps) => {
     <React.Fragment>
         <section className="flex flex-col gap-4 md:justify-start items-start ">
           {pill && (
-             <article className="rounded-full p-[1px] text-sm dark:bg-gradient-to-t dark:from-blue-500 dark:to-blue-500">
-               <div className="rounded-full px-3 py-1 dark:bg-[#0f0f0f]">
+             <article className="rounded-full p-[1.5px] text-sm bg-gradient-to-t from-blue-500 to-blue-500">
+               <div className="rounded-full px-3 py-1 dark:bg-[#0f0f0f] bg-[#f6f6f6]">
                  {pill}
                </div>
              </article>
@@ -55,7 +55,7 @@ const TitleSection = ({ title, subheading, pill }: TitleSectionProps) => {
                 <Image draggable={false} src={'/landing-page/star.svg'} alt="" width={25} height={25}/>
                 <Image draggable={false} src={'/landing-page/star.svg'} alt="" width={25} height={25}/>
                 <Image draggable={false} src={'/landing-page/star.svg'} alt="" width={25} height={25}/>
-                <div className="border-r border-neutral-600 h-[40px] px-1"/>
+                <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
                 <div>
                   <small className="text-muted-foreground ">
                     5 out of 5 Reply Quality

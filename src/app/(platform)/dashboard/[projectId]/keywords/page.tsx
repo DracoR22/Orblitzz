@@ -3,7 +3,7 @@ import KeywordsContainer from "@/components/keywords/keywords-container"
 import { Separator } from "@/components/ui/separator"
 import { db } from "@/lib/db"
 import { keywords } from "@/lib/db/schema/keyword"
-import { getAllKeyowords } from "@/server/actions/keyword-actions"
+import { getAllKeywords } from "@/server/actions/keyword-actions"
 import { eq } from "drizzle-orm"
 
 const columns = [
@@ -28,7 +28,7 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
   //    columnId: keywords.columnId
   //  }).from(keywords).where(eq(keywords.redditCampaignId, params.projectId)).orderBy(keywords.order.asc())
 
-   const serverKeywords = await getAllKeyowords(params.projectId)
+  //  const serverKeywords = await getAllKeywords(params.projectId)
 
   return (
     <>
@@ -42,7 +42,7 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
       </div>
       {/* DRAG AND DROP */}
       <div className="flex justify-center dark:bg-neutral-800 bg-neutral-100 mx-10 rounded-md py-6">
-        <KeywordsContainer columns={columns} keywords={serverKeywords} projectId={params.projectId}/>
+        <KeywordsContainer columns={columns} projectId={params.projectId}/>
       </div>
     </>
   )

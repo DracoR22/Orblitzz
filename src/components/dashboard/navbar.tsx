@@ -10,7 +10,8 @@ import { PLANS } from "@/lib/stripe/plans"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { useEffect, useState } from "react"
 import ColoredText from "../global/colored-text"
-import { AlertTriangleIcon } from "lucide-react"
+import { AlertTriangleIcon, SparklesIcon } from "lucide-react"
+import { Button } from "../ui/button"
 
 interface NavbarProps {
   projectId: string
@@ -84,6 +85,13 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
   return (
     <nav className="hidden sm:flex w-full h-[60px] dark:bg-[#363636] bg-[#f6f6f6]">
       <div className="flex flex-1 justify-end items-center">
+        {/* SUBSCRIPTION BUTTON */}
+      <div className="">
+        <Button size='sm' className="text-white">
+          Need more replies?
+          <SparklesIcon className="w-4 h-4 ml-2"/>
+        </Button>
+      </div>
         {projectAutoReplyLimit?.autoReply && allKeywords.length < 5 && isReplyPossible && (
           <div className="mx-6">
             <ColoredText variant="alert" icon={AlertTriangleIcon}>
@@ -93,8 +101,8 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
         )}
         {!isReplyPossible && (
           <div className="mx-6">
-          <ColoredText variant="error" icon={AlertTriangleIcon}>
-            You ran out of replies for this month. Upgrade your plan form more replies
+          <ColoredText variant="alert" icon={AlertTriangleIcon}>
+            You ran out of replies for this month. Upgrade your plan for more replies
           </ColoredText>
         </div>
         )}

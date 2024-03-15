@@ -124,5 +124,20 @@ export const keywordRouter = router({
          }
     }),
 
+    getAllKeywords: privateProcedure.input(z.object({ projectId: z.string() })).query(async ({ ctx, input }) => {
+        const { projectId } = input
 
+        const allKeywords = await db.query.keywords.findMany({
+            columns: {
+                id: true,
+                columnId: true,
+                order: true,
+                content: true
+              },
+              where: eq(keywords.redditCampaignId, projectId),
+              orderBy: (keywords, { asc }) => [asc(keywords.order)]
+        })
+
+        return { allKeywords }
+    })
 })

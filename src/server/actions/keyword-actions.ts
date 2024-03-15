@@ -17,7 +17,7 @@ export const getActiveKeywords = async (projectId: string) => {
     return activeKeywords
 }
 
-export const getAllKeyowords = async (projectId: string) => {
+export const getAllKeywords = async (projectId: string) => {
     const allKeywords = await db.query.keywords.findMany({
         columns: {
             id: true,

@@ -14,7 +14,7 @@ const Hint = ({ children , description, side, sideOffset = 0 }: HintProps) => {
           <TooltipTrigger>
             {children}
           </TooltipTrigger>
-          <TooltipContent sideOffset={sideOffset} side={side} className="text-xs max-w-[220px] break-words bg-[#1e1e1e]">
+          <TooltipContent sideOffset={sideOffset} side={side} className="text-xs max-w-[220px] break-words dark:bg-[#1e1e1e] bg-[#ffffff]">
             {description}
           </TooltipContent>
         </Tooltip>

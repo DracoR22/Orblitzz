@@ -141,10 +141,20 @@ export const redditRouter = router({
        // Plan Limits
        const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
 
-       // TODO: CHECK THIS FOR ALL PLANS
-       if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
-         throw new TRPCError({ message: 'You have reached the maximum amount of replies for your plan', code: 'TOO_MANY_REQUESTS' })
-       }
+       const canPlanReply = () => {
+        if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
+          return false
+        }
+    
+        return true
+      }
+    
+      const isReplyPossible = canPlanReply()
+
+      // Check if the reply limit is exceeded TODO: DO THE SAME FOR ALL PLANS
+      if (!isReplyPossible) {
+        throw new TRPCError({ message: 'You have reached the maximum amount of replies for your plan', code: 'TOO_MANY_REQUESTS' })
+      }
 
         // Get the Reddit project
         const project = await db.query.redditCampaigns.findFirst({
@@ -332,8 +342,18 @@ export const redditRouter = router({
       // Plan Limits
       const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
 
+      const canPlanReply = () => {
+        if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
+          return false
+        }
+    
+        return true
+      }
+    
+      const isReplyPossible = canPlanReply()
+
       // Check if the reply limit is exceeded TODO: DO THE SAME FOR ALL PLANS
-      if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
+      if (!isReplyPossible) {
         throw new TRPCError({ message: 'You have reached the maximum amount of replies for your plan', code: 'TOO_MANY_REQUESTS' })
       }
 

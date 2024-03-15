@@ -2,7 +2,6 @@
 
 import Hint from "@/components/global/hint"
 import { Button } from "@/components/ui/button"
-import { userOne } from "@/lib/reddit/reddit"
 import { trpc } from "@/server/trpc/client"
 import { LinkIcon } from "lucide-react"
 import Image from "next/image"  
@@ -19,8 +18,6 @@ interface Props {
 const Posts = ({ projectId, alreadyReplied, activeKeywordData }: Props) => {
 
     const router = useRouter()
-
-   
 
     if (!activeKeywordData) {
         return(
@@ -41,22 +38,20 @@ console.log(allKeywords)
               return toast.error('You are not authorized to perform this action')
             }
 
+            if (err.data?.code === "TOO_MANY_REQUESTS") {
+              return toast.error('You ran out of replies. Upgrade your plan for more')
+            }
+
             if (err instanceof ZodError) {
               return toast.error(err.issues[0].message)
             }
 
-           toast.error('Something went wrong while creating your project. Please try again later.')
+           toast.error('Something went wrong while creating reply. Please try again later.')
        },
         onSuccess: () => {
           toast.success('Replied to post!')
           router.refresh()
         }
-    })
-
-    const { mutate: autoReplyMutation } = trpc.reddit.createAutoReply.useMutation({
-      onSuccess: () => {
-        toast.success('Success')
-      }
     })
 
     if (isPending) {
@@ -80,18 +75,8 @@ console.log(allKeywords)
           return mutate(input)
     }
 
-    const onClickTest = () => {
-      const input = {
-        projectId: projectId,
-        allKeywords
-       };
-
-       return autoReplyMutation(input)
-    }
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-      <h1 onClick={onClickTest}>Click here to test</h1>
     {subredditData && Array.isArray(subredditData) && subredditData.map((item, i) => (
         item.posts.map((post, j) => (
             <div key={post.url} className="dark:bg-neutral-800 bg-neutral-100 mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between border">
