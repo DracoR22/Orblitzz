@@ -25,10 +25,6 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
 
   const [replyLimitReached, setReplyLimitReached] = useState(false);
 
-  if (!projectAutoReplyLimit || !projectAutoReplyLimit.autoReplyLimit) {
-    return
-  }
-
   // Plan Limits
   const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
 
@@ -72,7 +68,7 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
         return; // Exit the function early if the condition is not met
     }
     // TODO: CHECK FOR ALL THE PLANS
-    if ((replyLimitReached === false) && (projectAutoReplyLimit.autoReply) && (repliesCreatedToday.length <= projectAutoReplyLimit.autoReplyLimit) && (isReplyPossible)) {
+    if ((replyLimitReached === false) && (projectAutoReplyLimit?.autoReply) && (repliesCreatedToday.length <= projectAutoReplyLimit.autoReplyLimit) && (isReplyPossible)) {
       await autoReplyMutation({ projectId, allKeywords });
       console.log('AI replying')
     } else {
@@ -88,7 +84,7 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
   return (
     <nav className="hidden sm:flex w-full h-[60px] dark:bg-[#363636] bg-[#f6f6f6]">
       <div className="flex flex-1 justify-end items-center">
-        {projectAutoReplyLimit.autoReply && allKeywords.length < 5 && isReplyPossible && (
+        {projectAutoReplyLimit?.autoReply && allKeywords.length < 5 && isReplyPossible && (
           <div className="mx-6">
             <ColoredText variant="alert" icon={AlertTriangleIcon}>
               You need at least 5 active keywords in order to use the auto-reply functionality. This way AI will have more posts to reply to.
