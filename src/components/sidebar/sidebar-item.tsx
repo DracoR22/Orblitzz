@@ -14,7 +14,7 @@ interface Props {
 
 const SidebarItem = ({ active, href, icon: Icon, name }: Props) => {
   return (
-    <Link href={href} className={cn("flex flex-col mt-2 dark:hover:bg-[#363636] hover:bg-[#e3e3e3] rounded-sm p-1 cursor-pointer", active && 'bg-[#363636]')}>
+    <Link href={href} className={cn("flex flex-col mt-2 dark:hover:bg-[#363636] hover:bg-[#e3e3e3] rounded-sm p-1 cursor-pointer", active && 'dark:bg-[#363636] bg-[#e3e3e3]')}>
       <div className="flex gap-x-4">
         <Icon className="w-5 h-5 dark:text-neutral-400"/>
         {name}

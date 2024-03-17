@@ -8,3 +8,46 @@
     background-size: 86.125rem;
   }
   
+  .magic {
+    
+    box-shadow: 16px 14px 20px #0000008c;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .magic::before {
+    content: '';
+    background-image: conic-gradient(#3B82F6 20deg, transparent 120deg);
+    width: 270%;
+    height: 270%;
+    position: absolute;
+    animation: rotate 4s linear infinite;
+  }
+
+  .magic::after {
+    width: 190px;
+    height: 190px;
+    background: #101010;
+    position: absolute;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #3B82F6;
+    font-size: larger;
+    letter-spacing: 5px;
+    box-shadow: inset 20px 20px 20px #0000008c;
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(-360deg);
+    }
+  }

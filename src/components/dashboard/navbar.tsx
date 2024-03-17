@@ -24,7 +24,7 @@ interface NavbarProps {
 
 const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedThisMonth, repliesCreatedToday, subscriptionPlan }: NavbarProps) => {
 
-  const [replyLimitReached, setReplyLimitReached] = useState(false);
+  const [replyLimitReached, setReplyLimitReached] = useState<boolean>(false);
 
   // Plan Limits
   const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
@@ -45,6 +45,9 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
         
       } else if (err.data?.code === 'FORBIDDEN') {
          await handleAutoReply()
+      } else if (err.data?.code === 'UNPROCESSABLE_CONTENT') {
+        toast.error('Error while creating replies. Make sure you have at least 5 active keywords')
+        setReplyLimitReached(true)
       } else {
         toast.error('AI could not reply to this post at the moment');
         setReplyLimitReached(true);
@@ -52,6 +55,7 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
     },
   });
 
+   // TODO: CHECK FOR ALL THE PLANS
   const canPlanReply = () => {
     if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
       return false
@@ -68,7 +72,7 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
     if (allKeywords.length < 5) {
         return; // Exit the function early if the condition is not met
     }
-    // TODO: CHECK FOR ALL THE PLANS
+   
     if ((replyLimitReached === false) && (projectAutoReplyLimit?.autoReply) && (repliesCreatedToday.length <= projectAutoReplyLimit.autoReplyLimit) && (isReplyPossible)) {
       await autoReplyMutation({ projectId, allKeywords });
       console.log('AI replying')

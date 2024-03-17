@@ -50,11 +50,11 @@ const TitleSection = ({ title, subheading, pill }: TitleSectionProps) => {
               </p>
 
               <div className="flex items-center gap-x-2">
-                <Image draggable={false} src={'/landing-page/star.svg'} alt="" width={25} height={25}/>
-                <Image draggable={false} src={'/landing-page/star.svg'} alt="" width={25} height={25}/>
-                <Image draggable={false} src={'/landing-page/star.svg'} alt="" width={25} height={25}/>
-                <Image draggable={false} src={'/landing-page/star.svg'} alt="" width={25} height={25}/>
-                <Image draggable={false} src={'/landing-page/star.svg'} alt="" width={25} height={25}/>
+                <Image draggable={false} src={'/landing-page/openai-dark.svg'} alt="" width={25} height={25}/>
+                <Image draggable={false} src={'/sidebar/reddit-logo.svg'} alt="" width={25} height={25}/>
+                <Image draggable={false} src={'/landing-page/twitter.svg'} alt="" width={30} height={30}/>
+                <Image draggable={false} src={'/sidebar/gmail-logo.svg'} alt="" width={25} height={25}/>
+                <Image draggable={false} src={'/landing-page/adfree.svg'} alt="" width={25} height={25}/>
                 <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
                 <div>
                   <small className="text-muted-foreground ">

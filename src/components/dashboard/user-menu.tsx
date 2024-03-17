@@ -12,7 +12,7 @@ const UserMenu = () => {
 
   return (
     <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild className="cursor-pointer">
           <Avatar className="w-[37px] h-[37px]">
             <AvatarImage src={user?.image || ''}/>
             <AvatarFallback>{user?.name && user.name.slice(0, 2)}</AvatarFallback>
