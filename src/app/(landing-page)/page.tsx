@@ -4,7 +4,7 @@ import PricingCards from "@/components/global/pricing-cards";
 import SubTitleSection from "@/components/landing-page/subtitle-section";
 import TitleSection from "@/components/landing-page/title-section"
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { ArrowRightIcon, Check, ChevronRightIcon, ZapIcon } from "lucide-react";
 import Image from "next/image";
 
 import "@/styles/landing-page-styles.css";
@@ -19,7 +19,7 @@ const Home = () => {
      <div>
         <TitleSection title="Get users for you app without moving a finger" 
         subheading="Get an army of AIs that casually mentions your product in social media conversations"
-         pill="✨ How many people know your product?"/>
+         pill="🦨 How many people know your product?"/>
         
         <Button className="w-[200px] text-white bg-blue-500 clear-start mt-5">
            Get Started Free
@@ -31,7 +31,7 @@ const Home = () => {
         {/* COLOR BLUR */}
       <div aria-hidden='true' className='pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80'>
       <div style={{ clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)' }}
-        className='relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#80a8ff] to-[#968ff1] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]'/>
+        className='relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-blue-400 to-blue-600 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]'/>
       </div>
 
          <div className='flow-root my-10'>
@@ -61,7 +61,7 @@ const Home = () => {
         {/* "Hello world" text */}
         <div className="text-center mt-4 text-2xl font-medium">5 out of 5 Reply Quality</div>
 
-        <div className="text-center text-muted-foreground mt-3">With the power of OpenAI <span className="text-white font-semibold">GPT-4</span> <br /> we can provide human level and highly accurate replies</div>
+        <div className="text-center text-muted-foreground mt-3">With the power of OpenAI <span className="text-white font-semibold">GPT-4</span> <br /> we can provide <span className="text-white font-semibold">human level</span> and highly accurate replies</div>
       </div>
 
        {/* RIGHT LEAVE */}
@@ -74,17 +74,52 @@ const Home = () => {
          <div className="w-[30%] blur-[120px] rounded-full h-32 absolute bg-brand-primaryBlue/50 -z-10 top-22"/>
             <SubTitleSection title="Keep track of all your replies" subheading="Capture your ideas, thoughts, and meeting notes in a structured and organized manner."/>
             <div className='flow-root my-10'>
-              <div className="magic h-[766px] w-[1164px]">
+              <div className="magic h-[666px] w-[1164px]">
                <Image src='/landing-page/ai-replies.png' alt='product preview' fill
                 quality={100} draggable={false} className='p-2 shadow-2xl ring-1 z-[999] ring-gray-900/10 h-full object-cover'/>
               </div>
             </div>
        </section>
 
+     {/* GRID IMAGES */}
+       <section className="my-[100px] mx-10 z-[999]">
+         <SubTitleSection title="Why you should use Orblitzz?" subheading="You seriously wondering why?"/>
+         <div className="grid grid-cols-2 gap-x-4 mt-10"  style={{ gridTemplateColumns: '2fr 1fr' }}>
+           <div className="w-full relative flex flex-col h-[510px] bg-black/20 p-12 rounded-3xl">
+              <h4 className="text-5xl font-semibold leading-snug flex-1 z-[999]">
+                  A product to promote and a link is all you need to start generating replies.
+              </h4>
+
+              <button className="relative flex items-center group text-xl font-medium">
+                <span>Start for free now</span>
+                  <ChevronRightIcon className="ml-2 mt-1 group-hover:hidden transition-all duration-300" />
+                  <ArrowRightIcon className="ml-2 mt-1 group-hover:block hidden transition-all duration-300"/>
+                <span className="absolute left-0 w-0 bottom-0 top-8 h-[3px] bg-blue-500 transition-all group-hover:w-[170px] duration-300"></span>
+             </button>
+             <div className="absolute bottom-6 right-6 bg-blue-600 rounded-full h-[300px] w-[300px] blur-2xl bg-opacity-10"/>
+           </div>
+
+           <div className="w-full relative h-[510px] bg-black/50 p-8 pb-[140px] rounded-3xl">
+            <div className="flex-1 h-full">
+            <div className="bg-black rounded-full p-5 w-fit border-[4px] border-blue-500">
+              <ZapIcon className="w-12 h-12"/>
+             </div>
+            </div>
+
+             <div className="">
+               <h4 className="text-7xl font-bold">90%</h4>
+               <p className="text-muted-foreground text-xl">More efficient marketing</p>
+             </div>
+             <div className="absolute top-0 left-0 bg-blue-600 rounded-full h-[300px] w-[300px] blur-2xl bg-opacity-10"/>
+           </div>
+         </div>
+       </section>
+
       {/* GRID SECTION 1 */}
-      <section>
-        <h3 className="font-bold text-5xl flex justify-center my-[100px]">I s-dont know what to say here</h3>
-        <div className="grid lg:grid-cols-2 mx-[90px]">
+      <section className="my-[100px]">
+      
+        <SubTitleSection title="Let AI do all the work" subheading="Orblitzz will automatically market your product while you do other things"/>
+        <div className="grid lg:grid-cols-2 mx-[90px] mt-10">
         <div className='flow-root my-10'>
                  <div className='-m-2 rounded-xl bg-gray-900/5 dark:bg-[#242424] p-2 ring-1 ring-inset  ring-gray-900/10 dark:ring-gray-100/10 lg:-m-4 lg:rounded-2xl lg:p-4'>
                  <Image src='/landing-page/ai-replies.png' alt='product preview' width={1364} height={866}
@@ -93,22 +128,24 @@ const Home = () => {
          </div>
 
           <div className="flex items-center justify-center flex-col ">
-            <h3 className="text-3xl font-bold mr-[190px]">Get more users</h3>
+           <div className="lg:ml-10">
+           <h3 className="text-3xl font-bold mr-[190px]">Get more customers</h3>
 
-            <div className="mt-10">
-              <p className="flex items-center gap-x-1 mb-2">
-                <Check className="w-4 h-4 text-green-500"/> Find the posts that best matches your product niche
-              </p>
-              <p className="flex items-center gap-x-1 mb-2">
-                <Check className="w-4 h-4 text-green-500"/> AI always generates human level replies
-              </p>
-              <p className="flex items-center gap-x-1 mb-2">
-                <Check className="w-4 h-4 text-green-500"/> AI always recommend your product subtly
-              </p>
-              <p className="flex items-center gap-x-1 mb-2">
-                <Check className="w-4 h-4 text-green-500"/> Automatic replies! No need to move a single finger
-              </p>
-            </div>
+        <div className="mt-10">
+          <p className="flex items-center gap-x-1 mb-2">
+           <Check className="w-4 h-4 text-green-500"/> Find the posts that best matches your product niche
+          </p>
+          <p className="flex items-center gap-x-1 mb-2">
+           <Check className="w-4 h-4 text-green-500"/> Customizable AI tone and personality
+          </p>
+          <p className="flex items-center gap-x-1 mb-2">
+           <Check className="w-4 h-4 text-green-500"/> AI always recommend your product subtly
+          </p>
+          <p className="flex items-center gap-x-1 mb-2">
+           <Check className="w-4 h-4 text-green-500"/> Automatic replies! No need to move a single finger
+          </p>
+        </div>
+           </div>
 
           </div>
         </div>
@@ -119,23 +156,24 @@ const Home = () => {
       <section className="mt-20">
         <div className="grid lg:grid-cols-2 mx-[90px]">
           <div className="flex items-center justify-center flex-col ">
-            <h3 className="text-3xl font-bold mr-[190px]">Every reply is tracked in real-time</h3>
+           <div>
+           <h3 className="text-3xl font-bold mr-[190px]">Every reply is tracked in real-time</h3>
 
-            <div className="mt-10">
-              <p className="flex items-center gap-x-1 mb-2">
-                <Check className="w-4 h-4 text-green-500"/> Find the posts that best matches your product niche
-              </p>
-              <p className="flex items-center gap-x-1 mb-2">
-                <Check className="w-4 h-4 text-green-500"/> AI always generates human level replies
-              </p>
-              <p className="flex items-center gap-x-1 mb-2">
-                <Check className="w-4 h-4 text-green-500"/> AI always recommend your product subtly
-              </p>
-              <p className="flex items-center gap-x-1 mb-2">
-                <Check className="w-4 h-4 text-green-500"/> Automatic replies! No need to move a single finger
-              </p>
-            </div>
-
+           <div className="mt-10">
+             <p className="flex items-center gap-x-1 mb-2">
+              <Check className="w-4 h-4 text-green-500"/> Find the posts that best matches your product niche
+             </p>
+             <p className="flex items-center gap-x-1 mb-2">
+              <Check className="w-4 h-4 text-green-500"/> AI always generates human level replies
+             </p>
+             <p className="flex items-center gap-x-1 mb-2">
+              <Check className="w-4 h-4 text-green-500"/> AI always recommend your product subtly
+             </p>
+             <p className="flex items-center gap-x-1 mb-2">
+              <Check className="w-4 h-4 text-green-500"/> Automatic replies! No need to move a single finger
+             </p>
+           </div>
+           </div>
           </div>
 
           <div className='flow-root my-10'>

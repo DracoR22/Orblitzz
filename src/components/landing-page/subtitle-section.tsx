@@ -29,7 +29,7 @@ const SubTitleSection = ({ title, subheading, pill }: SubTitleSectionProps) => {
               </p>
             </>
            ) : (
-            <h1 className="text-left text-4xl sm:text-6xl sm:max-w-[850px] md:text-center font-semibold">
+            <h1 className="text-left text-3xl sm:text-5xl sm:max-w-[850px] md:text-center font-bold">
                 {title}
             </h1>
            )}
