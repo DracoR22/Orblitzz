@@ -2,6 +2,9 @@
 
 import Hint from "@/components/global/hint"
 import { Button } from "@/components/ui/button"
+import { useMonthlyReplies } from "@/hooks/use-monthly-replies"
+import { RedditReplyType } from "@/lib/db/schema/reddit"
+import { getActiveKeywords } from "@/server/actions/keyword-actions"
 import { trpc } from "@/server/trpc/client"
 import { LinkIcon } from "lucide-react"
 import Image from "next/image"  
@@ -11,23 +14,25 @@ import { ZodError } from "zod"
 
 interface Props {
     projectId: string
-    alreadyReplied?: any[] | undefined | null
-    activeKeywordData: any
+    alreadyReplied?: Pick<RedditReplyType, 'postId'>[] | undefined | null
+    activeKeywordData: Awaited<ReturnType<typeof getActiveKeywords>>
 }
 
 const Posts = ({ projectId, alreadyReplied, activeKeywordData }: Props) => {
 
     const router = useRouter()
 
+    const { addReply } = useMonthlyReplies()
+
     if (!activeKeywordData) {
         return(
             <div>
-               Select your keyowrds to access this page
+               Select your keywords to access this page
             </div>
         )
     }
 
-    //@ts-ignore
+    
     const allKeywords = activeKeywordData.map((k) => k.content)
 console.log(allKeywords)
     const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ allKeywords })
@@ -48,8 +53,9 @@ console.log(allKeywords)
 
            toast.error('Something went wrong while creating reply. Please try again later.')
        },
-        onSuccess: () => {
+        onSuccess: ({ dbReply }) => {
           toast.success('Replied to post!')
+          addReply(dbReply[0])
           router.refresh()
         }
     })

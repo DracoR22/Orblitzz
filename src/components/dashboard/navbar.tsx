@@ -12,6 +12,8 @@ import { useEffect, useState } from "react"
 import ColoredText from "../global/colored-text"
 import { AlertTriangleIcon, SparklesIcon } from "lucide-react"
 import { Button } from "../ui/button"
+import { useAutoRedditReply } from "@/hooks/use-auto-reddit-reply"
+import { checkPlanReplyLimit } from "@/lib/utils"
 
 interface NavbarProps {
   projectId: string
@@ -23,74 +25,21 @@ interface NavbarProps {
 }
 
 const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedThisMonth, repliesCreatedToday, subscriptionPlan }: NavbarProps) => {
-
-  const [replyLimitReached, setReplyLimitReached] = useState<boolean>(false);
-
-  // Plan Limits
-  const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
-
-  const { mutate: autoReplyMutation } = trpc.reddit.createAutoReply.useMutation({
-   
-    onSuccess: async () => {
-       toast.success('AI has replied to a post!')
-      await handleAutoReply(); // Call the function again on success
-    },
-    onError: async (err) => {
-      if (err.data?.code === 'TOO_MANY_REQUESTS') {
-        toast.error('Reply limit reached for today');
-       
-        setReplyLimitReached(true);
-      } else if (err instanceof ZodError) {
-        toast.error(err.issues[0].message);
-        
-      } else if (err.data?.code === 'FORBIDDEN') {
-         await handleAutoReply()
-      } else if (err.data?.code === 'UNPROCESSABLE_CONTENT') {
-        toast.error('Error while creating replies. Make sure you have at least 5 active keywords')
-        setReplyLimitReached(true)
-      } else {
-        toast.error('AI could not reply to this post at the moment');
-        setReplyLimitReached(true);
-      }
-    },
-  });
-
-   // TODO: CHECK FOR ALL THE PLANS
-  const canPlanReply = () => {
-    if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
-      return false
-    }
-
-    return true
-  }
-
-  const isReplyPossible = canPlanReply()
-  // console.log(isReplyPossible)
   
-  const handleAutoReply = async () => {
-      // Check if activeKeywords.length is less than 5
-    if (allKeywords.length < 5) {
-        return; // Exit the function early if the condition is not met
-    }
-   
-    if ((replyLimitReached === false) && (projectAutoReplyLimit?.autoReply) && (repliesCreatedToday.length <= projectAutoReplyLimit.autoReplyLimit) && (isReplyPossible)) {
-      await autoReplyMutation({ projectId, allKeywords });
-      console.log('AI replying')
-    } else {
-      return
-    }
-  };
+  const { isReplyPossible } = checkPlanReplyLimit({ planName: subscriptionPlan.name!, repliesCreatedThisMonth });
+
+  const { handleAutoReply } = useAutoRedditReply({ repliesCreatedThisMonth, allKeywords, subscriptionPlan, projectAutoReplyLimit, repliesCreatedToday, projectId })
   
   useEffect(() => {
     handleAutoReply();
-  }, [repliesCreatedToday, projectAutoReplyLimit, subscriptionPlan, isFreeExceeded]);
+  }, [repliesCreatedToday, projectAutoReplyLimit, subscriptionPlan]);
   
 
   return (
     <nav className="hidden sm:flex w-full h-[60px] dark:bg-[#363636] bg-[#f6f6f6]">
       <div className="flex flex-1 justify-end items-center">
         {/* SUBSCRIPTION BUTTON */}
-      <div className="">
+      <div className="mx-6">
         <Button size='sm' className="text-white">
           Need more replies?
           <SparklesIcon className="w-4 h-4 ml-2"/>

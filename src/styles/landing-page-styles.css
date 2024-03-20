@@ -10,7 +10,6 @@
   
   /* ANIMATED BORDER */
   .magic {
-    
     box-shadow: 16px 14px 20px #0000008c;
     border-radius: 10px;
     position: relative;
@@ -26,7 +25,7 @@
     width: 270%;
     height: 270%;
     position: absolute;
-    animation: rotate 4s linear infinite;
+    animation: rotate 6s linear infinite;
   }
 
   .magic::after {
@@ -51,6 +50,15 @@
     100% {
       transform: rotate(-360deg);
     }
+  }
+
+  .glass-container {
+    position: relative;
+  }
+
+  .glass-container::before {
+    @apply absolute -inset-[10px] -z-10 rounded-xl border border-slate-100/20 bg-slate-200/10 backdrop-blur-md;
+    content: '';
   }
 
   

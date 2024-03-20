@@ -4,10 +4,13 @@ import PricingCards from "@/components/global/pricing-cards";
 import SubTitleSection from "@/components/landing-page/subtitle-section";
 import TitleSection from "@/components/landing-page/title-section"
 import { Button } from "@/components/ui/button";
-import { ArrowRightIcon, Check, ChevronRightIcon, ZapIcon } from "lucide-react";
+import { ArrowRightIcon, Check, ChevronRightIcon, RocketIcon, StepForwardIcon, ZapIcon } from "lucide-react";
 import Image from "next/image";
 
 import "@/styles/landing-page-styles.css";
+import { cn } from "@/lib/utils";
+import { poppins } from "@/components/fonts/fonts";
+
 
 const Home = () => {
 
@@ -18,10 +21,11 @@ const Home = () => {
      <div className="grid lg:grid-cols-2">
      <div>
         <TitleSection title="Get users for you app without moving a finger" 
-        subheading="Get an army of AIs that casually mentions your product in social media conversations"
+         subheading="Get instant access to an AI that casually mentions your product in social media conversations"
          pill="🦨 How many people know your product?"/>
         
-        <Button className="w-[200px] text-white bg-blue-500 clear-start mt-5">
+        <Button className="w-[200px] text-white bg-blue-500 clear-start mt-5 flex items-center gap-x-2">
+         <RocketIcon/>
            Get Started Free
          </Button>
         
@@ -35,10 +39,10 @@ const Home = () => {
       </div>
 
          <div className='flow-root my-10'>
-                 <div className='-m-2 rounded-xl bg-gray-900/5 dark:bg-[#242424] p-2 ring-1 ring-inset  ring-gray-900/10 dark:ring-gray-100/10 lg:-m-4 lg:rounded-2xl lg:p-4'>
-                 <Image src='/landing-page/ai-replies.png' alt='product preview' width={1364} height={866}
-                 quality={100} draggable={false} className='rounded-md bg-white dark:bg-[#1e1e1e] p-2 shadow-2xl ring-1 ring-gray-900/10'/>
-                 </div>
+            <div className='glass-container'>
+              <Image src='/landing-page/ai-replies.png' alt='product preview' width={1364} height={866}
+              quality={100} draggable={false} className='rounded-md shadow-2xl'/>
+            </div>
          </div>
           </div>
       </section>
@@ -74,20 +78,26 @@ const Home = () => {
          <div className="w-[30%] blur-[120px] rounded-full h-32 absolute bg-brand-primaryBlue/50 -z-10 top-22"/>
             <SubTitleSection title="Keep track of all your replies" subheading="Capture your ideas, thoughts, and meeting notes in a structured and organized manner."/>
             <div className='flow-root my-10'>
-              <div className="magic h-[666px] w-[1164px]">
+              <div className="magic h-[666px] w-[1164px] border border-slate-100/20 bg-slate-200 bg-slate-200/10 backdrop-blur-md">
                <Image src='/landing-page/ai-replies.png' alt='product preview' fill
                 quality={100} draggable={false} className='p-2 shadow-2xl ring-1 z-[999] ring-gray-900/10 h-full object-cover'/>
               </div>
             </div>
+            <Button className="text-white font-medium text-md flex items-center gap-x-2">
+               <RocketIcon/>
+                Increase your visibility now →
+            </Button>
+            <small className="text-muted-foreground text-sm mt-3">2 clicks away from getting more customers for you product</small>
        </section>
 
-     {/* GRID IMAGES */}
-       <section className="my-[100px] mx-10 z-[999]">
-         <SubTitleSection title="Why you should use Orblitzz?" subheading="You seriously wondering why?"/>
-         <div className="grid grid-cols-2 gap-x-4 mt-10"  style={{ gridTemplateColumns: '2fr 1fr' }}>
-           <div className="w-full relative flex flex-col h-[510px] bg-black/20 p-12 rounded-3xl">
-              <h4 className="text-5xl font-semibold leading-snug flex-1 z-[999]">
-                  A product to promote and a link is all you need to start generating replies.
+     {/* GRID IMAGES*/}
+       <section className="my-[180px] mx-[80px] z-[999]">
+         <SubTitleSection title="Why use Orblitzz?"/>
+         {/* FIRST LINE */}
+         <div className="grid grid-cols-2 gap-x-4 mt-14"  style={{ gridTemplateColumns: '2fr 1fr' }}>
+           <div className="w-full relative flex flex-col h-[460px] bg-black/50 p-12 rounded-3xl">
+              <h4 className={cn("text-5xl font-semibold leading-snug flex-1 z-[999]", poppins.className)}>
+                  Simple setup and full control over how much you want AI to automate.
               </h4>
 
               <button className="relative flex items-center group text-xl font-medium">
@@ -99,7 +109,7 @@ const Home = () => {
              <div className="absolute bottom-6 right-6 bg-blue-600 rounded-full h-[300px] w-[300px] blur-2xl bg-opacity-10"/>
            </div>
 
-           <div className="w-full relative h-[510px] bg-black/50 p-8 pb-[140px] rounded-3xl">
+           <div className="w-full relative h-[460px] bg-black/50 p-8 pb-[140px] rounded-3xl">
             <div className="flex-1 h-full">
             <div className="bg-black rounded-full p-5 w-fit border-[4px] border-blue-500">
               <ZapIcon className="w-12 h-12"/>
@@ -113,6 +123,46 @@ const Home = () => {
              <div className="absolute top-0 left-0 bg-blue-600 rounded-full h-[300px] w-[300px] blur-2xl bg-opacity-10"/>
            </div>
          </div>
+
+         {/* SECOND LINE */}
+         <div className="grid grid-cols-2 gap-x-4 mt-5"  style={{ gridTemplateColumns: '1fr 2fr' }}>
+         <div className="w-full relative h-[460px] bg-black/50 p-8 pb-[140px] rounded-3xl">
+            <div className="flex-1 h-full">
+           <div className="flex items-center gap-x-10">
+           <div className="bg-black rounded-full p-5 w-fit border-[4px] border-blue-500">
+              <Image draggable={false} src={'/landing-page/openai-dark.svg'} alt="" width={45} height={45}/>
+             </div>
+             <div>
+             <Image draggable={false} src={'/landing-page/reddit-white.svg'} alt="" width={50} height={50}/>
+             </div>
+             <div>
+             <Image draggable={false} src={'/landing-page/twitter-white.svg'} alt="" width={50} height={50}/>
+             </div>
+             <div>
+             <Image draggable={false} src={'/landing-page/gmail-white.svg'} alt="" width={50} height={50}/>
+             </div>
+           </div>
+            </div>
+
+             <div className="">
+               <p className="text-3xl font-semibold">Getting your product noticed has never been easier.</p>
+             </div>
+             <div className="absolute top-0 left-0 bg-blue-600 rounded-full h-[300px] w-[300px] blur-2xl bg-opacity-10"/>
+           </div>
+           <div className="w-full relative flex flex-col h-[460px] bg-black/50 p-12 rounded-3xl">
+              <h4 className={cn("text-5xl font-semibold leading-snug flex-1 z-[999]", poppins.className)}>
+                  Bring new customers without any effort.
+              </h4>
+
+              <button className="relative flex items-center group text-xl font-medium">
+                <span>See how to setup you product with Orblitzz</span>
+                  <ChevronRightIcon className="ml-2 mt-1 group-hover:hidden transition-all duration-300" />
+                  <ArrowRightIcon className="ml-2 mt-1 group-hover:block hidden transition-all duration-300"/>
+                <span className="absolute left-0 w-0 bottom-0 top-8 h-[3px] bg-blue-500 transition-all group-hover:w-[420px] duration-300"></span>
+             </button>
+             <div className="absolute bottom-6 right-6 bg-blue-600 rounded-full h-[300px] w-[300px] blur-2xl bg-opacity-10"/>
+           </div>
+         </div>
        </section>
 
       {/* GRID SECTION 1 */}
@@ -121,28 +171,28 @@ const Home = () => {
         <SubTitleSection title="Let AI do all the work" subheading="Orblitzz will automatically market your product while you do other things"/>
         <div className="grid lg:grid-cols-2 mx-[90px] mt-10">
         <div className='flow-root my-10'>
-                 <div className='-m-2 rounded-xl bg-gray-900/5 dark:bg-[#242424] p-2 ring-1 ring-inset  ring-gray-900/10 dark:ring-gray-100/10 lg:-m-4 lg:rounded-2xl lg:p-4'>
-                 <Image src='/landing-page/ai-replies.png' alt='product preview' width={1364} height={866}
-                 quality={100} draggable={false} className='rounded-md bg-white dark:bg-[#1e1e1e] p-2 shadow-2xl ring-1 ring-gray-900/10'/>
-                 </div>
+            <div className='glass-container'>
+              <Image src='/landing-page/ai-replies.png' alt='product preview' width={1364} height={866}
+                quality={100} draggable={false} className='rounded-md shadow-2xl h-[500px] object-cover'/>
+            </div>
          </div>
 
           <div className="flex items-center justify-center flex-col ">
            <div className="lg:ml-10">
-           <h3 className="text-3xl font-bold mr-[190px]">Get more customers</h3>
+           <h3 className={cn("text-3xl font-bold mr-[190px]", poppins.className)}>Get more customers</h3>
 
         <div className="mt-10">
-          <p className="flex items-center gap-x-1 mb-2">
-           <Check className="w-4 h-4 text-green-500"/> Find the posts that best matches your product niche
+          <p className="flex items-center gap-x-2 mb-2">
+           <Check className="w-5 h-5 text-green-500"/> Find the posts that best matches your product niche
           </p>
           <p className="flex items-center gap-x-1 mb-2">
-           <Check className="w-4 h-4 text-green-500"/> Customizable AI tone and personality
+           <Check className="w-5 h-5 text-green-500"/> Customizable AI tone and personality
           </p>
           <p className="flex items-center gap-x-1 mb-2">
-           <Check className="w-4 h-4 text-green-500"/> AI always recommend your product subtly
+           <Check className="w-5 h-5 text-green-500"/> AI always recommend your product subtly
           </p>
           <p className="flex items-center gap-x-1 mb-2">
-           <Check className="w-4 h-4 text-green-500"/> Automatic replies! No need to move a single finger
+           <Check className="w-5 h-5 text-green-500"/> Automatic replies! No need to move a single finger
           </p>
         </div>
            </div>
@@ -157,33 +207,33 @@ const Home = () => {
         <div className="grid lg:grid-cols-2 mx-[90px]">
           <div className="flex items-center justify-center flex-col ">
            <div>
-           <h3 className="text-3xl font-bold mr-[190px]">Every reply is tracked in real-time</h3>
+           <h3 className="text-3xl font-bold ">How it works?</h3>
+           <p className="text-muted-foreground mt-2">It only takes 1 minute of your time.</p>
 
-           <div className="mt-10">
-             <p className="flex items-center gap-x-1 mb-2">
-              <Check className="w-4 h-4 text-green-500"/> Find the posts that best matches your product niche
+           <div className="mt-10 ">
+             <p className="flex items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
+              <StepForwardIcon className="w-5 h-5 text-blue-500"/> Create a <span className="font-semibold">FREE</span>  account
              </p>
-             <p className="flex items-center gap-x-1 mb-2">
-              <Check className="w-4 h-4 text-green-500"/> AI always generates human level replies
+             <p className="flex items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
+             <StepForwardIcon className="w-5 h-5 text-blue-500"/> Type your product name and a <span className="font-semibold">simple description</span> 
              </p>
-             <p className="flex items-center gap-x-1 mb-2">
-              <Check className="w-4 h-4 text-green-500"/> AI always recommend your product subtly
+             <p className="flex items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
+             <StepForwardIcon className="w-5 h-5 text-blue-500"/> AI will generate some keywords based on your <br /> product description
              </p>
-             <p className="flex items-center gap-x-1 mb-2">
-              <Check className="w-4 h-4 text-green-500"/> Automatic replies! No need to move a single finger
+             <p className="flex items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
+             <StepForwardIcon className="w-5 h-5 text-blue-500"/> Now you can either allow AI to automatically reply <br /> to posts or you can choose which posts it can reply to.
              </p>
            </div>
            </div>
           </div>
 
-          <div className='flow-root my-10'>
-          <div className='flow-root my-10'>
-                 <div className='-m-2 rounded-xl bg-gray-900/5 dark:bg-[#242424] p-2 ring-1 ring-inset  ring-gray-900/10 dark:ring-gray-100/10 lg:-m-4 lg:rounded-2xl lg:p-4'>
-                 <Image src='/landing-page/ai-replies.png' alt='product preview' width={1364} height={866}
-                 quality={100} draggable={false} className='rounded-md bg-white dark:bg-[#1e1e1e] p-2 shadow-2xl ring-1 ring-gray-900/10'/>
-                 </div>
+          <div className='flow-root mt-[80px]'>
+             <div className='glass-container'>
+                <Image src='/landing-page/ai-replies.png' alt='product preview' width={1364} height={966}
+                 quality={100} draggable={false} className='rounded-md shadow-2xl h-[500px] object-cover'/>
+             </div>
          </div>
-          </div>
+         
         </div>
       </section>
 

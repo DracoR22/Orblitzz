@@ -13,6 +13,7 @@ import { endOfDay, isToday, startOfDay } from "date-fns";
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe";
 import { PLANS } from "@/lib/stripe/plans";
 import { getMonthlyReplies } from "@/server/actions/reddit-actions";
+import { checkPlanReplyLimit } from "@/lib/utils";
 
 export const redditRouter = router({
     //-------------------------------------------------//GET POSTS ON KEYWORDS//------------------------------------//
@@ -139,22 +140,12 @@ export const redditRouter = router({
        console.log(repliesCreatedThisMonth)
 
        // Plan Limits
-       const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
-
-       const canPlanReply = () => {
-        if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
-          return false
-        }
-    
-        return true
-      }
-    
-      const isReplyPossible = canPlanReply()
+       const { isReplyPossible } = checkPlanReplyLimit({ planName: subscriptionPlan.name!, repliesCreatedThisMonth });
 
       // Check if the reply limit is exceeded TODO: DO THE SAME FOR ALL PLANS
       if (!isReplyPossible) {
         throw new TRPCError({ message: 'You have reached the maximum amount of replies for your plan', code: 'TOO_MANY_REQUESTS' })
-      }
+       }
 
         // Get the Reddit project
         const project = await db.query.redditCampaigns.findFirst({
@@ -173,7 +164,7 @@ export const redditRouter = router({
         })
 
         if (!project) {
-            return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
+            throw new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
         }
 
         // Check if already replied to the same post
@@ -188,7 +179,7 @@ export const redditRouter = router({
         })
 
         if (alreadyReplied) {
-            return new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
+            throw new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
         }
 
         // Create Reddit instance
@@ -219,28 +210,28 @@ export const redditRouter = router({
       
 
         if (!response) {
-            return new TRPCError({ message: 'No Openai response', code: 'BAD_REQUEST' })
+            throw new TRPCError({ message: 'No Openai response', code: 'BAD_REQUEST' })
         }
 
         const responseData = (await response.json() as ResponseTypes["createChatCompletion"])
         const cleanedAiResponse = responseData.choices[0].message?.content
 
         if (!cleanedAiResponse) {
-            return new TRPCError({ message: 'Could not clean the AI response', code: 'BAD_REQUEST' })
+            throw new TRPCError({ message: 'Could not clean the AI response', code: 'BAD_REQUEST' })
         }
 
         // Get the post to reply
         const post = reddit.getSubmission(postId)
 
         if (!post) {
-            return new TRPCError({ message: 'Could not find the post to reply', code: 'BAD_REQUEST' })
+            throw new TRPCError({ message: 'Could not find the post to reply', code: 'BAD_REQUEST' })
         }
 
         // Reply to the post
         const redditReply = post.reply(cleanedAiResponse)
 
         if (!redditReply) {
-            return new TRPCError({ message: 'Could not reply to post', code: 'BAD_REQUEST' })
+            throw new TRPCError({ message: 'Could not reply to post', code: 'BAD_REQUEST' })
         }
 
         // Extract the first 100 letters of the cleanedAiResponse
@@ -254,10 +245,12 @@ export const redditRouter = router({
             postId,
             postUrl: postUrl,
             reply: limitedReply
+        }).returning({
+          createdAt: redditReplies.id
         })
 
         // Save reply to database
-         return dbReply
+         return { dbReply }
     }),
 
     //---------------------------------------------//UPDATE REDDIT PROJECT//---------------------------------//
@@ -343,18 +336,8 @@ export const redditRouter = router({
 
       console.log(repliesCreatedThisMonth)
 
-      // Plan Limits
-      const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
-
-      const canPlanReply = () => {
-        if (subscriptionPlan.name === 'Free' && isFreeExceeded) {
-          return false
-        }
-    
-        return true
-      }
-    
-      const isReplyPossible = canPlanReply()
+      // Plan Limits --------------------------------------
+      const { isReplyPossible } = checkPlanReplyLimit({ planName: subscriptionPlan.name!, repliesCreatedThisMonth });
 
       // Check if the reply limit is exceeded TODO: DO THE SAME FOR ALL PLANS
       if (!isReplyPossible) {
@@ -502,18 +485,20 @@ export const redditRouter = router({
     //   // Extract the first 100 letters of the cleanedAiResponse
     //    const limitedReply = cleanedAiResponse.slice(0, 100);
 
-    //   // Save reply into database
-      await db.insert(redditReplies).values({
+     // Save reply into database
+     const newReply = await db.insert(redditReplies).values({
           projectId,
           title: 'test',
           postAuthor: 'test',
           postId: randomPost.posts[0].postId,
           postUrl: 'test',
           reply: randomPost.posts[0].content
+      }).returning({
+        createdAt: redditReplies.id
       })
 
-    //   // Save reply to database
-       return { message: 'OK'}
+      // Save reply to database
+       return { newReply }
   }),
 
   getProjectReplies: privateProcedure.input(z.object({ projectId: z.string() })).query(async ({ ctx, input }) => {

@@ -13,13 +13,15 @@ import Hint from "../global/hint"
 import AdditionalSidebarItem from "./additional-sidebar-item"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { RedditCampaignType } from "@/lib/db/schema/reddit"
+import { getMonthlyReplies } from "@/server/actions/reddit-actions"
 
 interface SidebarProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
   project?: Pick<RedditCampaignType, 'title' | 'autoReply' | 'autoReplyLimit'>
+  repliesCreatedThisMonth: Awaited<ReturnType<typeof getMonthlyReplies>>
 }
 
-const Sidebar = ({ subscriptionPlan, project }: SidebarProps) => {
+const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth }: SidebarProps) => {
 
   const isMobile = useMediaQuery("(max-width: 768px)")
   const pathname = usePathname()
@@ -107,7 +109,7 @@ const Sidebar = ({ subscriptionPlan, project }: SidebarProps) => {
          <div className={cn("mt-3", isCollapsed && "hidden")}>
            <SidebarHeader projectTitle={project?.title} collapse={collapse} isMobile={isMobile}/>
            <div className="mx-3 mt-4">
-            <PlanUsage subscriptionPlan={subscriptionPlan}/>
+            <PlanUsage subscriptionPlan={subscriptionPlan} repliesCreatedThisMonth={repliesCreatedThisMonth}/>
            </div>
            <div className="mt-4 mx-2">
               <div className="flex items-center">
