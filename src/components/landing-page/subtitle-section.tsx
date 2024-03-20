@@ -1,6 +1,9 @@
 'use client'
 
+
+import { cn } from "@/lib/utils"
 import React from "react"
+import { poppins } from "../fonts/fonts"
 
 interface SubTitleSectionProps {
     title: string
@@ -21,7 +24,7 @@ const SubTitleSection = ({ title, subheading, pill }: SubTitleSectionProps) => {
            )}
            {subheading ? (
             <>
-              <h2 className="text-left text-3xl sm:text-5xl sm:max-w-[750px] md:text-center font-bold">
+              <h2 className={cn("text-left text-3xl sm:text-5xl sm:max-w-[750px] md:text-center font-bold", poppins.className)}>
                  {title}
               </h2>
               <p className="text-muted-foreground sm:max-w-[450px] md:text-center">
@@ -29,7 +32,7 @@ const SubTitleSection = ({ title, subheading, pill }: SubTitleSectionProps) => {
               </p>
             </>
            ) : (
-            <h1 className="text-left text-3xl sm:text-5xl sm:max-w-[850px] md:text-center font-bold">
+            <h1  className={cn("text-left text-3xl sm:text-5xl sm:max-w-[750px] md:text-center font-bold", poppins.className)}>
                 {title}
             </h1>
            )}

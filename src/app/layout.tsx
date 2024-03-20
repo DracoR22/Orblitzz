@@ -6,7 +6,7 @@ import { SessionProvider } from "next-auth/react"
 import "@/styles/globals.css";
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import { auth } from "@/lib/auth/auth";
 import { Toaster } from "@/components/ui/sonner";
 

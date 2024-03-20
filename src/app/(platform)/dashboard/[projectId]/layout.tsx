@@ -39,7 +39,7 @@ const DashboardLayout = async ({ children, params }: DashboardLayoutProps) => {
 
     return (
       <div className="h-full flex">
-         <Sidebar project={projectAutoReplyLimit} subscriptionPlan={subscriptionPlan}/>
+         <Sidebar project={projectAutoReplyLimit} subscriptionPlan={subscriptionPlan} repliesCreatedThisMonth={repliesCreatedThisMonth}/>
         <main className="flex-1 h-full">
         <Navbar projectId={params.projectId} allKeywords={allKeywords} projectAutoReplyLimit={projectAutoReplyLimit}
          repliesCreatedThisMonth={repliesCreatedThisMonth} repliesCreatedToday={repliesCreatedToday} subscriptionPlan={subscriptionPlan}/>
