@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import LoginModal from "../modals/login-modal"
+import CreateProjectModal from "../modals/create-project-modal"
 
 const ModalProvider = () => {
 
@@ -17,7 +17,7 @@ const ModalProvider = () => {
 
   return (
     <>
-      <LoginModal/>
+      <CreateProjectModal/>
     </>
   )
 }

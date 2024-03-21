@@ -92,7 +92,7 @@ const Home = () => {
 
      {/* GRID IMAGES*/}
        <section className="my-[180px] mx-[80px] z-[999]">
-         <SubTitleSection title="Why use Orblitzz?"/>
+         <SubTitleSection title="Why use Orblitzz?" pill="Say something here" subheading="Tell peaople why they should use this product"/>
          {/* FIRST LINE */}
          <div className="grid grid-cols-2 gap-x-4 mt-14"  style={{ gridTemplateColumns: '2fr 1fr' }}>
            <div className="w-full relative flex flex-col h-[460px] bg-black/50 p-12 rounded-3xl">
@@ -100,7 +100,7 @@ const Home = () => {
                   Simple setup and full control over how much you want AI to automate.
               </h4>
 
-              <button className="relative flex items-center group text-xl font-medium">
+              <button className="relative flex items-center group text-xl font-medium max-w-[210px]">
                 <span>Start for free now</span>
                   <ChevronRightIcon className="ml-2 mt-1 group-hover:hidden transition-all duration-300" />
                   <ArrowRightIcon className="ml-2 mt-1 group-hover:block hidden transition-all duration-300"/>
@@ -227,7 +227,7 @@ const Home = () => {
            </div>
           </div>
 
-          <div className='flow-root mt-[80px]'>
+          <div className='flow-root mt-[70px]'>
              <div className='glass-container'>
                 <Image src='/landing-page/ai-replies.png' alt='product preview' width={1364} height={966}
                  quality={100} draggable={false} className='rounded-md shadow-2xl h-[500px] object-cover'/>

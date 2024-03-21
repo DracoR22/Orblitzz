@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import { auth } from "@/lib/auth/auth";
 import { Toaster } from "@/components/ui/sonner";
+import ModalProvider from "@/components/providers/modal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default async function RootLayout({ children }: Readonly<{children: React
       <TrpcProviders>
       <body className={cn('dark:bg-[#1e1e1e] bg-[#ffffff]', inter.className)}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <ModalProvider/>
            {children}
            <Toaster/>
         </ThemeProvider>

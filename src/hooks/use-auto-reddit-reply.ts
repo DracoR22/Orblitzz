@@ -9,13 +9,14 @@ import { toast } from "sonner";
 import { ZodError } from "zod";
 import { useMonthlyReplies } from "./use-monthly-replies";
 import { checkPlanReplyLimit } from "@/lib/utils";
+import { RedditCampaignType } from "@/lib/db/schema/reddit";
 
 interface Props {
     repliesCreatedThisMonth: Awaited<ReturnType<typeof getMonthlyReplies>>
     allKeywords: string[]
     subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
     repliesCreatedToday: Awaited<ReturnType<typeof getMonthlyReplies>>
-    projectAutoReplyLimit: Awaited<ReturnType<typeof getProjectAutoreplyLimit>>
+    projectAutoReplyLimit:  Pick<RedditCampaignType, 'id' | 'title' | 'autoReply' | 'autoReplyLimit'>
     projectId: string
 }
 
@@ -59,7 +60,7 @@ export const useAutoRedditReply = ({ repliesCreatedThisMonth, allKeywords, subsc
            return; // Exit the function early if the condition is not met
         }
    
-       if ((replyLimitReached === false) && (projectAutoReplyLimit?.autoReply) && (repliesCreatedToday.length < projectAutoReplyLimit.autoReplyLimit) && (isReplyPossible)) {
+       if ((replyLimitReached === false) && (projectAutoReplyLimit?.autoReply) && (repliesCreatedToday.length < projectAutoReplyLimit.autoReplyLimit!) && (isReplyPossible)) {
          await autoReplyMutation({ projectId, allKeywords });
            console.log('AI replying')
         } else {

@@ -52,8 +52,10 @@ const Navbar = () => {
           </div>
 
           <div>
-             <Button className="font-semibold text-white" onClick={() => router.push('/login')}>
-               Sign In
+             <Button asChild className="font-semibold text-white">
+               <Link href={'/login'}>
+                  Sign In
+               </Link>
              </Button>
           </div>
        </div>
