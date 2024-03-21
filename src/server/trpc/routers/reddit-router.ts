@@ -9,11 +9,12 @@ import { z } from "zod";
 import { openai } from "@/lib/openai/openai";
 import { and, eq } from "drizzle-orm";
 import { ResponseTypes } from "openai-edge";
-import { endOfDay, isToday, startOfDay } from "date-fns";
+import { isToday } from "date-fns";
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe";
-import { PLANS } from "@/lib/stripe/plans";
 import { getMonthlyReplies } from "@/server/actions/reddit-actions";
 import { checkPlanReplyLimit } from "@/lib/utils";
+import { v4 } from "uuid"
+import { keywords } from "@/lib/db/schema/keyword";
 
 export const redditRouter = router({
     //-------------------------------------------------//GET POSTS ON KEYWORDS//------------------------------------//
@@ -99,8 +100,11 @@ export const redditRouter = router({
         const { userId } = ctx
         const { autoReply, description, title, tone, url, image, autoReplyLimit } = input
 
+        const projectId = v4()
+
         // TODO: check for user subscription
         const project = await db.insert(redditCampaigns).values({
+            id: projectId,
             image,
             title,
             tone,
@@ -114,9 +118,82 @@ export const redditRouter = router({
             description: redditCampaigns.description
         })
 
-        console.log(project)
+         // Create keywords
+         const response = await openai.createChatCompletion({
+          model: 'gpt-3.5-turbo',
+          messages: [
+              { 
+                  role: 'system',
+                  content: 'You are a helpful AI embedded in a keyword generator app' +
+                  'AI can ONLY answer with keywords, NEVER reply with a non list of keywords or a message besides the keywords' + 
+                  'Always generate a list of keywords' 
+              },
+              {
+                  role: 'user',
+                  content: `Generate a list of 5 keywords based on '${description}'`
+              }
+          ]
+      })
 
-         return { projectId: project[0].insertedId, projectDescription: project[0].description }
+       // Get the keywords array and push them into the database
+        const data = await response.json()
+
+        const keywordPattern = /\d+\.\s*(\S+)/g;
+
+        const matches = data.choices[0].message.content.matchAll(keywordPattern);
+
+        const keywordsOpenai = Array.from(matches, (match: any) => match[1].trim());
+
+        // TODO: This is probably the worst way of doing this
+        const trimmedFirstKeyword = keywordsOpenai[0].trim();
+        const trimmedSecondKeyword = keywordsOpenai[1].trim();
+        const trimmedThirdKeyword = keywordsOpenai[2].trim();
+        const trimmedFourthKeyword = keywordsOpenai[3].trim();
+        const trimmedFifthKeyword = keywordsOpenai[4].trim();
+
+        console.log(trimmedFirstKeyword)
+        console.log(trimmedSecondKeyword)
+        console.log(trimmedThirdKeyword)
+        console.log(trimmedFourthKeyword)
+        console.log(trimmedFifthKeyword)
+
+       const insertedKeyword = await db.insert(keywords).values({
+            redditCampaignId: projectId,
+            columnId: '2',
+            order: 0,
+            content: trimmedFirstKeyword,
+       })
+
+       const insertedKeywordS = await db.insert(keywords).values({
+          redditCampaignId: projectId,
+          columnId: '2',
+          order: 1,
+          content: trimmedSecondKeyword,
+      })
+
+       const insertedKeywordT = await db.insert(keywords).values({
+          redditCampaignId: projectId,
+          columnId: '2',
+          order: 2,
+          content: trimmedThirdKeyword,
+      })
+
+      const insertedKeywordF = await db.insert(keywords).values({
+          redditCampaignId: projectId,
+          columnId: '2',
+          order: 3,
+          content: trimmedFourthKeyword,
+      })
+
+     const insertedKeywordFi = await db.insert(keywords).values({
+        redditCampaignId: projectId,
+        columnId: '2',
+        order: 4,
+        content: trimmedFifthKeyword,
+     })
+
+
+      return { projectId: project[0].insertedId, projectDescription: project[0].description }
     }),
 
     //--------------------------------------------//CREATE REPLY//------------------------------------------//

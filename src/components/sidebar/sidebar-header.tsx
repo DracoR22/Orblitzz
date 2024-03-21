@@ -1,17 +1,37 @@
-import { ChevronDownIcon, ChevronsLeftIcon } from "lucide-react"
+import { BadgeCheckIcon, CheckIcon, ChevronDownIcon, ChevronsLeftIcon, PlusCircleIcon } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
-import Image from "next/image"
 import { cn } from "@/lib/utils"
 import Hint from "../global/hint"
+import { Button } from "../ui/button";
+import { useCreateProjectModal } from "@/hooks/use-create-project-modal";
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe";
+import { RedditCampaignType } from "@/lib/db/schema/reddit";
+import { Label } from "../ui/label";
+import { useParams } from "next/navigation";
+import Link from "next/link";
 
-const SidebarHeader = ({ collapse, isMobile, projectTitle }: { collapse: () => void; isMobile: boolean, projectTitle?: string }) => {
+interface SidebarHeaderProps {
+  collapse: () => void;
+  isMobile: boolean
+  projectTitle?: string
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
+  allProjects?: Pick<RedditCampaignType, 'id' | 'title' | 'autoReply' | 'autoReplyLimit'>[] | undefined
+}
+
+const SidebarHeader = ({ collapse, isMobile, projectTitle, subscriptionPlan, allProjects }: SidebarHeaderProps) => {
+
+   const { onOpen } = useCreateProjectModal()
+
+   const params = useParams()
+
   return (
     <DropdownMenu>
       <div className="flex items-center mr-4">
        <Hint side="left" description="Switch Projects">
         <DropdownMenuTrigger asChild onClick={(e: any) => e.stopPropagation()}>
           <div role="button" className="w-full text-md font-semibold px-3 flex items-center cursor-pointer h-12 border-neutral-200
-           transition truncate ">
+           transition truncate">
+            <BadgeCheckIcon className="w-6 h-6 text-green-500 mr-2"/>
               {projectTitle}
             <ChevronDownIcon className="h-5 w-5 ml-2 text-muted-foreground"/>
           </div>
@@ -21,9 +41,26 @@ const SidebarHeader = ({ collapse, isMobile, projectTitle }: { collapse: () => v
              <ChevronsLeftIcon className="h-6 w-6"/>
            </div>
         </div>
-        <DropdownMenuContent>
-            <DropdownMenuItem className="w-56 dark:bg-[#1e1e1e] bg-[#ffffff] text-xs font-medium text-black dark:text-neutral-400 space-y-[2px] hover:bg-[#e3e3e3] dark:hover:bg-[#242424]">
-                List of user projects
+        <DropdownMenuContent className="dark:bg-[#1e1e1e] bg-[#ffffff] overflow-auto">
+          <div className="mb-2">
+          <Label className="mx-2 text-muted-foreground font-medium text-xs">Your Projects</Label>
+          </div>
+          {/* ALWAYS SHOW FIRST THE CURRENT PROJECT */}
+          {allProjects && [...allProjects.filter((project) => project.id === params.projectId),
+           ...allProjects.filter((project) => project.id !== params.projectId)].map((project) => (
+          <DropdownMenuItem key={project.id} className="w-56 cursor-pointer dark:bg-[#1e1e1e] bg-[#ffffff] text-sm font-medium text-black dark:text-neutral-400 space-y-[2px] hover:bg-[#e3e3e3] dark:hover:bg-[#242424]">
+            <Link href={`/dashboard/${project.id}`} className="w-full flex items-center gap-x-2">
+              {project.title}
+              {project.id === params.projectId && (
+                 <CheckIcon className="w-4 h-4 text-green-500" />
+              )}
+            </Link>
+         </DropdownMenuItem>
+          ))}
+           <DropdownMenuItem className="w-full dark:bg-[#1e1e1e] bg-[#ffffff] text-xs font-medium text-black dark:text-neutral-400 space-y-[2px] hover:bg-[#e3e3e3] dark:hover:bg-[#242424] mt-10">
+                <Button className="w-full text-white gap-x-2 text-sm" size={'icon'} onClick={() => onOpen({ subscriptionPlan})}>
+                   <PlusCircleIcon className="w-4 h-4"/> Create new project
+                </Button>
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

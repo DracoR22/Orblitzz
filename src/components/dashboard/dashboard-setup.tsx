@@ -69,7 +69,9 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
             toast.error('Something went wrong while creating your project. Please try again later.')
         },
         onSuccess: ({ projectId, projectDescription }) => {
-           return handleCreateKeywordSuccess({ projectId, projectDescription })
+         router.push(`/dashboard/${projectId}/keywords`);
+         toast.success('Your project has been created')
+         router.refresh()
         }
    })
 
@@ -117,7 +119,7 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
 
   return (
     <AlertDialog>
-        <Card>
+      <Card>
         <CardHeader>
           <CardTitle>Create A Project</CardTitle>
            <CardDescription className="dark:text-neutral-400">
@@ -228,12 +230,14 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
                             </SelectItem>
                           </SelectContent>
                        </Select>
-                       <div className='pt-2 px-2 text-xs bg-green-400/20 text-green-500 p-1 font-medium rounded-md'>
-                         {field.value === 'formal' && 'Professional and business-like language. Suitable for serious or formal contexts.'}
-                         {field.value === 'humorous' && 'Light-hearted and funny language. Adds a touch of humor to the replies.'}
-                         {field.value === 'inspirational' && 'Motivational and uplifting language. Suitable for encouraging users to try new things.'}
-                         {field.value === 'casual' && 'Relaxed and friendly language. Ideal for more casual or personal interactions.'}
-                       </div>
+                    {field.value !== '' && (
+                        <div className='pt-2 px-2 text-xs bg-green-400/20 text-green-500 p-1 font-medium rounded-md'>
+                        {field.value === 'formal' && 'Professional and business-like language. Suitable for serious or formal contexts.'}
+                        {field.value === 'humorous' && 'Light-hearted and funny language. Adds a touch of humor to the replies.'}
+                        {field.value === 'inspirational' && 'Motivational and uplifting language. Suitable for encouraging users to try new things.'}
+                        {field.value === 'casual' && 'Relaxed and friendly language. Ideal for more casual or personal interactions.'}
+                      </div>
+                    )}
                     </FormItem>
                   )}/>
                   <Button type='submit' disabled={isLoading || isCreatePending || isUpdatePending} className='text-white w-full'>
@@ -243,7 +247,7 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
                </form>
             </Form>
         </CardContent>
-    </Card>
+      </Card>
     </AlertDialog>
   )
 }

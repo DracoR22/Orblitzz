@@ -1,5 +1,6 @@
 'use server'
 
+import { currentUser } from "@/lib/auth/get-server-session"
 import { db } from "@/lib/db"
 import { redditCampaigns, redditReplies } from "@/lib/db/schema/reddit"
 import { and, asc, eq } from "drizzle-orm"
@@ -44,6 +45,7 @@ export const getRedditCampaignDetails = async (projectId: string, userId: string
 export const getProjectAutoreplyLimit = async (projectId: string, userId: string) => {
   const campaign = await db.query.redditCampaigns.findFirst({
     columns: {
+      id: true,
       autoReplyLimit: true,
       autoReply: true,
       title: true
@@ -55,6 +57,23 @@ export const getProjectAutoreplyLimit = async (projectId: string, userId: string
   })
 
   return campaign
+}
+
+export const getAllUserProjects = async () => {
+  const user = await currentUser()
+
+   if (!user || !user.id) {
+      return []
+   }
+
+  const allUserProjects = await db.select({
+    id: redditCampaigns.id,
+    autoReplyLimit: redditCampaigns.autoReplyLimit,
+    autoReply: redditCampaigns.autoReply,
+    title: redditCampaigns.title
+  }).from(redditCampaigns).where(eq(redditCampaigns.userId, user.id))
+
+  return allUserProjects
 }
 
 export const getMonthlyReplies = async (projectId: string) => {
@@ -80,3 +99,21 @@ export const getMonthlyReplies = async (projectId: string) => {
 
       return repliesCreatedThisMonth
 }
+
+// export const getAllUserProjects = async () => {
+//    const user = await currentUser()
+
+//    if (!user || !user.id) {
+//       return
+//    }
+
+//    const allUserProjects = await db.query.redditCampaigns.findMany({
+//       columns: {
+//         id: true,
+//         title: true
+//       },
+//       where: eq(redditCampaigns.userId, user.id)
+//    })
+
+//    return allUserProjects
+// }

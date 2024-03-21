@@ -9,10 +9,14 @@ import { useEffect, useState } from 'react'
 import { trpc } from "@/server/trpc/client"
 import { toast } from 'sonner'
 import { ZodError } from 'zod'
-import { useRouter } from 'next/navigation'
+import { KeywordType } from '@/lib/db/schema/keyword'
 
 interface Props {
-  columns: any
+  columns: {
+    id: string;
+    title: string;
+    isAdded: boolean;
+  }[];
   projectId: string,
 }
 
@@ -125,8 +129,8 @@ const KeywordsContainer = ({ columns, projectId }: Props) => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex w-[700px] h-[400px]  p-4 rounded-md">
-        {columns.map((column: any) => {
-          const columnKeywords = orderedData.filter((keyword: any) => keyword.columnId === column.id);
+        {columns.map((column) => {
+          const columnKeywords = orderedData.filter((keyword:  Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId'>) => keyword.columnId === column.id);
           return (
           <div key={column.id} className="flex-1">
           <div className='flex items-center gap-x-4'>
@@ -158,7 +162,7 @@ const KeywordsContainer = ({ columns, projectId }: Props) => {
                     className={cn(`px-4 py-0.5 flex flex-col gap-y-2`, 
                     columnKeywords && columnKeywords.length > 0 ? 'mt-2' : 'mt-0',
                     )}>
-                       {columnKeywords.map((keyword: any, index: number) => (
+                       {columnKeywords.map((keyword:  Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId'>, index: number) => (
                          <KeywordItem key={keyword.id} index={index} keyword={keyword}/>
                        ))}
                        {provided.placeholder}

@@ -14,11 +14,12 @@ import { AlertTriangleIcon, SparklesIcon } from "lucide-react"
 import { Button } from "../ui/button"
 import { useAutoRedditReply } from "@/hooks/use-auto-reddit-reply"
 import { checkPlanReplyLimit } from "@/lib/utils"
+import { RedditCampaignType } from "@/lib/db/schema/reddit"
 
 interface NavbarProps {
   projectId: string
   allKeywords: string[]
-  projectAutoReplyLimit: Awaited<ReturnType<typeof getProjectAutoreplyLimit>>
+  projectAutoReplyLimit:  Pick<RedditCampaignType, 'id' | 'title' | 'autoReply' | 'autoReplyLimit'>
   repliesCreatedThisMonth: Awaited<ReturnType<typeof getMonthlyReplies>>
   repliesCreatedToday: Awaited<ReturnType<typeof getMonthlyReplies>>
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
@@ -46,21 +47,21 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
         </Button>
       </div>
         {projectAutoReplyLimit?.autoReply && allKeywords.length < 5 && isReplyPossible && (
-          <div className="mx-6">
+          <div className="mr-6">
             <ColoredText variant="alert" icon={AlertTriangleIcon}>
               You need at least 5 active keywords in order to use the auto-reply functionality. This way AI will have more posts to reply to.
             </ColoredText>
           </div>
         )}
         {!isReplyPossible && (
-          <div className="mx-6">
+          <div className="mr-6">
           <ColoredText variant="alert" icon={AlertTriangleIcon}>
             You ran out of replies for this month. Upgrade your plan for more replies
           </ColoredText>
         </div>
         )}
         <div className="pt-1">
-            <UserMenu/>
+            <UserMenu subscriptionPlan={subscriptionPlan}/>
         </div>
           <div className="px-4">
             <ThemeSwitcher/>

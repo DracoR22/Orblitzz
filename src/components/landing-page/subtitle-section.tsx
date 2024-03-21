@@ -16,11 +16,11 @@ const SubTitleSection = ({ title, subheading, pill }: SubTitleSectionProps) => {
     <React.Fragment>
         <section className="flex flex-col gap-4 justify-center items-start md:items-center">
            {pill && (
-            <article className="rounded-full p-[1px] text-sm dark:bg-gradient-to-t dark:from-brand-primaryBlue dark:to-brand-primaryPurple">
-            <div className="rounded-full px-3 py-1 dark:bg-black">
-               {pill}
-            </div>
-         </article>
+            <article className="rounded-full p-[1.5px] text-sm bg-gradient-to-t from-blue-500 to-blue-500">
+             <div className="rounded-full px-3 py-1 dark:bg-[#0f0f0f] bg-[#f6f6f6]">
+              {pill}
+             </div>
+          </article>
            )}
            {subheading ? (
             <>
