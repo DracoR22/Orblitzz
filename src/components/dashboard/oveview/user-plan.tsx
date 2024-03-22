@@ -33,7 +33,7 @@ const UserPlan = ({ subscriptionPlan, replies }: UserPlanProps) => {
             </Button>
             <div className="mt-4">
                 <p className="text-xl font-bold">
-                    {(replies / (subscriptionPlan.repliesPerMonth as number || 3)) * 100}%
+                    {(replies / (subscriptionPlan.repliesPerMonth as number || 3)) * 100}% <span className="text-sm text-muted-foreground font-medium">Plan used</span>
                 </p>
                 <p className="text-muted-foreground text-sm mt-2">{replies} Replies</p>
                 <div className="mt-2">

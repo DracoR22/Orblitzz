@@ -1,4 +1,4 @@
-import { BotIcon, BrainIcon, CreditCardIcon, GlobeIcon, InfoIcon, LayoutDashboardIcon, MailIcon, ReplyIcon, SettingsIcon } from "lucide-react"
+import { BotIcon, BrainIcon, CreditCardIcon, GlobeIcon, InfoIcon, LayoutDashboardIcon, MailIcon, ReplyIcon, SettingsIcon, SquarePenIcon } from "lucide-react"
 import { useParams, usePathname } from "next/navigation"
 import { useMemo } from "react"
 
@@ -40,6 +40,22 @@ export const useRoutes = () => {
     ], [pathname])
 
     return routes
+}
+
+export const useMarketingRoutes = () => {
+  const pathname = usePathname()
+  const params = useParams()
+
+  const routes = useMemo(() => [
+        {
+          name: 'Text Editor',
+          href: `/dashboard/${params.projectId}/editor`,
+          icon: SquarePenIcon,
+          isActive: pathname === `/dashboard/${params.projectId}/editor`
+        },
+  ], [pathname])
+
+  return routes
 }
 
 export const useExtraRoutes = () => {

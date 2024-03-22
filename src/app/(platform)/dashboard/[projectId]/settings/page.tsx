@@ -2,19 +2,12 @@ import DashboardSetup from "@/components/dashboard/dashboard-setup"
 import Heading from "@/components/global/heading"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { currentUser } from "@/lib/auth/get-server-session"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { getRedditCampaignDetails } from "@/server/actions/reddit-actions"
 
 const SettingsPage = async ({ params }: { params: { projectId: string }}) => {
 
-  const user = await currentUser()
-
-  if (!user || !user.id) {
-    return
-  }
-
-   const data = await getRedditCampaignDetails(params.projectId, user.id)
+   const data = await getRedditCampaignDetails(params.projectId)
 
    const subscriptionPlan = await getUserSubscriptionPlan()
 

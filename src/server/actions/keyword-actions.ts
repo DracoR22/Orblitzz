@@ -4,6 +4,7 @@ import { db } from "@/lib/db"
 import { keywords } from "@/lib/db/schema/keyword"
 import { and, asc, eq } from "drizzle-orm"
 
+//----------------------------------------------------------//GET PROJECT ACTIVE KEYWORDS//--------------------------------------------------//
 export const getActiveKeywords = async (projectId: string) => {
     const activeKeywords = await db.select({
         id: keywords.id,
@@ -17,6 +18,7 @@ export const getActiveKeywords = async (projectId: string) => {
     return activeKeywords
 }
 
+//---------------------------------------------------------//GET ALL PROJECT KEYWORDS//------------------------------------------------------//
 export const getAllKeywords = async (projectId: string) => {
     const allKeywords = await db.query.keywords.findMany({
         columns: {

@@ -12,13 +12,21 @@ export interface GraphData {
   
 }
 
-export const getFirstCampaign = async (userId: string) => {
+//-----------------------------------------------------//SEE IF A USER HAS A PROJECT TO REDIRECT TO//---------------------------------------//
+export const getFirstCampaign = async () => {
+   // Validate user
+   const user = await currentUser()
+
+   if (!user || !user.id) {
+      throw new Error("User not authenticated or missing user ID.");
+   }
+
    const campaign = await db.query.redditCampaigns.findFirst({
     columns: {
         id: true,
         userId: true
     },
-    where: eq(redditCampaigns.userId, userId)
+    where: eq(redditCampaigns.userId, user.id)
    })
 
    return campaign
@@ -30,7 +38,15 @@ export const getRedditReplies = async (projectId: string) => {
     return reply
 }
 
-export const getRedditCampaignDetails = async (projectId: string, userId: string) => {
+//----------------------------------------------------//GET PROJECT BY ID//---------------------------------------------------------------//
+export const getRedditCampaignDetails = async (projectId: string) => {
+     // Validate user
+     const user = await currentUser()
+
+     if (!user || !user.id) {
+        throw new Error("User not authenticated or missing user ID.");
+     }
+
     const campaign = await db.query.redditCampaigns.findFirst({
         columns: {
             title: true,
@@ -42,13 +58,14 @@ export const getRedditCampaignDetails = async (projectId: string, userId: string
         },
         where: and(
             eq(redditCampaigns.id, projectId),
-            eq(redditCampaigns.userId, userId)
+            eq(redditCampaigns.userId, user.id)
         )
     })
 
     return campaign
 }
 
+//-----------------------------------------------------//GET THE AUTO REPLY LIMIT OF A PROJECT//----------------------------------------//
 export const getProjectAutoreplyLimit = async (projectId: string, userId: string) => {
   const campaign = await db.query.redditCampaigns.findFirst({
     columns: {
@@ -66,6 +83,7 @@ export const getProjectAutoreplyLimit = async (projectId: string, userId: string
   return campaign
 }
 
+//-----------------------------------------------------//GET ALL USER PROJECTS//-------------------------------------------------------//
 export const getAllUserProjects = async () => {
   const user = await currentUser()
 
@@ -83,7 +101,15 @@ export const getAllUserProjects = async () => {
   return allUserProjects
 }
 
+//---------------------------------------------------//GET PROJECT THIS MONTH REPLIES COUNT//------------------------------------------//
 export const getMonthlyReplies = async (projectId: string) => {
+    // Validate user
+    const user = await currentUser()
+
+    if (!user || !user.id) {
+      throw new Error("User not authenticated or missing user ID.");
+    }
+
     // Check the ammount of replies. 
     const allProjectReplies = await db.query.redditReplies.findMany({
         columns: {
@@ -91,7 +117,8 @@ export const getMonthlyReplies = async (projectId: string) => {
         },
         where: and(
           eq(redditReplies.projectId, projectId),
-        )
+        ),
+        orderBy: (redditReplies, { desc }) => [desc(redditReplies.createdAt)]
       })
 
       const repliesCreatedThisMonth = allProjectReplies.filter(reply => {
@@ -104,15 +131,17 @@ export const getMonthlyReplies = async (projectId: string) => {
         );
       });
 
+
       return repliesCreatedThisMonth
 }
 
+//-----------------------------------------//GET COUNT OF ALL USER PROJECTS//---------------------------------------------------------------------//
 export const getAllUserProjectsCount = async () => {
   const user = await currentUser()
 
-   if (!user || !user.id) {
-      return []
-   }
+  if (!user || !user.id) {
+    throw new Error("User not authenticated or missing user ID.");
+  }
 
   const allUserProjects = await db.select({
     createdAt: redditCampaigns.createdAt
@@ -121,14 +150,22 @@ export const getAllUserProjectsCount = async () => {
   return allUserProjects
 }
 
-//----------------------------------------------//GET ALL MONTHS REDDIT REPLIES//--------------------------------------------------------//
-export const getGraphProjectReplies = async (projectId: string): Promise<GraphData[]>  => {
+//------------------------------------------//GET ALL MONTHS, LAST 2 MONTHS AND LATEST REPLY//---------------------------------------------------//
+export const getGraphProjectReplies = async (projectId: string) => {
   try {
+    // Validate user
+    const user = await currentUser()
+
+    if (!user || !user.id) {
+       throw new Error("User not authenticated or missing user ID.");
+    }
+
      const projectReplies = await db.query.redditReplies.findMany({
         columns: {
            createdAt: true
         },
-        where: eq(redditReplies.projectId, projectId)
+        where: eq(redditReplies.projectId, projectId),
+        orderBy: (redditReplies, { desc }) => [desc(redditReplies.createdAt)]
      });
 
      const monthlyReplies: { [key: string]: number } = {};
@@ -141,94 +178,59 @@ export const getGraphProjectReplies = async (projectId: string): Promise<GraphDa
      }
 
      // Converting the grouped data into the format expected by the graph
-     const graphData: GraphData[] = [];
+     const allMonthsData: GraphData[] = [];
      const currentDate = new Date();
      for (let month = 0; month < 12; month++) {
         const monthName = new Date(currentDate.getFullYear(), month).toLocaleString('default', { month: 'short' });
         const yearMonth = currentDate.getFullYear() + '-' + (month + 1).toString().padStart(2, '0');
-        graphData.push({ name: monthName, replies: monthlyReplies[yearMonth] || 0 });
+        allMonthsData.push({ name: monthName, replies: monthlyReplies[yearMonth] || 0 });
      }
-
-
-
-     return graphData
-  } catch (error) {
-     console.error('Error fetching graph project replies:', error);
-     throw error; // Re-throw the error for higher-level error handling
-  }
-}
-
-export const getLastTwoMonthsReplies = async (projectId: string) => {
-  try {
-    const projectReplies = await db.query.redditReplies.findMany({
-      columns: {
-         createdAt: true
-        },
-        where: eq(redditReplies.projectId, projectId)
-      });
 
       // Filter replies for the last two months
       const lastTwoMonths = subMonths(new Date(), 1); // Get the date for two months ago
       const filteredReplies = projectReplies.filter(reply => new Date(reply.createdAt) >= lastTwoMonths);
 
-      const monthlyReplies: { [key: string]: number } = {};
+      const lastTwoMonthsReplies: { [key: string]: number } = {};
 
       // Count the number of replies in each month
       for (const reply of filteredReplies) {
           const replyDate = new Date(reply.createdAt);
           const yearMonth = replyDate.toISOString().slice(0, 7); // Year-month format
-          monthlyReplies[yearMonth] = (monthlyReplies[yearMonth] || 0) + 1;
+          lastTwoMonthsReplies[yearMonth] = (lastTwoMonthsReplies[yearMonth] || 0) + 1;
       }
 
       // Converting the grouped data into the format expected by the graph
-      const graphData: GraphData[] = [];
-      const currentDate = new Date();
+      const lastTwoMonthsData: GraphData[] = [];
       for (let month = 0; month < 2; month++) { // Only the last two months
           const monthName = new Date(currentDate.getFullYear(), currentDate.getMonth() - month).toLocaleString('default', { month: 'short' });
           const yearMonth = currentDate.getFullYear() + '-' + (currentDate.getMonth() - month + 1).toString().padStart(2, '0');
-          graphData.push({ name: monthName, replies: monthlyReplies[yearMonth] || 0 }); // Push to the beginning of the array
+          lastTwoMonthsData.push({ name: monthName, replies: lastTwoMonthsReplies[yearMonth] || 0 }); // Push to the beginning of the array
       }
 
-        // Calculate the percentage difference
-    const repliesThisMonth = graphData[0].replies || 0;
-    const repliesLastMonth = graphData[1].replies || 0;
-    const percentageDifference = repliesLastMonth !== 0 ? ((repliesThisMonth - repliesLastMonth) / repliesLastMonth) * 100 : 100;
+      // Calculate the percentage difference
+      const repliesThisMonth = lastTwoMonthsData[0].replies || 0;
+      const repliesLastMonth = lastTwoMonthsData[1].replies || 0;
+      const percentageDifference = repliesLastMonth !== 0 ? ((repliesThisMonth - repliesLastMonth) / repliesLastMonth) * 100 : 100;
 
-    graphData.reverse();
-      return {graphData, percentageDifference}
-  } catch (error) {
-      console.error('Error fetching graph project replies:', error);
-      throw error; // Re-throw the error for higher-level error handling
+      lastTwoMonthsData.reverse();
+
+      // Get the replies created this month
+      const repliesCreatedThisMonth = projectReplies.filter(reply => {
+        const replyDate = new Date(reply.createdAt);
+        const currentDate = new Date();
+      
+        return (
+          replyDate.getMonth() === currentDate.getMonth() &&
+          replyDate.getFullYear() === currentDate.getFullYear()
+        );
+      });
+
+      // Get the latest reply
+      const latestReply = projectReplies[0]
+
+      return { lastTwoMonthsData, percentageDifference, allMonthsData, repliesCreatedThisMonth, latestReply }
+    } catch (error) {
+     console.error('Error fetching graph project replies:', error);
+     throw error; // Re-throw the error for higher-level error handling
   }
 }
-
-
-export const getLastReply = async (projectId: string) => {
-   const latestReply = await db.query.redditReplies.findFirst({
-    columns: {
-      createdAt: true
-    },
-    where: eq(redditReplies.projectId, projectId),
-    orderBy: (redditReplies, { desc }) => [desc(redditReplies.createdAt)]
-   })
-
-   return latestReply
-}
-
-// export const getAllUserProjects = async () => {
-//    const user = await currentUser()
-
-//    if (!user || !user.id) {
-//       return
-//    }
-
-//    const allUserProjects = await db.query.redditCampaigns.findMany({
-//       columns: {
-//         id: true,
-//         title: true
-//       },
-//       where: eq(redditCampaigns.userId, user.id)
-//    })
-
-//    return allUserProjects
-// }
