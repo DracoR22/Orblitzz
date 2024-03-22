@@ -31,7 +31,7 @@ const SidebarHeader = ({ collapse, isMobile, projectTitle, subscriptionPlan, all
         <DropdownMenuTrigger asChild onClick={(e: any) => e.stopPropagation()}>
           <div role="button" className="w-full text-md font-semibold px-3 flex items-center cursor-pointer h-12 border-neutral-200
            transition truncate">
-            <BadgeCheckIcon className="w-6 h-6 text-green-500 mr-2"/>
+            <BadgeCheckIcon className="w-6 h-6 text-green-500 mr-3"/>
               {projectTitle}
             <ChevronDownIcon className="h-5 w-5 ml-2 text-muted-foreground"/>
           </div>
