@@ -8,7 +8,7 @@ import { and, eq } from "drizzle-orm";
 import { redditCampaigns } from "@/lib/db/schema/reddit";
 
 export const keywordRouter = router({
-    //----------------------------------------------//CREATE KEYWORDS WITH AI//--------------------------------------//
+//--------------------------------------------------------------------------------//CREATE KEYWORDS WITH AI//-----------------------------------------------------------------------//
     createKeywords: privateProcedure.input(z.object({ projectId: z.string(), projectDescription: z.string() })).mutation(async ({ input, ctx }) => {
         const { projectId, projectDescription } = input
 
@@ -89,7 +89,7 @@ export const keywordRouter = router({
           return { projectId }
     }),
 
-    //---------------------------------------------------//UPDATE KEYWORD ORDER AND POSITION//------------------------//
+//-------------------------------------------------------------------------//UPDATE KEYWORD ORDER AND POSITION//-----------------------------------------------------------------//
     updateKeywordOrder: privateProcedure.input(z.object({ projectId: z.string(), items: z.any()})).mutation(async ({ ctx, input }) => {
          const { projectId, items } = input
 
@@ -124,6 +124,7 @@ export const keywordRouter = router({
          }
     }),
 
+//-------------------------------------------------------------------------//GET ALL PROJECT KEYWORDS//--------------------------------------------------------------------//
     getAllKeywords: privateProcedure.input(z.object({ projectId: z.string() })).query(async ({ ctx, input }) => {
         const { projectId } = input
 

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import { CalendarIcon } from "lucide-react"
 
 interface LastTwoMonthsOverviewProps {
     data: GraphData[]
@@ -16,17 +17,18 @@ const LastTwoMonthsOverview = ({ data, percentageDifference }: LastTwoMonthsOver
     <Card className="col-span-4">
     <CardHeader>
      <div className="flex items-center">
-     <CardTitle className="flex-1">
+     <CardTitle className="flex-1 flex items-center gap-x-4">
+     <CalendarIcon className="w-[35px] h-[35px] p-2 rounded-full bg-purple-400/10 text-purple-500"/>
         Last 2 Months
       </CardTitle>
       <div>
       <Image src={'/dashboard-media/ellipsis.svg'} alt="" width={50} height={50} className="w-[38px] h-[38px] cursor-pointer hover:bg-neutral-800 transition rounded-full p-2"/>
       </div>
      </div>
-     <div className="text-xl font-bold">
+     <div className="text-xl font-bold mt-1">
       {percentageDifference}%
      </div>
-     <div className="text-sm text-muted-foreground">
+     <div className="text-sm text-muted-foreground font-medium">
       vs last month
      </div>
     </CardHeader>

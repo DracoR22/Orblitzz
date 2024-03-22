@@ -17,7 +17,7 @@ import { v4 } from "uuid"
 import { keywords } from "@/lib/db/schema/keyword";
 
 export const redditRouter = router({
-    //-------------------------------------------------//GET POSTS ON KEYWORDS//------------------------------------//
+//--------------------------------------------------------//GET POSTS ON KEYWORDS//---------------------------------------------------------//
     getSubredditsAndPosts: publicProcedure.input(GetPostsSchema).query(async({ input }) => {
 
         const { allKeywords } = input
@@ -95,7 +95,7 @@ export const redditRouter = router({
          }
     }), 
 
-    //---------------------------------------------//CREATE REDDIT PROJECT//---------------------------------//
+    //--------------------------------------------------------//CREATE REDDIT PROJECT//-----------------------------------------//
     createRedditProject: privateProcedure.input(RedditCampaignSchema).mutation(async ({ input, ctx }) => {
         const { userId } = ctx
         const { autoReply, description, title, tone, url, image, autoReplyLimit } = input
@@ -118,7 +118,7 @@ export const redditRouter = router({
             description: redditCampaigns.description
         })
 
-         // Create keywords
+         // Create Keywords
          const response = await openai.createChatCompletion({
           model: 'gpt-3.5-turbo',
           messages: [
@@ -196,7 +196,7 @@ export const redditRouter = router({
       return { projectId: project[0].insertedId, projectDescription: project[0].description }
     }),
 
-    //--------------------------------------------//CREATE REPLY//------------------------------------------//
+    //--------------------------------------------------------------//CREATE REPLY//-------------------------------------------------------------//
     createReply: privateProcedure.input(CreateReplySchema).mutation(async ({ ctx, input }) => {
         const { postId, projectId, postContent, postAuthor, postUrl, postTitle } = input
         const { userId } = ctx
@@ -330,7 +330,7 @@ export const redditRouter = router({
          return { dbReply }
     }),
 
-    //---------------------------------------------//UPDATE REDDIT PROJECT//---------------------------------//
+    //--------------------------------------------------------------//UPDATE REDDIT PROJECT//----------------------------------------------------------//
     updateRedditProject: privateProcedure.input(UpdateRedditCampaignSchema).mutation(async ({ ctx, input }) => {
       const { userId } = ctx
       const { id, autoReply, description, title, tone, url, image,autoReplyLimit } = input
@@ -357,7 +357,7 @@ export const redditRouter = router({
         return { projectId: project[0].insertedId }
     }),
 
-    //---------------------------------------------//CREATE AUTOMATIC REPLIES//---------------------------------//
+    //-----------------------------------------------------------------//CREATE AUTOMATIC REPLIES//----------------------------------------------------//
     createAutoReply: privateProcedure.input(CreateAutoReplySchema).mutation(async ({ ctx, input }) => {
       const { projectId, allKeywords } = input
       const { userId } = ctx
@@ -578,6 +578,7 @@ export const redditRouter = router({
        return { newReply }
   }),
 
+//--------------------------------------------------------------//GET ALL PROJECT REPLIES//----------------------------------------------------------------------//
   getProjectReplies: privateProcedure.input(z.object({ projectId: z.string() })).query(async ({ ctx, input }) => {
     const { projectId } = input
 

@@ -25,7 +25,7 @@ const RepliesCreatedToday = ({  replies }: RepliesCountTodayProps) => {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-md font-medium">Replies today</p>
-          <p className="text-3xl mt-2 font-bold">{replies}</p>
+          <p className="text-3xl mt-2 font-bold">+{replies}</p>
         </CardContent>
     </Card>
   )

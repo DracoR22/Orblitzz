@@ -8,9 +8,8 @@ import { cn } from "@/lib/utils"
 import { MenuIcon, Plus } from "lucide-react"
 import SidebarItem from "./sidebar-item"
 import PlanUsage from "./plan-usage"
-import { useExtraRoutes, useRoutes } from "@/hooks/use-routes"
+import { useExtraRoutes, useMarketingRoutes, useRoutes } from "@/hooks/use-routes"
 import Hint from "../global/hint"
-import AdditionalSidebarItem from "./additional-sidebar-item"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { RedditCampaignType } from "@/lib/db/schema/reddit"
 import { getMonthlyReplies } from "@/server/actions/reddit-actions"
@@ -27,8 +26,10 @@ const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth, allProjec
   const isMobile = useMediaQuery("(max-width: 768px)")
   const pathname = usePathname()
   const params = useParams()
+
   const routes = useRoutes()
   const extraRoutes = useExtraRoutes()
+  const marketingRoutes = useMarketingRoutes()
 
   const sidebarRef = useRef<ElementRef<"aside">>(null)
   const navbarRef = useRef<ElementRef<"div">>(null)
@@ -106,7 +107,7 @@ const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth, allProjec
 
   return (
     <>
-      <aside ref={sidebarRef} className={cn("group/sidebar flex flex-col h-full w-60 relative dark:bg-[#2a2a2a] bg-[#F2F3F5] ", isResetting && "transition-all ease-in-out duration-300", isMobile && "w-0")}>
+      <aside ref={sidebarRef} className={cn("group/sidebar flex flex-col w-60 relative dark:bg-[#2a2a2a] bg-[#F2F3F5] ", isResetting && "transition-all ease-in-out duration-300", isMobile && "w-0")}>
          <div className={cn("mt-3", isCollapsed && "hidden")}>
            <SidebarHeader allProjects={allProjects} subscriptionPlan={subscriptionPlan} projectTitle={project?.title} collapse={collapse} isMobile={isMobile}/>
            <div className="mx-3 mt-4">
@@ -128,10 +129,17 @@ const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth, allProjec
                 ))}
               </div>
 
+              <p className="text-xs text-muted-foreground mb-1 mt-6 font-medium">MARKETING TOOLS</p>
+              <div className="mt-2">
+               {marketingRoutes.map((route, i) => (
+                <SidebarItem key={i} active={route.isActive} name={route.name} icon={route.icon} href={route.href}/>
+               ))}
+              </div>
+
               <p className="text-xs text-muted-foreground mb-1 mt-6 font-medium">MORE</p>
               <div className="mt-2">
                {extraRoutes.map((route, i) => (
-                <AdditionalSidebarItem key={i} active={route.isActive} name={route.name} icon={route.icon} href={route.href}/>
+                <SidebarItem key={i} active={route.isActive} name={route.name} icon={route.icon} href={route.href}/>
                ))}
               </div>
            </div>

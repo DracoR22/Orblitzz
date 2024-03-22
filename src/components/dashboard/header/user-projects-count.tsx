@@ -25,7 +25,7 @@ const UserProjectsCount = ({ projects }: UserProjectsCountProps) => {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-md font-medium">Total projects</p>
-          <p className="text-3xl mt-2 font-bold">{projects}</p>
+          <p className="text-3xl mt-2 font-bold">+{projects}</p>
         </CardContent>
     </Card>
   )
