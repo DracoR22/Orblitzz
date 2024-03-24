@@ -3,7 +3,7 @@ import { privateProcedure, router } from "../trpc";
 import { openai } from "@/lib/openai/openai";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/lib/db";
-import { keywords } from "@/lib/db/schema/keyword";
+import { KeywordType, keywords } from "@/lib/db/schema/keyword";
 import { and, eq } from "drizzle-orm";
 import { redditCampaigns } from "@/lib/db/schema/reddit";
 
@@ -104,23 +104,38 @@ export const keywordRouter = router({
          })
 
          if (project?.userId !== ctx.userId) {
-            return new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
+            throw new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
          }
          
          try {
-            const transaction = items.map(async(keyword: any) => {
-                return await db.update(keywords).set({ 
-                    order: keyword.order,
-                    columnId: keyword.columnId
-                 }).where(and(
-                    eq(keywords.id, keyword.id),
-                    eq(keywords.redditCampaignId, projectId)
-                 ))
-             })
-
-             return { message: transaction }
+            const updatedKeywords = await Promise.all(items.map(async (keyword: any) => {
+                // Update the keyword
+                await db.update(keywords)
+                    .set({ 
+                        order: keyword.order,
+                        columnId: keyword.columnId
+                    })
+                    .where(
+                        and(
+                            eq(keywords.id, keyword.id),
+                            eq(keywords.redditCampaignId, projectId)
+                        )
+                    );
+        
+                // Fetch the updated keyword data
+                const updatedKeyword = await db.select({ columnId: keywords.columnId }).from(keywords).where(
+                    and(
+                        eq(keywords.id, keyword.id),
+                        eq(keywords.redditCampaignId, projectId)
+                    )
+                );
+        
+                return updatedKeyword[0]; // Assuming only one keyword is updated
+            }));
+        
+            return { updatedKeyword: updatedKeywords[0] }; // Return the array of updated keywords to the frontend
          } catch (error) {
-            return new TRPCError({ message: 'Could not update keyword order ', code: 'BAD_REQUEST' })
+            throw new TRPCError({ message: 'Could not update keyword order ', code: 'BAD_REQUEST' })
          }
     }),
 

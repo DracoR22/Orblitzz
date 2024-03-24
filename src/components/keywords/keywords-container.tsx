@@ -10,6 +10,7 @@ import { trpc } from "@/server/trpc/client"
 import { toast } from 'sonner'
 import { ZodError } from 'zod'
 import { KeywordType } from '@/lib/db/schema/keyword'
+import { useActiveKeywords } from '@/hooks/use-keywords-available'
 
 interface Props {
   columns: {
@@ -34,6 +35,8 @@ const KeywordsContainer = ({ columns, projectId }: Props) => {
 
   const { data } = trpc.keyword.getAllKeywords.useQuery({ projectId })
 
+  const { addKeyword } = useActiveKeywords()
+
    const { mutate: updateKeywordMutation } = trpc.keyword.updateKeywordOrder.useMutation({
     onError: (err) => {
       if (err.data?.code === "UNAUTHORIZED") {
@@ -44,10 +47,17 @@ const KeywordsContainer = ({ columns, projectId }: Props) => {
         return toast.error(err.issues[0].message)
       }
 
-     toast.error('Something went wrong while generating keywords. Please try again later.')
+     toast.error('Something went wrong while updating keywords. Please try again later.')
+     console.log(err)
     },
-    onSuccess: () => {
-     
+    onSuccess: ({ updatedKeyword }) => {
+       console.log(updatedKeyword)
+       if (updatedKeyword.columnId === '1') {
+        addKeyword(updatedKeyword.columnId)
+       } else {
+        // TODO: REMOVE KEYOWORD FROM THE STATE
+        console.log('Keyword removed')
+       }
     }
    })
 
@@ -128,12 +138,12 @@ const KeywordsContainer = ({ columns, projectId }: Props) => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex w-[700px] h-[400px]  p-4 rounded-md">
+        <div className="flex w-[700px] h-fit border p-4 rounded-md">
         {columns.map((column) => {
           const columnKeywords = orderedData.filter((keyword:  Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId'>) => keyword.columnId === column.id);
           return (
           <div key={column.id} className="flex-1">
-          <div className='flex items-center gap-x-4'>
+          <div className='flex items-center gap-x-4 ml-4'>
             <div className={cn("w-4 h-4 mb-2 rounded-full", column.id === '1' ? 'bg-blue-500' : 'bg-red-500 ')}/>
              <h2 className=" font-bold mb-2">{column.title}</h2>
               {column.id === '1' && (
@@ -155,7 +165,7 @@ const KeywordsContainer = ({ columns, projectId }: Props) => {
               )}
           </div>
             <div className='border-t w-full'/>
-             <div className={cn('', column.id === '1' && 'border-r h-[300px]')}>
+             <div className={cn('', column.id === '1' && 'border-r h-[480px]')}>
                <Droppable droppableId={column.id} type='keyword' direction='vertical'>
                   {(provided) => (
                     <ol ref={provided.innerRef} {...provided.droppableProps}

@@ -12,10 +12,10 @@ const CreateProjectModal = () => {
 
   return (
      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="bg-[#1e1e1e] w-[1000px]">
+        <DialogContent className="bg-[#1e1e1e] overflow-scroll md:max-h-[700px] md:h-fit h-screen">
            <DashboardSetup subscriptionPlan={subscriptionPlan!}/>
         </DialogContent>
-    </Dialog>
+     </Dialog>
   )
 }
 

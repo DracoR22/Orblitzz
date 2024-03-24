@@ -1,15 +1,12 @@
 import Heading from "@/components/global/heading"
 import KeywordsContainer from "@/components/keywords/keywords-container"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { db } from "@/lib/db"
-import { keywords } from "@/lib/db/schema/keyword"
-import { getAllKeywords } from "@/server/actions/keyword-actions"
-import { eq } from "drizzle-orm"
 
 const columns = [
   {
     id: '1',
-    title: 'Chosen Keywords',
+    title: 'Active Keywords',
     isAdded: true
   },
   {
@@ -32,18 +29,20 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
 
   return (
     <>
+    <ScrollArea className="h-[90%] w-full">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <div className="flex items-center justify-between">
            <Heading title='Keywords' description="Drag and drop the AI generated keywords to
-            the 'Chosen Keywords' column to add the into your project. We will search for posts
+            the 'Active Keywords' column to add the into your project. Then AI will search for posts
             based on the keywords you chose"/>
         </div>
         <Separator/>
       </div>
       {/* DRAG AND DROP */}
-      <div className="flex justify-center dark:bg-neutral-800 bg-neutral-100 mx-10 rounded-md py-6">
+      <div className="flex justify-center mx-10 rounded-md py-6">
         <KeywordsContainer columns={columns} projectId={params.projectId}/>
       </div>
+      </ScrollArea>
     </>
   )
 }

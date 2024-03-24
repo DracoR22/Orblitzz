@@ -144,7 +144,9 @@ export const getAllUserProjectsCount = async () => {
   }
 
   const allUserProjects = await db.select({
-    createdAt: redditCampaigns.createdAt
+    id: redditCampaigns.id,
+    createdAt: redditCampaigns.createdAt,
+    title: redditCampaigns.title
   }).from(redditCampaigns).where(eq(redditCampaigns.userId, user.id))
 
   return allUserProjects

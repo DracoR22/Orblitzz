@@ -22,14 +22,20 @@ export function absoluteUrl(path: string) {
 export const checkPlanReplyLimit = ({ planName, repliesCreatedThisMonth }: CheckPlanLimitProps) => {
   // Plan Limits
   const isFreeExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Free')!.repliesPerMonth
+  const isStarterExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Starter')!.repliesPerMonth
+  const isProExceeded = repliesCreatedThisMonth.length >= PLANS.find((plan) => plan.name === 'Pro')!.repliesPerMonth
 
   // TODO: CHECK FOR ALL THE PLANS
   const canPlanReply = () => {
    if (planName === 'Free' && isFreeExceeded) {
       return false
+    } else if (planName === 'Starter' && isStarterExceeded) {
+      return false
+    } else if (planName === 'Pro' && isProExceeded) {
+      return false
     }
 
-      return true
+    return true
    }
 
  const isReplyPossible = canPlanReply()
