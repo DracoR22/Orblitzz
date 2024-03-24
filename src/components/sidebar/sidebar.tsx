@@ -19,9 +19,10 @@ interface SidebarProps {
   project: Pick<RedditCampaignType, 'id' | 'title' | 'autoReply' | 'autoReplyLimit'>
   allProjects?:  Pick<RedditCampaignType, 'id' | 'title' | 'autoReply' | 'autoReplyLimit'>[] | undefined
   repliesCreatedThisMonth: Awaited<ReturnType<typeof getMonthlyReplies>>
+  allKeywords: string[]
 }
 
-const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth, allProjects }: SidebarProps) => {
+const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth, allProjects, allKeywords }: SidebarProps) => {
 
   const isMobile = useMediaQuery("(max-width: 768px)")
   const pathname = usePathname()
@@ -111,7 +112,7 @@ const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth, allProjec
          <div className={cn("mt-3", isCollapsed && "hidden")}>
            <SidebarHeader allProjects={allProjects} subscriptionPlan={subscriptionPlan} projectTitle={project?.title} collapse={collapse} isMobile={isMobile}/>
            <div className="mx-3 mt-4">
-            <PlanUsage subscriptionPlan={subscriptionPlan} repliesCreatedThisMonth={repliesCreatedThisMonth}/>
+            <PlanUsage allKeywords={allKeywords} subscriptionPlan={subscriptionPlan} repliesCreatedThisMonth={repliesCreatedThisMonth}/>
            </div>
            <div className="mt-4 mx-2">
               <div className="flex items-center">

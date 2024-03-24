@@ -25,7 +25,7 @@ const LastTwoMonthsOverview = ({ data, percentageDifference }: LastTwoMonthsOver
       <Image src={'/dashboard-media/ellipsis.svg'} alt="" width={50} height={50} className="w-[38px] h-[38px] cursor-pointer hover:bg-neutral-800 transition rounded-full p-2"/>
       </div>
      </div>
-     <div className="text-xl font-bold mt-1">
+     <div className="text-xl font-bold mt-1 ">
       {percentageDifference}%
      </div>
      <div className="text-sm text-muted-foreground font-medium">

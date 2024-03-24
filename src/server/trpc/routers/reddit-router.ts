@@ -22,19 +22,37 @@ export const redditRouter = router({
 
         const { allKeywords } = input
 
-        const userCredentials = {
-          userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
-          clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
-          clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
-          username: process.env.FIRST_REDDIT_USERNAME!,
-          password: process.env.FIRST_REDDIT_PASSWORD!
-        }
-
-        const subscriptionPlan = await getUserSubscriptionPlan()
-
+        const userCredentials = [
+          {
+            userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
+            clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
+            clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
+            username: process.env.FIRST_REDDIT_USERNAME!,
+            password: process.env.FIRST_REDDIT_PASSWORD!
+          },
+          {
+            userAgent: process.env.SECOND_REDDIT_USER_AGENT!,
+            clientId: process.env.SECOND_REDDIT_CLIENT_ID!,
+            clientSecret: process.env.SECOND_REDDIT_CLIENT_SECRET!,
+            username: process.env.SECOND_REDDIT_USERNAME!,
+            password: process.env.SECOND_REDDIT_PASSWORD!
+          }
+        ];
+        
+        const subscriptionPlan = await getUserSubscriptionPlan();
+        
+        // Randomly choose between the first and second user
+        const selectedUser = userCredentials[Math.floor(Math.random() * userCredentials.length)];
+         console.log(selectedUser)
         try { 
             // Create our Reddit instance
-            const reddit = createRedditInstance({ clientId: userCredentials.clientId,clientSecret : userCredentials.clientSecret, userAgent: userCredentials.userAgent, username: userCredentials.username, password: userCredentials.password })
+            const reddit = createRedditInstance({ 
+              clientId: selectedUser.clientId,
+              clientSecret: selectedUser.clientSecret,
+              userAgent: selectedUser.userAgent,
+              username: selectedUser.username,
+              password: selectedUser.password
+            });
 
             const postIdsSet = new Set();
             // Array of latest posts
@@ -130,7 +148,7 @@ export const redditRouter = router({
               },
               {
                   role: 'user',
-                  content: `Generate a list of 5 keywords based on '${description}'`
+                  content: `Generate a list of 10 RELEVANT and unique keywords based on '${description}'`
               }
           ]
       })
@@ -150,6 +168,11 @@ export const redditRouter = router({
         const trimmedThirdKeyword = keywordsOpenai[2].trim();
         const trimmedFourthKeyword = keywordsOpenai[3].trim();
         const trimmedFifthKeyword = keywordsOpenai[4].trim();
+        const trimmedSixthKeyword = keywordsOpenai[5].trim();
+        const trimmedSeventhKeyword = keywordsOpenai[6].trim();
+        const trimmedEightKeyword = keywordsOpenai[7].trim();
+        const trimmedNinthKeyword = keywordsOpenai[8].trim();
+        const trimmedTenthKeyword = keywordsOpenai[9].trim();
 
         console.log(trimmedFirstKeyword)
         console.log(trimmedSecondKeyword)
@@ -192,8 +215,42 @@ export const redditRouter = router({
         content: trimmedFifthKeyword,
      })
 
+     const insertedKeywordSi = await db.insert(keywords).values({
+      redditCampaignId: projectId,
+      columnId: '2',
+      order: 5,
+      content: trimmedSixthKeyword,
+   })
 
-      return { projectId: project[0].insertedId, projectDescription: project[0].description }
+    const insertedKeywordSe = await db.insert(keywords).values({
+     redditCampaignId: projectId,
+     columnId: '2',
+     order: 6,
+     content: trimmedSeventhKeyword,
+    })
+
+    const insertedKeywordEi = await db.insert(keywords).values({
+     redditCampaignId: projectId,
+     columnId: '2',
+     order: 7,
+     content: trimmedEightKeyword,
+    })
+
+    const insertedKeywordNi = await db.insert(keywords).values({
+     redditCampaignId: projectId,
+     columnId: '2',
+     order: 8,
+     content: trimmedNinthKeyword,
+    })
+
+    const insertedKeywordTh = await db.insert(keywords).values({
+     redditCampaignId: projectId,
+     columnId: '2',
+     order: 9,
+     content: trimmedTenthKeyword,
+    })
+
+    return { projectId: project[0].insertedId, projectDescription: project[0].description }
     }),
 
     //--------------------------------------------------------------//CREATE REPLY//-------------------------------------------------------------//
