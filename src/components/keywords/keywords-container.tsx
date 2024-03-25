@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { checkPlanKeywordsLimitClient, cn } from '@/lib/utils'
 import { DragDropContext, DropResult, Droppable } from '@hello-pangea/dnd'
 import KeywordItem from './keyword-item'
 import { BotIcon, InfoIcon, UserIcon } from 'lucide-react'
@@ -11,6 +11,8 @@ import { toast } from 'sonner'
 import { ZodError } from 'zod'
 import { KeywordType } from '@/lib/db/schema/keyword'
 import { useActiveKeywords } from '@/hooks/use-keywords-available'
+import { getUserSubscriptionPlan } from '@/lib/stripe/stripe'
+import { Skeleton } from '../ui/skeleton'
 
 interface Props {
   columns: {
@@ -19,6 +21,7 @@ interface Props {
     isAdded: boolean;
   }[];
   projectId: string,
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>> 
 }
 
 function reorder<T>(column: T[], startIndex: number, endIndex: number) {
@@ -29,13 +32,17 @@ function reorder<T>(column: T[], startIndex: number, endIndex: number) {
   return result
 }
 
-const KeywordsContainer = ({ columns, projectId }: Props) => {
+const KeywordsContainer = ({ columns, projectId, subscriptionPlan }: Props) => {
 
   const [orderedData, setOrderedData] = useState<any>(null)
 
   const { data } = trpc.keyword.getAllKeywords.useQuery({ projectId })
 
-  const { addKeyword } = useActiveKeywords()
+  const { addKeyword, setActiveKeywords } = useActiveKeywords()
+
+  const columnIds = data && data.allKeywords.map(keyword => keyword.columnId);
+
+  const { isAddedKeywordPossible } = checkPlanKeywordsLimitClient({ activeKeywords: columnIds?.filter((columnId) => columnId === '1') as string[], planName: subscriptionPlan.name as string})
 
    const { mutate: updateKeywordMutation } = trpc.keyword.updateKeywordOrder.useMutation({
     onError: (err) => {
@@ -50,13 +57,13 @@ const KeywordsContainer = ({ columns, projectId }: Props) => {
      toast.error('Something went wrong while updating keywords. Please try again later.')
      console.log(err)
     },
+    // YOU CAN REMOVE THE CONDITIONAL AND IT WILL STILL WORK
     onSuccess: ({ updatedKeyword }) => {
        console.log(updatedKeyword)
        if (updatedKeyword.columnId === '1') {
         addKeyword(updatedKeyword.columnId)
        } else {
-        // TODO: REMOVE KEYOWORD FROM THE STATE
-        console.log('Keyword removed')
+        setActiveKeywords(columnIds?.filter((columnId) => columnId === '1') as string[])
        }
     }
    })
@@ -76,6 +83,9 @@ const KeywordsContainer = ({ columns, projectId }: Props) => {
 
     // If dropped in the same position
     if (destination.droppableId === source.droppableId && destination.index === source.index) return
+
+    // Return if user has reached its keyword limit
+    if (destination.droppableId === '1' && !isAddedKeywordPossible) return
 
     if (type === 'keyword') {
        let newOrderedData = [...orderedData]
@@ -133,7 +143,11 @@ const KeywordsContainer = ({ columns, projectId }: Props) => {
    }
 
    if (orderedData === null) {
-    return <div>Loading...</div>; // or any loading indicator
+    return (
+      <div >
+        <Skeleton className='flex w-[700px] h-[1000px] p-4 rounded-md'/>
+      </div>
+    )
   }
 
   return (

@@ -82,7 +82,7 @@ const PlanUsage = ({ subscriptionPlan, repliesCreatedThisMonth, allKeywords }: P
             <DiamondIcon/>
           </div>
           {/* <div className="text-sm">Free Plan</div> */}
-          <small>{keywords.length.toFixed(0)} / {subscriptionPlan.keywords as number} Keywords</small>
+          <small>{keywords.length.toFixed(0)} / {subscriptionPlan.keywords as number} Active Keywords</small>
         </div>
       </div>
       <Progress value={(keywords.length / (subscriptionPlan.keywords as number || 3)) * 100} className="h-1" />

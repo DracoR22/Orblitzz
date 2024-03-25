@@ -11,6 +11,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { ZodError } from "zod"
+import { Skeleton } from "../ui/skeleton"
 
 interface Props {
     projectId: string
@@ -34,7 +35,7 @@ const Posts = ({ projectId, alreadyReplied, activeKeywordData }: Props) => {
 
     
     const allKeywords = activeKeywordData.map((k) => k.content)
-console.log(allKeywords)
+    // console.log(allKeywords)
     const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ allKeywords })
 
     const { mutate, isPending: isReplyPending } = trpc.reddit.createReply.useMutation({
@@ -62,8 +63,13 @@ console.log(allKeywords)
 
     if (isPending) {
       return(
-        <div>
-          Fetching posts...
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            <Skeleton className="mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between"/>
+            <Skeleton className="mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between"/>
+            <Skeleton className="mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between"/>
+            <Skeleton className="mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between"/>
+            <Skeleton className="mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between"/>
+            <Skeleton className="mt-6 rounded-md p-4 h-[320px] flex flex-col justify-between"/>
         </div>
       )
     }

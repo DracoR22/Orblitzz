@@ -18,7 +18,7 @@ import { keywords } from "@/lib/db/schema/keyword";
 
 export const redditRouter = router({
 //--------------------------------------------------------//GET POSTS ON KEYWORDS//---------------------------------------------------------//
-    getSubredditsAndPosts: publicProcedure.input(GetPostsSchema).query(async({ input }) => {
+    getSubredditsAndPosts: privateProcedure.input(GetPostsSchema).query(async({ input }) => {
 
         const { allKeywords } = input
 
@@ -640,12 +640,12 @@ export const redditRouter = router({
     const { projectId } = input
 
     const projectReplies = await db.query.redditReplies.findMany({
-      columns: {
-        id: true
-      },
+      // columns: {
+      //   id: true
+      // },
       where: eq(redditReplies.projectId, projectId)
     })
-
+    
     if (!projectReplies) {
        return []
     }

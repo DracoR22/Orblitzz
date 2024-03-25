@@ -20,7 +20,7 @@ const Home = () => {
       <section className="overflow-hidden px-4 sm:px-6 sm:flex sm:flex-col md:justify-start ">
      <div className="grid lg:grid-cols-2">
      <div>
-        <TitleSection title="Get users for you app without moving a finger" 
+        <TitleSection
          subheading="Get instant access to an AI that casually mentions your product in social media conversations"
          pill="🦨 How many people know your product?"/>
         
@@ -33,10 +33,11 @@ const Home = () => {
 
           {/* IMAGE */}
         {/* COLOR BLUR */}
-      <div aria-hidden='true' className='pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80'>
+      {/* <div aria-hidden='true' className='pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80'>
       <div style={{ clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)' }}
         className='relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-blue-400 to-blue-600 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]'/>
-      </div>
+      </div> */}
+      <div className="absolute -top-10 -left-10 h-[500px] w-[300px] blur-3xl bg-blue-500 rounded-full opacity-30"/>
 
          <div className='flow-root my-10'>
             <div className='glass-container'>
@@ -75,6 +76,23 @@ const Home = () => {
 
     {/* IMAGE */}
      <section className="px-4 sm:px-6 flex justify-center items-center flex-col relative">
+         <div className="w-[30%] blur-[120px] rounded-full h-32 absolute bg-brand-primaryBlue/50 -z-10 top-22"/>
+            <SubTitleSection title="Keep track of all your replies" subheading="Capture your ideas, thoughts, and meeting notes in a structured and organized manner."/>
+            <div className='flow-root my-10'>
+              <div className="magic h-[666px] w-[1164px] border border-slate-100/20 bg-slate-200 bg-slate-200/10 backdrop-blur-md">
+               <Image src='/landing-page/ai-replies.png' alt='product preview' fill
+                quality={100} draggable={false} className='p-2 shadow-2xl ring-1 z-[999] ring-gray-900/10 h-full object-cover'/>
+              </div>
+            </div>
+            <Button className="text-white font-medium text-md flex items-center gap-x-2">
+               <RocketIcon/>
+                Increase your visibility now →
+            </Button>
+            <small className="text-muted-foreground text-sm mt-3">2 clicks away from getting more customers for you product</small>
+       </section>
+
+         {/* IMAGE 2 */}
+      <section className="px-4 sm:px-6 mt-[200px] flex justify-center items-center flex-col relative">
          <div className="w-[30%] blur-[120px] rounded-full h-32 absolute bg-brand-primaryBlue/50 -z-10 top-22"/>
             <SubTitleSection title="Keep track of all your replies" subheading="Capture your ideas, thoughts, and meeting notes in a structured and organized manner."/>
             <div className='flow-root my-10'>
