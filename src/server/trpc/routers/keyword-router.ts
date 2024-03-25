@@ -3,9 +3,12 @@ import { privateProcedure, router } from "../trpc";
 import { openai } from "@/lib/openai/openai";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/lib/db";
-import { KeywordType, keywords } from "@/lib/db/schema/keyword";
+import { keywords } from "@/lib/db/schema/keyword";
 import { and, eq } from "drizzle-orm";
 import { redditCampaigns } from "@/lib/db/schema/reddit";
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe";
+import { checkPlanKeywordsLimitServer } from "@/lib/utils";
+import { UpdateKeywordOrderInputSchema } from "@/lib/validations/campaign-keywords-schema";
 
 export const keywordRouter = router({
 //--------------------------------------------------------------------------------//CREATE KEYWORDS WITH AI//-----------------------------------------------------------------------//
@@ -90,8 +93,23 @@ export const keywordRouter = router({
     }),
 
 //-------------------------------------------------------------------------//UPDATE KEYWORD ORDER AND POSITION//-----------------------------------------------------------------//
-    updateKeywordOrder: privateProcedure.input(z.object({ projectId: z.string(), items: z.any()})).mutation(async ({ ctx, input }) => {
+    updateKeywordOrder: privateProcedure.input(UpdateKeywordOrderInputSchema).mutation(async ({ ctx, input }) => {
          const { projectId, items } = input
+
+         const subscriptionPlan = await getUserSubscriptionPlan()
+
+         const columnIds = items && items.map((keyword) => keyword.columnId);
+        //  const activeKeywords = columnIds?.filter((columnId: string) => columnId === '1') as string[]
+
+         const { isAddedKeywordPossible } = checkPlanKeywordsLimitServer({ activeKeywords: columnIds, planName: subscriptionPlan.name as string})
+
+         console.log(columnIds)
+        //  console.log(activeKeywords)
+
+        if (columnIds.includes('1') && !isAddedKeywordPossible) {
+            console.log('Active keyword limit reached')
+          throw new TRPCError({ message: 'Active keyword limit reached', code: 'TOO_MANY_REQUESTS' })
+        }
 
          const project = await db.query.redditCampaigns.findFirst({
             columns: {

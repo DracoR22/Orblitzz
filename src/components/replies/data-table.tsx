@@ -7,17 +7,23 @@ import { Skeleton } from "../ui/skeleton"
 import { Input } from "../ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import { Button } from "../ui/button"
+import { trpc } from "@/server/trpc/client"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  projectId: string
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, projectId }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+  const { data, isPending } = trpc.reddit.getProjectReplies.useQuery({ projectId })
+
   const table = useReactTable({
+    // @ts-ignore
     data,
+    // @ts-ignore
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -31,11 +37,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     },
   })
 
-  const { status } = useSession()
-
   const [isRefreshing, setIsRefreshing] = useState(false)
 
-  if (status === 'loading') {
+  if (isPending) {
     return (
       <>
        <div className="mt-10 flex items-center justify-between mb-2">

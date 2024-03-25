@@ -2,6 +2,7 @@ import Heading from "@/components/global/heading"
 import KeywordsContainer from "@/components/keywords/keywords-container"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 
 const columns = [
   {
@@ -18,14 +19,7 @@ const columns = [
 
 const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
 
-  //  const serverKeywords = await db.select({
-  //    id: keywords.id,
-  //    order: keywords.order,
-  //    content: keywords.content,
-  //    columnId: keywords.columnId
-  //  }).from(keywords).where(eq(keywords.redditCampaignId, params.projectId)).orderBy(keywords.order.asc())
-
-  //  const serverKeywords = await getAllKeywords(params.projectId)
+   const subscriptionPlan = await getUserSubscriptionPlan()
 
   return (
     <>
@@ -40,7 +34,7 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
       </div>
       {/* DRAG AND DROP */}
       <div className="flex justify-center mx-10 rounded-md py-6">
-        <KeywordsContainer columns={columns} projectId={params.projectId}/>
+        <KeywordsContainer subscriptionPlan={subscriptionPlan} columns={columns} projectId={params.projectId}/>
       </div>
       </ScrollArea>
     </>

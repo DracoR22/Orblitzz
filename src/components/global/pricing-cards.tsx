@@ -88,12 +88,15 @@ const PricingCards = ({ isDashboard }: PricingCardProps) => {
       ]
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4">
+    <div className={cn("grid grid-cols-1 sm:grid-cols-2 gap-x-4", isDashboard ? "lg:grid-cols-2" : "lg:grid-cols-3")}>
       {pricingItems.map((item, i) => {
         const price = PLANS.find((p) => p.slug === item.plan.toLowerCase())?.price.amount || 0
+        if (isDashboard && item.plan === 'Free') {
+          return null; // Skip rendering the Free plan in dashboard
+        }
         return (
-            <div key={i} className={cn("relative rounded-2xl bg-white dark:bg-[#1e1e1e] shadow-lg" ,{
-                "border-2 border-blue-500 shadow-blue-200": item.plan === "Pro",
+            <div key={i} className={cn("relative rounded-2xl bg-white dark:bg-[#1e1e1e] shadow-2xl" ,{
+                "border-[4px] border-blue-500 shadow-blue-300": item.plan === "Pro",
                 "border border-gray-200 dark:border-neutral-700": item.plan !== "Pro"
               })}>
                 {item.plan === "Pro" && (

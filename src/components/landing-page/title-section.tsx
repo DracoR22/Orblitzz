@@ -5,17 +5,17 @@ import React from "react"
 import { poppins } from "../fonts/fonts"
 
 interface TitleSectionProps {
-    title?: string
+  
     subheading?: string
     pill?: string
 }
 
-const TitleSection = ({ title, subheading, pill }: TitleSectionProps) => {
+const TitleSection = ({ subheading, pill }: TitleSectionProps) => {
   return (
     <React.Fragment>
-        <section className="flex flex-col gap-4 md:justify-start items-start ">
+        <section className="flex flex-col gap-4 md:justify-start items-start">
           {pill && (
-             <article className="rounded-full p-[1.5px] text-sm bg-gradient-to-t from-blue-500 to-blue-500">
+             <article className="rounded-full p-[1.5px] text-sm bg-gradient-to-t from-blue-500 to-blue-500 z-[999]">
                <div className="rounded-full px-3 py-1 dark:bg-[#0f0f0f] bg-[#f6f6f6]">
                  {pill}
                </div>
@@ -23,8 +23,8 @@ const TitleSection = ({ title, subheading, pill }: TitleSectionProps) => {
           )}
            {subheading ? (
             <>
-              <h2 className={cn("text-left text-3xl sm:text-5xl sm:max-w-[500px] md:text-left font-bold mb-4", poppins.className)}>
-                 {title}
+              <h2 className={cn("text-left text-3xl sm:text-5xl sm:max-w-[500px] md:text-left font-bold mb-4 z-[999]", poppins.className)}>
+              Get <span className="text-blue-500">more people </span>to know your product
               </h2>
              <div className="">
              <div className="grid grid-cols-2 gap-x-4">
@@ -60,20 +60,20 @@ const TitleSection = ({ title, subheading, pill }: TitleSectionProps) => {
                 <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
                 <div>
                   <small className="text-muted-foreground ">
-                     AI Reddit replies
+                     Leave marketing in Auto-Pilot
                   </small>
                 </div>
-                <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
+                {/* <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
                 <div>
                   <small className="text-muted-foreground ">
                      AI Reddit repl
                   </small>
-                </div>
+                </div> */}
               </div>
             </>
            ) : (
             <h1 className="text-left text-4xl sm:text-6xl sm:max-w-[850px] font-semibold">
-                {title}
+              Get users for you app without moving a finger" 
             </h1>
            )}
         </section>

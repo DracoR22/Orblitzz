@@ -20,8 +20,7 @@ const BillingPage = async () => {
     </div>
     {/* BILLING */}
     <div className="flex justify-center dark:bg-neutral-800 bg-neutral-100 mx-10 rounded-md py-6 px-6">
-      <PricingCards/>
-      
+      <PricingCards isDashboard={true}/>
     </div>
     </ScrollArea>
   </>
