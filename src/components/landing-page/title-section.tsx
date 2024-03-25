@@ -73,7 +73,7 @@ const TitleSection = ({ subheading, pill }: TitleSectionProps) => {
             </>
            ) : (
             <h1 className="text-left text-4xl sm:text-6xl sm:max-w-[850px] font-semibold">
-              Get users for you app without moving a finger" 
+              Get users for you app without moving a finger
             </h1>
            )}
         </section>
