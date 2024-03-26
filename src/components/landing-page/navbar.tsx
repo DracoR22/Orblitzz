@@ -6,6 +6,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "../ui/button"
 import Image from "next/image"
+import { poppins } from "../fonts/fonts"
+import { HoverBorderGradient } from "../global/animations/hover-border-gradient-animation"
 
 const Navbar = () => {
 
@@ -17,8 +19,8 @@ const Navbar = () => {
     scrolled && "border-b shadow-sm bg-white/75 dark:bg-[#1e1e1e] dark:bg-opacity-50 backdrop-blur-md")}>
       {/* LOGO */}
        <Link href={'/'} className="hidden md:flex items-center cursor-pointer">
-         <Image draggable="false" src="/logo-orblitzz-bg.png" height={65} width={65} alt="Logo" className="rounded-full"/>
-         <p className={cn("font-semibold text-2xl hover:text-blue-200 transition")}>
+         <Image draggable="false" src="/logo-bg.png" height={55} width={55} alt="Logo" className="rounded-full"/>
+         <p className={cn("font-semibold text-2xl transition ml-2", poppins.className)}>
            Orblitzz
          </p>
        </Link>
@@ -52,11 +54,11 @@ const Navbar = () => {
           </div>
 
           <div>
-             <Button asChild className="font-semibold text-white">
+             <HoverBorderGradient className="dark:bg-[#212121] font-semibold bg-white text-black dark:text-white flex items-center space-x-2 rounded-md">
                <Link href={'/login'}>
                   Sign In
                </Link>
-             </Button>
+             </HoverBorderGradient>
           </div>
        </div>
     </nav>

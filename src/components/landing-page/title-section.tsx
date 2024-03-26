@@ -3,6 +3,7 @@ import { Check } from "lucide-react"
 import Image from "next/image"
 import React from "react"
 import { poppins } from "../fonts/fonts"
+import { Spotlight } from "../global/animations/spotlight-animation"
 
 interface TitleSectionProps {
   
@@ -21,6 +22,7 @@ const TitleSection = ({ subheading, pill }: TitleSectionProps) => {
                </div>
              </article>
           )}
+          
            {subheading ? (
             <>
               <h2 className={cn("text-left text-3xl sm:text-5xl sm:max-w-[500px] md:text-left font-bold mb-4 z-[999]", poppins.className)}>
@@ -42,7 +44,7 @@ const TitleSection = ({ subheading, pill }: TitleSectionProps) => {
                     <Check className="w-4 h-4 text-green-500"/> Choose AI Tone
                   </p>
                   <p className="flex items-center gap-x-1">
-                    <Check className="w-4 h-4 text-green-500"/> AI powered text editor
+                    <Check className="w-4 h-4 text-green-500"/> Highly accurate replies
                   </p>
                 </div>
               </div>
@@ -60,7 +62,7 @@ const TitleSection = ({ subheading, pill }: TitleSectionProps) => {
                 <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
                 <div>
                   <small className="text-muted-foreground ">
-                     Leave marketing in Auto-Pilot
+                     Bring new customers to your app
                   </small>
                 </div>
                 {/* <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
