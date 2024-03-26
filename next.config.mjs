@@ -12,6 +12,14 @@ const nextConfig = {
     
         return config;
       },
+      images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "pbs.twimg.com"
+            },
+        ]
+    }
 };
 
 export default nextConfig;

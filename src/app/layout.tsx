@@ -6,12 +6,12 @@ import { SessionProvider } from "next-auth/react"
 import "@/styles/globals.css";
 
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Inter, DM_Sans } from "next/font/google";
 import { auth } from "@/lib/auth/auth";
 import { Toaster } from "@/components/ui/sonner";
 import ModalProvider from "@/components/providers/modal-provider";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "AI that promotes your product online",
