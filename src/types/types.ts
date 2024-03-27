@@ -9,3 +9,11 @@ export interface CheckPlanKeywordsLimitProps {
     planName: string
     activeKeywords: string[]
 }
+
+export interface ReplyOutputProps {
+    projectTone: string
+    projectTitle: string
+    projectUrl: string
+    projectDescription: string
+    postContent: string
+}
