@@ -83,3 +83,33 @@ export const checkPlanKeywordsLimitServer = ({ planName, activeKeywords }: Check
 
    return { isAddedKeywordPossible }
 }
+
+// COSINE SIMILARITY ALGORITHM
+const cosineSimilarity = (vector1: number[], vector2: number[]): number => {
+  const dotProduct = vector1.reduce((acc, val, index) => acc + val * vector2[index], 0);
+  const magnitude1 = Math.sqrt(vector1.reduce((acc, val) => acc + val ** 2, 0));
+  const magnitude2 = Math.sqrt(vector2.reduce((acc, val) => acc + val ** 2, 0));
+  return dotProduct / (magnitude1 * magnitude2);
+};
+
+const tokenize = (text: string): string[] => {
+  return text.split(/\s+/);
+};
+
+const vectorize = (tokens: string[], vocabulary: string[]): number[] => {
+  return vocabulary.map(word => tokens.includes(word) ? 1 : 0);
+};
+
+export const calculateCosineSimilarity = (text1: string, text2: string): number => {
+  const tokens1 = tokenize(text1);
+  const tokens2 = tokenize(text2);
+
+  // Create a vocabulary (set of unique tokens) from both texts
+  const vocabulary = Array.from(new Set([...tokens1, ...tokens2]));
+
+  // Vectorize both texts based on the vocabulary
+  const vector1 = vectorize(tokens1, vocabulary);
+  const vector2 = vectorize(tokens2, vocabulary);
+
+  return cosineSimilarity(vector1, vector2);
+};

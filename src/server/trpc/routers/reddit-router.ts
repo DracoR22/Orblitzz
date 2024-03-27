@@ -12,9 +12,10 @@ import { ResponseTypes } from "openai-edge";
 import { isToday } from "date-fns";
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe";
 import { getMonthlyReplies } from "@/server/actions/reddit-actions";
-import { checkPlanReplyLimit } from "@/lib/utils";
+import { calculateCosineSimilarity, checkPlanReplyLimit } from "@/lib/utils";
 import { v4 } from "uuid"
 import { keywords } from "@/lib/db/schema/keyword";
+import { replyOutput } from "@/lib/openai/prompts";
 
 export const redditRouter = router({
 //--------------------------------------------------------//GET POSTS ON KEYWORDS//---------------------------------------------------------//
@@ -462,15 +463,15 @@ export const redditRouter = router({
 
       // Replies created today
       const repliesCreatedToday = repliesCreatedThisMonth.filter(reply => isToday(reply.createdAt));
-      console.log(repliesCreatedToday)
+      // console.log(repliesCreatedToday)
 
       if (repliesCreatedToday.length >= project.autoReplyLimit) {
         throw new TRPCError({ message: 'Reply limit reached for today.', code: 'TOO_MANY_REQUESTS' })
       }
 
-      console.log(repliesCreatedThisMonth)
+      // console.log(repliesCreatedThisMonth)
 
-      // Plan Limits --------------------------------------
+      // Plan Limits 
       const { isReplyPossible } = checkPlanReplyLimit({ planName: subscriptionPlan.name!, repliesCreatedThisMonth });
 
       // Check if the reply limit is exceeded TODO: DO THE SAME FOR ALL PLANS
@@ -481,12 +482,11 @@ export const redditRouter = router({
       // Create Reddit instance
       const reddit = createRedditInstance({ clientId: userCredentials.clientId, clientSecret: userCredentials.clientSecret, userAgent: userCredentials.userAgent, username: userCredentials.username, password: userCredentials.password })
 
-      // Get the Reddit posts
-      const postIdsSet = new Set();
       // Array of latest posts
       const latestPosts = [];
+
+      const oneKeyword = allKeywords[Math.floor(Math.random() * allKeywords.length)];
       
-      for (const oneKeyword of allKeywords) {
         // Search for posts based on the keyword
           const searchResults = await reddit.search({
              query: oneKeyword,
@@ -496,7 +496,6 @@ export const redditRouter = router({
              syntax: 'plain',
           });
         
-        // Extract the first 5 unique posts from the search results
           const formattedPosts = searchResults
             .filter((post) => post.selftext.trim().length > 0)
             .map((post) => ({
@@ -508,15 +507,15 @@ export const redditRouter = router({
               author: post.author.name,
               createdAt: new Date(post.created_utc * 1000).toLocaleString(),
              }))
-             .filter((post) => {
-              // Check if the post ID is not already in the set and has content with enough words
-              if (!postIdsSet.has(post.postId) && countWords(post.content) >= 10) {
-                // Add the post ID to the set and return true to include the post
-                postIdsSet.add(post.postId);
-                return true;
-              }
-              return false;
-              });
+            //  .filter((post) => { 
+            //   // Check if the post ID is not already in the set and has content with enough words
+            //   if (!postIdsSet.has(post.postId) && countWords(post.content) >= 10) {
+            //     // Add the post ID to the set and return true to include the post
+            //     postIdsSet.add(post.postId);
+            //     return true;
+            //   }
+            //   return false;
+            //   });
         
           // Only add the keyword if there are unique posts with content
             if (formattedPosts.length > 0) {
@@ -525,24 +524,17 @@ export const redditRouter = router({
                 posts: formattedPosts,
               });
             }
-          }
+          
         
       // Exclude keywords with no posts
-      const filteredLatestPosts = latestPosts.filter((keyword) => keyword.posts.length > 0);
-
-      // Function to get a random element from an array
-      const getRandomElement = (array: any[], seed: number) => {
-        const randomIndex = Math.floor(Math.abs(Math.sin(seed)) * array.length);
-        return array[randomIndex];
-      };
-
-      // Generate a random seed (you can use any number)
-      const randomSeed = Math.random();
-
-     // Get a random post from the filteredLatestPosts array with the seed
-     const randomPost = getRandomElement(filteredLatestPosts, randomSeed);
-     console.log(randomPost.posts[0].content);
+      const filteredLatestPosts = latestPosts
+      // .filter((keyword) => keyword.posts.length > 0);
      
+      // Get a random post from the filteredLatestPosts array with the seed
+      const randomIndex = Math.floor(Math.random() * filteredLatestPosts[0].posts.length);
+      const randomPost = filteredLatestPosts[0].posts[randomIndex];
+     //  console.log(randomPost.posts[0].content);
+
       // Check if already replied to post
       const alreadyReplied = await db.query.redditReplies.findFirst({
         columns: {
@@ -550,7 +542,7 @@ export const redditRouter = router({
           createdAt: true
         },
         where: and(
-            eq(redditReplies.postId, randomPost.posts[0].postId),
+            eq(redditReplies.postId, randomPost.postId),
             eq(redditReplies.projectId, projectId)
         )
       })
@@ -559,9 +551,29 @@ export const redditRouter = router({
         throw new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
       }
 
-      
+       // Preprocess the text: Remove punctuation and convert to lowercase
+       const processedPostContent = randomPost.content.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase();
+       const processedProjectDescription = project.description.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase();
+   
+       // Calculate similarity score using cosine similarity
+       const similarityScore = calculateCosineSimilarity(processedPostContent, processedProjectDescription);
+       console.log(`Similarity score for: //  ${randomPost.content} is ${similarityScore}`)
+
+       if (similarityScore < 0.09) {
+        throw new TRPCError({ message: 'Post is not suitable to reply', code: 'FORBIDDEN' })
+       }
+
  
       // OpenAI reponse
+ 
+      // const response = await replyOutput({ 
+      //   postContent: randomPost.posts[0].content,
+      //   projectDescription: project.description,
+      //   projectTitle: project.title,
+      //   projectUrl: project.url,
+      //   projectTone: project.tone
+      // })
+
     //   const response = await openai.createChatCompletion({
     //     model: 'gpt-3.5-turbo',
     //     messages: [
@@ -624,9 +636,9 @@ export const redditRouter = router({
           projectId,
           title: 'test',
           postAuthor: 'test',
-          postId: randomPost.posts[0].postId,
+          postId: randomPost.postId,
           postUrl: 'test',
-          reply: randomPost.posts[0].content
+          reply: randomPost.content
       }).returning({
         createdAt: redditReplies.id
       })
