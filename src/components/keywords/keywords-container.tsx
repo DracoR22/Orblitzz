@@ -13,6 +13,9 @@ import { KeywordType } from '@/lib/db/schema/keyword'
 import { useActiveKeywords } from '@/hooks/use-keywords-available'
 import { getUserSubscriptionPlan } from '@/lib/stripe/stripe'
 import { Skeleton } from '../ui/skeleton'
+import { RedditCampaignType } from '@/lib/db/schema/reddit'
+import { getMonthlyReplies } from '@/server/actions/reddit-actions'
+import { useAutoRedditReply } from '@/hooks/use-auto-reddit-reply'
 
 interface Props {
   columns: {
@@ -22,6 +25,9 @@ interface Props {
   }[];
   projectId: string,
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>> 
+  projectAutoReplyLimit:  Pick<RedditCampaignType, 'id' | 'title' | 'autoReply' | 'autoReplyLimit'>
+  repliesCreatedThisMonth: Awaited<ReturnType<typeof getMonthlyReplies>>
+  repliesCreatedToday: Awaited<ReturnType<typeof getMonthlyReplies>>
 }
 
 function reorder<T>(column: T[], startIndex: number, endIndex: number) {
@@ -32,15 +38,17 @@ function reorder<T>(column: T[], startIndex: number, endIndex: number) {
   return result
 }
 
-const KeywordsContainer = ({ columns, projectId, subscriptionPlan }: Props) => {
+const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoReplyLimit, repliesCreatedThisMonth, repliesCreatedToday }: Props) => {
 
   const [orderedData, setOrderedData] = useState<any>(null)
 
   const { data } = trpc.keyword.getAllKeywords.useQuery({ projectId })
 
-  const { addKeyword, setActiveKeywords } = useActiveKeywords()
+  const { addKeyword, setActiveKeywords, activeKeywords } = useActiveKeywords()
 
   const columnIds = data && data.allKeywords.map(keyword => keyword.columnId);
+  const filterKeywords = data && data.allKeywords.filter(keyword => keyword.columnId === "1");
+  const keywordsContent = filterKeywords && filterKeywords.map(keyword => keyword.content);
 
   const { isAddedKeywordPossible } = checkPlanKeywordsLimitClient({ activeKeywords: columnIds?.filter((columnId) => columnId === '1') as string[], planName: subscriptionPlan.name as string})
 
@@ -60,21 +68,25 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan }: Props) => {
     // YOU CAN REMOVE THE CONDITIONAL AND IT WILL STILL WORK
     onSuccess: ({ updatedKeyword }) => {
        console.log(updatedKeyword)
-       if (updatedKeyword.columnId === '1') {
-        addKeyword(updatedKeyword.columnId)
-       } else {
-        setActiveKeywords(columnIds?.filter((columnId) => columnId === '1') as string[])
-       }
+
+      //  if (updatedKeyword.columnId === '1') {
+      //   addKeyword(updatedKeyword.columnId)
+      //  } else {
+      //   setActiveKeywords(columnIds?.filter((columnId) => columnId === '1') as string[])
+      //  }
     }
    })
-
+ 
    useEffect(() => {
     if (data) {
       setOrderedData(data.allKeywords); // Assuming data structure contains allKeywords
     }
   }, [data]);
 
-  // console.log(data?.allKeywords)
+  const { handleAutoReply } = useAutoRedditReply({ repliesCreatedThisMonth, allKeywords: data?.allKeywords.filter((d) => d.columnId === "1").map((d) => d.content) as string[], subscriptionPlan, projectAutoReplyLimit, repliesCreatedToday, projectId })
+  // console.log(orderedData)
+  // console.log( data?.allKeywords.filter((d) => d.columnId === "1").map((d) => d.content))
+  
 
    const onDragEnd = (result: DropResult) => {
     const { destination, source, type } = result
@@ -86,6 +98,11 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan }: Props) => {
 
     // Return if user has reached its keyword limit
     if (destination.droppableId === '1' && !isAddedKeywordPossible) return
+
+    if (destination.droppableId === "1") {
+      // console.log("calling auto reply function")
+     handleAutoReply()
+    }
 
     if (type === 'keyword') {
        let newOrderedData = [...orderedData]
@@ -138,6 +155,9 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan }: Props) => {
 
          // Trigger backend
          updateKeywordMutation({ projectId, items: destColumn })
+
+         // Update keywords global state
+         setActiveKeywords(orderedData.filter((o: any) => o.columnId === "1").map((o: any) => o.createdAt) as string[])
       }
     }
    }

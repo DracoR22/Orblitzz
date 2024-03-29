@@ -24,7 +24,17 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
 
    const subscriptionPlan = await getUserSubscriptionPlan()
 
+  // Replies created this month
+  const repliesCreatedThisMonth = await getMonthlyReplies(params.projectId)
 
+  // Replies created today
+  const repliesCreatedToday = repliesCreatedThisMonth.filter(reply => isToday(reply.createdAt));
+
+  // All user projects
+  const allUserProjects = await getAllUserProjects()
+
+  // Filter the one we are seeing right now
+  const projectAutoReplyLimit = allUserProjects.find((project) => project.id === params.projectId)
 
   return (
     <>
@@ -39,7 +49,8 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
       </div>
       {/* DRAG AND DROP */}
       <div className="flex justify-center mx-10 rounded-md py-6">
-        <KeywordsContainer subscriptionPlan={subscriptionPlan} columns={columns} projectId={params.projectId}/>
+        <KeywordsContainer projectAutoReplyLimit={projectAutoReplyLimit!}
+         repliesCreatedThisMonth={repliesCreatedThisMonth} repliesCreatedToday={repliesCreatedToday} subscriptionPlan={subscriptionPlan} columns={columns} projectId={params.projectId}/>
       </div>
       </ScrollArea>
     </>
