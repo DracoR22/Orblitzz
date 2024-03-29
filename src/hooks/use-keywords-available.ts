@@ -8,7 +8,7 @@ interface KeywordsStore {
   addKeyword: (keyword: string) => void;
 }
 
-export const useKeywordStore = create<KeywordsStore>((set) => ({
+const useKeywordStore = create<KeywordsStore>((set) => ({
   activeKeywords: [],
   setActiveKeywords: (keywords) => set({ activeKeywords: keywords }),
   addKeyword: (keyword) => set((state) => ({ activeKeywords: [...state.activeKeywords, keyword] })),

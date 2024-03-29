@@ -31,7 +31,7 @@ export const useAutoRedditReply = ({ repliesCreatedThisMonth, allKeywords, subsc
           await handleAutoReply(); // Call the function again on success
           addReply(newReply[0])
         },
-        onError: async (err) => {
+        onError: async (err: any) => {
           if (err.data?.code === 'TOO_MANY_REQUESTS') {
             toast.error('Reply limit reached for today');
            
@@ -45,7 +45,8 @@ export const useAutoRedditReply = ({ repliesCreatedThisMonth, allKeywords, subsc
             toast.error('Error while creating replies. Make sure you have at least 5 active keywords')
             setReplyLimitReached(true)
           } else {
-            toast.error('AI could not reply to this post at the moment');
+            // toast.error('AI could not reply to this post at the moment');
+            console.log(err)
             setReplyLimitReached(true);
           }
         },

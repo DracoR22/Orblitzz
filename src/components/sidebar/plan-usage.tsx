@@ -7,7 +7,8 @@ import { useParams } from "next/navigation"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { getMonthlyReplies } from "@/server/actions/reddit-actions"
 import { useMonthlyReplies } from "../../hooks/use-monthly-replies"
-import { useKeywordStore } from "@/hooks/use-keywords-available"
+import { useActiveKeywords } from "@/hooks/use-keywords-available"
+import { ZapIcon } from "lucide-react"
 
 interface PlanUsageProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
@@ -20,7 +21,7 @@ const PlanUsage = ({ subscriptionPlan, repliesCreatedThisMonth, allKeywords }: P
   const params = useParams()
 
   const { repliesCreatedThisMonth: replies, setRepliesCreatedThisMonth} = useMonthlyReplies()
-  const { activeKeywords: keywords, setActiveKeywords } = useKeywordStore()
+  const { activeKeywords: keywords, setActiveKeywords } = useActiveKeywords()
  
   // SET OUR MONTHLY REPLY STATE WITH THE MONTHLY REPLIES FROM OUR DATABASE
   useEffect(() => {
@@ -79,7 +80,7 @@ const PlanUsage = ({ subscriptionPlan, repliesCreatedThisMonth, allKeywords }: P
        <div className="flex gap-2 text-neutral-400 mb-2 items-center">
         <div className="flex justify-between w-full items-center">
           <div className="h-4 w-4">
-            <DiamondIcon/>
+            <ZapIcon className="w-4 h-4 text-[#6889FF]" fill="#6889FF"/>
           </div>
           {/* <div className="text-sm">Free Plan</div> */}
           <small>{keywords.length.toFixed(0)} / {subscriptionPlan.keywords as number} Active Keywords</small>

@@ -11,7 +11,7 @@ import { auth } from "@/lib/auth/auth";
 import { Toaster } from "@/components/ui/sonner";
 import ModalProvider from "@/components/providers/modal-provider";
 
-const inter = DM_Sans({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "AI that promotes your product online",
