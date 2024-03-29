@@ -3,6 +3,9 @@ import KeywordsContainer from "@/components/keywords/keywords-container"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
+import { getActiveKeywords } from "@/server/actions/keyword-actions"
+import { getAllUserProjects, getMonthlyReplies } from "@/server/actions/reddit-actions"
+import { isToday } from "date-fns"
 
 const columns = [
   {
@@ -20,6 +23,8 @@ const columns = [
 const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
 
    const subscriptionPlan = await getUserSubscriptionPlan()
+
+
 
   return (
     <>

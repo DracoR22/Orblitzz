@@ -43,19 +43,11 @@ const DashboardLayout = async ({ children, params }: DashboardLayoutProps) => {
   // Filter the one we are seeing right now
   const projectAutoReplyLimit = allUserProjects.find((project) => project.id === params.projectId)
 
-  if (!projectAutoReplyLimit) {
-    return (
-      <div>
-        loading...
-      </div>
-    )
-  }
-
     return (
       <div className="h-full flex">
-         <Sidebar allKeywords={allKeywords} allProjects={allUserProjects} project={projectAutoReplyLimit} subscriptionPlan={subscriptionPlan} repliesCreatedThisMonth={repliesCreatedThisMonth}/>
+         <Sidebar allKeywords={allKeywords} allProjects={allUserProjects} project={projectAutoReplyLimit!} subscriptionPlan={subscriptionPlan} repliesCreatedThisMonth={repliesCreatedThisMonth}/>
         <main className="flex-1 h-full">
-        <Navbar projectId={params.projectId} allKeywords={allKeywords} projectAutoReplyLimit={projectAutoReplyLimit}
+        <Navbar projectId={params.projectId} allKeywords={allKeywords} projectAutoReplyLimit={projectAutoReplyLimit!}
          repliesCreatedThisMonth={repliesCreatedThisMonth} repliesCreatedToday={repliesCreatedToday} subscriptionPlan={subscriptionPlan}/>
         {children}
         </main>

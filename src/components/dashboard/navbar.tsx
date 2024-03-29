@@ -15,6 +15,7 @@ import { Button } from "../ui/button"
 import { useAutoRedditReply } from "@/hooks/use-auto-reddit-reply"
 import { checkPlanReplyLimit } from "@/lib/utils"
 import { RedditCampaignType } from "@/lib/db/schema/reddit"
+import { useActiveKeywords } from "@/hooks/use-keywords-available"
 
 interface NavbarProps {
   projectId: string
@@ -28,13 +29,15 @@ interface NavbarProps {
 const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedThisMonth, repliesCreatedToday, subscriptionPlan }: NavbarProps) => {
   
   const { isReplyPossible } = checkPlanReplyLimit({ planName: subscriptionPlan.name!, repliesCreatedThisMonth });
+   const { activeKeywords } = useActiveKeywords()
 
   const { handleAutoReply } = useAutoRedditReply({ repliesCreatedThisMonth, allKeywords, subscriptionPlan, projectAutoReplyLimit, repliesCreatedToday, projectId })
+  
+  
   
   useEffect(() => {
     handleAutoReply();
   }, [repliesCreatedToday, projectAutoReplyLimit, subscriptionPlan]);
-  
 
   return (
     <nav className="hidden sm:flex w-full h-[60px] dark:bg-[#363636] bg-[#f6f6f6]">
@@ -46,7 +49,7 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
           <SparklesIcon className="w-4 h-4 ml-2"/>
         </Button>
       </div>
-        {projectAutoReplyLimit?.autoReply && allKeywords.length < 5 && isReplyPossible && (
+        {projectAutoReplyLimit?.autoReply && activeKeywords.length < 5 && isReplyPossible && (
           <div className="mr-6">
             <ColoredText variant="alert" icon={AlertTriangleIcon}>
               You need at least 5 active keywords in order to use the auto-reply functionality. This way AI will have more posts to reply to.

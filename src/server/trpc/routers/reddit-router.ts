@@ -145,11 +145,11 @@ export const redditRouter = router({
                   role: 'system',
                   content: 'You are a helpful AI embedded in a keyword generator app' +
                   'AI can ONLY answer with keywords, NEVER reply with a non list of keywords or a message besides the keywords' + 
-                  'Always generate a list of keywords' 
+                  'Always generate a list of UNIQUE keywords' 
               },
               {
                   role: 'user',
-                  content: `Generate a list of 10 RELEVANT and unique keywords based on '${description}'`
+                  content: `Generate a list of 10 RELEVANT and UNIQUE keywords based on '${description}'`
               }
           ]
       })
@@ -463,13 +463,10 @@ export const redditRouter = router({
 
       // Replies created today
       const repliesCreatedToday = repliesCreatedThisMonth.filter(reply => isToday(reply.createdAt));
-      // console.log(repliesCreatedToday)
 
       if (repliesCreatedToday.length >= project.autoReplyLimit) {
         throw new TRPCError({ message: 'Reply limit reached for today.', code: 'TOO_MANY_REQUESTS' })
       }
-
-      // console.log(repliesCreatedThisMonth)
 
       // Plan Limits 
       const { isReplyPossible } = checkPlanReplyLimit({ planName: subscriptionPlan.name!, repliesCreatedThisMonth });
@@ -507,16 +504,7 @@ export const redditRouter = router({
               author: post.author.name,
               createdAt: new Date(post.created_utc * 1000).toLocaleString(),
              }))
-            //  .filter((post) => { 
-            //   // Check if the post ID is not already in the set and has content with enough words
-            //   if (!postIdsSet.has(post.postId) && countWords(post.content) >= 10) {
-            //     // Add the post ID to the set and return true to include the post
-            //     postIdsSet.add(post.postId);
-            //     return true;
-            //   }
-            //   return false;
-            //   });
-        
+       
           // Only add the keyword if there are unique posts with content
             if (formattedPosts.length > 0) {
               latestPosts.push({
@@ -527,13 +515,11 @@ export const redditRouter = router({
           
         
       // Exclude keywords with no posts
-      const filteredLatestPosts = latestPosts
-      // .filter((keyword) => keyword.posts.length > 0);
+      const filteredLatestPosts = latestPosts.filter((keyword) => keyword.posts.length > 0);
      
       // Get a random post from the filteredLatestPosts array with the seed
       const randomIndex = Math.floor(Math.random() * filteredLatestPosts[0].posts.length);
       const randomPost = filteredLatestPosts[0].posts[randomIndex];
-     //  console.log(randomPost.posts[0].content);
 
       // Check if already replied to post
       const alreadyReplied = await db.query.redditReplies.findFirst({
@@ -551,7 +537,8 @@ export const redditRouter = router({
         throw new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
       }
 
-       // Preprocess the text: Remove punctuation and convert to lowercase
+      // try {
+         // Preprocess the text: Remove punctuation and convert to lowercase
        const processedPostContent = randomPost.content.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase();
        const processedProjectDescription = project.description.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase();
    
@@ -562,6 +549,10 @@ export const redditRouter = router({
        if (similarityScore < 0.09) {
         throw new TRPCError({ message: 'Post is not suitable to reply', code: 'FORBIDDEN' })
        }
+      // } catch (error) {
+      //   console.log(`COULD NOT REFINE POST: ${randomPost.content}, ERROR:  ${error}`)
+      //   throw new TRPCError({ message: 'Could not refine post', code: 'INTERNAL_SERVER_ERROR' })
+      // }
 
  
       // OpenAI reponse
