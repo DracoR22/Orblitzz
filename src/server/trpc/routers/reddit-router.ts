@@ -420,7 +420,7 @@ export const redditRouter = router({
       const { projectId, allKeywords } = input
       const { userId } = ctx
 
-      if (allKeywords.length < 5) {
+      if (allKeywords.length < 4) {
           throw new TRPCError({ message: 'Insufficient keywords', code: 'UNPROCESSABLE_CONTENT'}) // Exit the function early if the condition is not met
       }
    

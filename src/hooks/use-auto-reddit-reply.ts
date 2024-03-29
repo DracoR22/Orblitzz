@@ -23,7 +23,7 @@ interface Props {
 export const useAutoRedditReply = ({ repliesCreatedThisMonth, allKeywords, subscriptionPlan, projectAutoReplyLimit, repliesCreatedToday, projectId }: Props) => {
     const [replyLimitReached, setReplyLimitReached] = useState<boolean>(false);
     const { addReply } = useMonthlyReplies()
-
+    //  console.log(`REPLIES THIS MONTH: ${repliesCreatedThisMonth}, ALL KEYWORDS: ${allKeywords}, SUBSCRIPTION PLAN: ${subscriptionPlan} PROJECT AUTO REPLY LIMIT: ${projectAutoReplyLimit}, REPLIES CREATED TODAY: ${repliesCreatedToday}, projectId: ${projectId}`)
     const { mutate: autoReplyMutation } = trpc.reddit.createAutoReply.useMutation({
    
         onSuccess: async ({ newReply }) => {
@@ -57,7 +57,8 @@ export const useAutoRedditReply = ({ repliesCreatedThisMonth, allKeywords, subsc
   
       const handleAutoReply = async () => {
       // Check if activeKeywords.length is less than 5
-       if (allKeywords.length < 5) {
+       if (allKeywords.length < 4) {
+        console.log('Insufficient keywords')
            return; // Exit the function early if the condition is not met
         }
    
@@ -65,6 +66,7 @@ export const useAutoRedditReply = ({ repliesCreatedThisMonth, allKeywords, subsc
          await autoReplyMutation({ projectId, allKeywords });
            console.log('AI replying')
         } else {
+          // console.log('AI NOT replying')
           return
       }
    }; 
