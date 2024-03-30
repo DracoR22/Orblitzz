@@ -16,16 +16,15 @@ import { LampContainer } from "@/components/global/animations/lamp-animation";
 import { TracingBeam } from "@/components/global/animations/tracing-beam-animation";
 import { Spotlight } from "@/components/global/animations/spotlight-animation";
 
-
 const Home = () => {
-
+  
   return (
     <div>
        
       {/* HEADING */}
       <section className="overflow-hidden px-4 sm:px-6 sm:flex sm:flex-col md:justify-start ">
       <Spotlight className="-top-40 left-0 md:left-40 md:-top-20" fill="white"/>
-     <div className="grid lg:grid-cols-2">
+     <div className="flex justify-center items-center gap-x-[100px]">
      <div>
         <TitleSection
          subheading="Orblitzz is an AI that casually mentions your product in social media conversations"
@@ -40,9 +39,9 @@ const Home = () => {
 
       {/* <div className="absolute -top-10 -left-10 h-[500px] w-[300px] blur-3xl bg-blue-500 rounded-full opacity-30"/> */}
          <div className='flow-root my-10'>
-            <div className='glass-container'>
-              <Image src='/landing-page/ai-replies.png' alt='product preview' width={1364} height={866}
-              quality={100} draggable={false} className='rounded-md shadow-2xl'/>
+            <div className='glass-container h-[300px] w-[500px]'>
+              <video src='/showcase/dboard.mp4' autoPlay muted loop controls playsInline
+               draggable={false} className='rounded-md shadow-2xl w-full h-full dark:bg-neutral-900 bg-white'/>
             </div>
          </div>
           </div>

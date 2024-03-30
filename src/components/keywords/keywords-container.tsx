@@ -99,11 +99,6 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
     // Return if user has reached its keyword limit
     if (destination.droppableId === '1' && !isAddedKeywordPossible) return
 
-    if (destination.droppableId === "1") {
-      // console.log("calling auto reply function")
-     handleAutoReply()
-    }
-
     if (type === 'keyword') {
        let newOrderedData = [...orderedData]
 
@@ -159,6 +154,11 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
          // Update keywords global state
          setActiveKeywords(orderedData.filter((o: any) => o.columnId === "1").map((o: any) => o.createdAt) as string[])
       }
+    }
+
+    if (destination.droppableId === "1") {
+      // console.log("calling auto reply function")
+     handleAutoReply()
     }
    }
 

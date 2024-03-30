@@ -25,7 +25,7 @@
     width: 270%;
     height: 270%;
     position: absolute;
-    animation: rotate 6s linear infinite;
+    animation: rotate 8s linear infinite;
   }
 
   .magic::after {
