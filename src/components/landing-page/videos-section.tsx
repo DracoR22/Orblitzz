@@ -13,8 +13,10 @@ const VideosSection = () => {
             <SubTitleSection title="Keep track of all your replies" subheading="Capture your ideas, thoughts, and meeting notes in a structured and organized manner."/>
             <div className='flow-root my-10'>
               <div className="magic h-[666px] w-[1164px] border border-slate-100/20 bg-slate-200 bg-slate-200/10 backdrop-blur-md">
-               <Image src='/landing-page/ai-replies.png' alt='product preview' fill
-                quality={100} draggable={false} className='p-2 shadow-2xl ring-1 z-[999] ring-gray-900/10 h-full object-cover'/>
+              <video src='/showcase/hero-video.mp4' autoPlay muted loop controls playsInline
+               draggable={false} className='rounded-md object-cover shadow-2xl w-full h-full p-2  ring-1 z-[999] ring-gray-900/10'/>
+               {/* <Image src='/landing-page/ai-replies.png' alt='product preview' fill
+                quality={100} draggable={false} className='p-2 shadow-2xl ring-1 z-[999] ring-gray-900/10 h-full object-cover'/> */}
               </div>
             </div>
             <Button className="text-white font-medium text-md flex items-center gap-x-2">
