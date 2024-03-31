@@ -17,7 +17,7 @@ const ExplanationSection = () => {
     <section >
     
 
-        <div className="grid lg:grid-cols-2 mx-[90px]">
+        <div className="grid lg:grid-cols-2 md:mx-[90px]">
         <div className='flow-root my-10'>
 
             <CardContainer>
@@ -35,18 +35,18 @@ const ExplanationSection = () => {
            <div className="lg:ml-10">
            
            <h3 className={cn("text-3xl font-bold z-[999] text-white ", poppins.className)}>Get more customers</h3>
-        <div className="mt-10">
+        <div className="mt-10 mb-[100px] md:mb-0">
       
-          <p className="flex items-center gap-x-2 mb-2">
+          <p className="flex text-sm md:text-base items-center gap-x-2 mb-2">
            <Check className="w-5 h-5 text-green-500"/> Find the posts that best matches your product niche
           </p>
-          <p className="flex items-center gap-x-1 mb-2">
+          <p className="flex text-sm md:text-base items-center gap-x-2 mb-2">
            <Check className="w-5 h-5 text-green-500"/> Customizable AI tone and personality
           </p>
-          <p className="flex items-center gap-x-1 mb-2">
+          <p className="flex text-sm md:text-base items-center gap-x-2 mb-2">
            <Check className="w-5 h-5 text-green-500"/> AI always recommend your product subtly
           </p>
-          <p className="flex items-center gap-x-1 mb-2">
+          <p className="flex text-sm md:text-base items-center gap-x-2 mb-2">
            <Check className="w-5 h-5 text-green-500"/> Automatic replies! No need to move a single finger
           </p>
         </div>
@@ -59,23 +59,23 @@ const ExplanationSection = () => {
       
       {/* GRID SECTION  2*/}
       <section className="">
-        <div className="grid lg:grid-cols-2 mx-[90px]">
+        <div className="grid lg:grid-cols-2 md:mx-[90px]">
           <div className="flex items-center justify-center flex-col ">
            <div>
            <h3 className="text-3xl font-bold ">How it works?</h3>
            <p className="text-muted-foreground mt-2">It only takes 1 minute of your time.</p>
 
            <div className="mt-10 ">
-             <p className="flex items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
+             <p className="flex text-sm md:text-base items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
               <StepForwardIcon className="w-5 h-5 text-blue-500"/> Create a <span className="font-semibold">FREE</span>  account
              </p>
-             <p className="flex items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
+             <p className="flex text-sm md:text-base items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
              <StepForwardIcon className="w-5 h-5 text-blue-500"/> Type your product name and a <span className="font-semibold">simple description</span> 
              </p>
-             <p className="flex items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
+             <p className="flex text-sm md:text-base items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
              <StepForwardIcon className="w-5 h-5 text-blue-500"/> AI will generate some keywords based on your <br /> product description
              </p>
-             <p className="flex items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
+             <p className="flex text-sm md:text-base items-center gap-x-2 mb-3 border border-neutral-700 rounded-lg p-4">
              <StepForwardIcon className="w-5 h-5 text-blue-500"/> Now you can either allow AI to automatically reply <br /> to posts or you can choose which posts it can reply to.
              </p>
            </div>
