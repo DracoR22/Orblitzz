@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 
-const BillingPage = async () => {
+const BillingPage = async ({ params }: { params: { projectId: string }}) => {
 
   const currentPlan = await getUserSubscriptionPlan()
 
@@ -20,7 +20,7 @@ const BillingPage = async () => {
     </div>
     {/* BILLING */}
     <div className="flex justify-center dark:bg-neutral-800 bg-neutral-100 mx-10 rounded-md py-6 px-6">
-      <PricingCards isDashboard={true}/>
+      <PricingCards isDashboard={true} projectId={params.projectId}/>
     </div>
     </ScrollArea>
   </>
