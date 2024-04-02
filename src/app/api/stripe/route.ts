@@ -6,11 +6,13 @@ import { absoluteUrl } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-const dashboardUrl = absoluteUrl(`/dashboard`);
+const dashboardUrl = absoluteUrl(`/`);
 
 export async function POST(req: Request) {
    try {
-    const { priceId } = await req.json()
+    const { priceId, projectId } = await req.json()
+
+    const dashboardUrl = absoluteUrl(`/dashboard/${projectId}/billing`);
 
     const user = await currentUser()
 

@@ -12,6 +12,26 @@ export const PLANS = [
           production: '',
         },
       },
+      features: [
+        {
+          text: '2 AI replies per month',
+        },
+        {
+          text: 'Automatic replies',
+        },
+        {
+          text: 'Up to 5 keywords',
+        },
+        {
+          text: 'Unlimited AI post editor',
+        },
+        {
+          text: '1 project',
+        },
+        {
+          text: 'Priority support',
+        },
+      ],
     },
     {
       name: 'Starter',
@@ -26,6 +46,26 @@ export const PLANS = [
           production: '',
         },
       },
+      features: [
+        {
+          text: '20 AI replies per month',
+        },
+        {
+          text: 'Automatic replies',
+        },
+        {
+          text: 'Up to 5 keywords',
+        },
+        {
+          text: 'Unlimited AI post editor',
+        },
+        {
+          text: '1 project',
+        },
+        {
+          text: 'Priority support',
+        },
+      ],
     },
     {
       name: 'Pro',
@@ -40,5 +80,25 @@ export const PLANS = [
           production: '',
         },
       },
+      features: [
+        {
+          text: '100 AI replies per month',
+        },
+        {
+          text: 'Automatic replies',
+        },
+        {
+          text: 'Up to 10 keywords',
+        },
+        {
+          text: 'Unlimited AI post editor',
+        },
+        {
+          text: '1 project',
+        },
+        {
+          text: 'Priority support',
+        },
+      ],
     },
   ]
