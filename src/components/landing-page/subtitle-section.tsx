@@ -24,7 +24,7 @@ const SubTitleSection = ({ title, subheading, pill }: SubTitleSectionProps) => {
            )}
            {subheading ? (
             <>
-              <h2 className={cn("text-left text-3xl sm:text-5xl sm:max-w-[750px] md:text-center font-bold", poppins.className)}>
+              <h2 className={cn("text-left text-3xl sm:text-5xl sm:max-w-[800px] md:text-center font-bold", poppins.className)}>
                  {title}
               </h2>
               <p className="text-muted-foreground sm:max-w-[450px] md:text-center">

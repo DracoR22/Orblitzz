@@ -67,10 +67,10 @@ export const LampContainer = ({
           }}
           className="absolute inset-auto left-1/2 h-56 w-[30rem] bg-gradient-conic from-transparent via-transparent to-blue-500 text-white [--conic-position:from_290deg_at_center_top]"
         >
-          <div className="absolute  w-40 h-[100%] right-0 bg-[#1e1e1e]  bottom-0 z-20 [mask-image:linear-gradient(to_left,white,transparent)]" />
+          <div className="absolute  w-40 h-[100%] right-0 bg-[#1e1e1e] bottom-0 z-20 [mask-image:linear-gradient(to_left,white,transparent)]" />
           <div className="absolute  w-[100%] right-0 bg-[#1e1e1e] h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
         </motion.div>
-        <div className="absolute top-1/2 h-48 w-full translate-y-12 scale-x-150 bg-[#1e1e1e] blur-2xl"></div>
+        <div className="absolute top-1/2 h-2 w-full translate-y-12 scale-x-150 bg-[#1e1e1e] blur-2xl"></div>
         <div className="absolute top-1/2 z-50 h-48 w-full bg-transparent opacity-10 backdrop-blur-md"></div>
         <div className="absolute inset-auto z-50 h-36 w-[28rem] -translate-y-1/2 rounded-full bg-[#1e1e1e] opacity-50 blur-3xl"></div>
         <motion.div

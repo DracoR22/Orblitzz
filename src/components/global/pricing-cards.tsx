@@ -4,6 +4,7 @@ import { PLANS } from "@/lib/stripe/plans"
 import { cn } from "@/lib/utils"
 import { Check } from "lucide-react"
 import { Button } from "../ui/button"
+import Link from "next/link"
 
 interface PricingCardProps {
     isDashboard?: boolean
@@ -96,7 +97,7 @@ const PricingCards = ({ isDashboard }: PricingCardProps) => {
         }
         return (
             <div key={i} className={cn("relative rounded-2xl bg-white dark:bg-[#1e1e1e] shadow-2xl" ,{
-                "border-[4px] border-blue-500 shadow-blue-300": item.plan === "Pro",
+                "border-[2px] border-blue-500 shadow-blue-300": item.plan === "Pro",
                 "border border-gray-200 dark:border-neutral-700": item.plan !== "Pro"
               })}>
                 {item.plan === "Pro" && (
@@ -106,19 +107,25 @@ const PricingCards = ({ isDashboard }: PricingCardProps) => {
                   )}
 
                  <div className="p-5">
-                    <h3 className="my-3 text-center font-display text-3xl font-bold">
+                    <h3 className="my-3 text-center font-display text-sm font-medium border p-1 rounded-md">
                       {item.plan}
                     </h3>
-                    <p className="text-gray-500">{item.tagline}</p>
-                    <p className="my-5 font-display text-6xl font-semibold">${price}</p>
-                    <p className="text-gray-500">per month</p>
+                    {/* <p className="text-gray-500">{item.tagline}</p> */}
+                    <h4 className="mt-10 font-display text-5xl font-semibold flex justify-center">${price}</h4>
+                    <p className="text-gray-500 flex justify-center text-sm mt-5">per month</p>
+
+                    <Button asChild variant={'outline'} className="w-full dark:bg-[#242424] bg-[#fafafa] mt-4 dark:hover:bg-[#1e1e1e] hover:bg-white">
+                      <Link href={`/login?plan=${item.plan}`}>
+                         Select {item.plan}
+                      </Link>
+                    </Button>
                   </div>
 
-                  <ul className="my-4 space-y-5 px-8">
+                  <ul className="my-4 space-y-5 px-8 mb-14">
                      {item.features.map(({text }) => (
                       <li key={text} className="flex space-x-5">
-                         <div className="flex-shrink-0">
-                            <Check className="h-6 w-6 text-green-500"/>
+                         <div className="dark:bg-[#242424] bg-[#fafafa] p-2 rounded-full">
+                            <Check className="h-5 w-5 text-green-500"/>
                          </div>
                       
                           <div className="flex items-center space-x-1">
@@ -130,14 +137,7 @@ const PricingCards = ({ isDashboard }: PricingCardProps) => {
                      ))}
                   </ul>
 
-                  <div className="border-t border-gray-200 dark:border-neutral-700"/>
-
-                  {/* UPGRADE BUTTON */}
-                 <div className="mx-2 my-4">
-                 <Button className="text-white w-full">
-                    Upgrade
-                  </Button>
-                 </div>
+                  
             </div>
         )
       })}

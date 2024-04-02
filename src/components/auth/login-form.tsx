@@ -1,21 +1,23 @@
 'use client'
 
+import { cn } from "@/lib/utils"
 import { signIn } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
+import { poppins } from "../fonts/fonts"
 
 const LoginForm = () => {
   return (
       <div className="w-full sm:justify-center sm:w-[400px] space-y-6 flex flex-col">
         <Link href={'/'} className="w-full flex justify-start items-center">
-          {/* TODO: Add Logo */}
-           LOGO  
-           <span className="font-semibold dark:text-white text-2xl ml-2">
-              Orblitzz.
-           </span>
+        <Image draggable="false" quality={100} src="/logo-bg.png" height={55} width={55} alt="Logo" className="rounded-full object-cover"/>
+         <p className={cn("font-semibold text-2xl transition ml-2", poppins.className)}>
+           Orblitzz
+         </p>
         </Link>
         <span className="text-foreground/60">
-           brand description
+          {/* TODO: Do this shit */}
+           ggrg4544g
         </span>
 
         <div>
