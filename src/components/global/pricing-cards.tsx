@@ -114,11 +114,20 @@ const PricingCards = ({ isDashboard }: PricingCardProps) => {
                     <h4 className="mt-10 font-display text-5xl font-semibold flex justify-center">${price}</h4>
                     <p className="text-gray-500 flex justify-center text-sm mt-5">per month</p>
 
-                    <Button asChild variant={'outline'} className="w-full dark:bg-[#242424] bg-[#fafafa] mt-4 dark:hover:bg-[#1e1e1e] hover:bg-white">
+                    {isDashboard ? (
+                      <Button asChild variant={'outline'} className="w-full dark:bg-[#242424] bg-[#fafafa] mt-4 dark:hover:bg-[#1e1e1e] hover:bg-white">
                       <Link href={`/login?plan=${item.plan}`}>
                          Select {item.plan}
                       </Link>
                     </Button>
+                    ) : (
+                      // TODO: Change this to call the actual stripe session
+                      <Button asChild variant={'outline'} className="w-full dark:bg-[#242424] bg-[#fafafa] mt-4 dark:hover:bg-[#1e1e1e] hover:bg-white">
+                      <Link href={`/login?plan=${item.plan}`}>
+                         Select {item.plan}
+                      </Link>
+                    </Button>
+                    )}
                   </div>
 
                   <ul className="my-4 space-y-5 px-8 mb-14">
