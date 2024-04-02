@@ -85,7 +85,7 @@ const Navbar = () => {
                           
                         </div>
                           <p className="text-sm text-muted-foreground mt-3">
-                            It only takes one minute!
+                            It only takes a minute!
                           </p>
 
                           <div className="flex items-center gap-x-3 mt-4">
