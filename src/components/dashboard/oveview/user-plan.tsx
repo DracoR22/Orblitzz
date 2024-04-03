@@ -13,6 +13,9 @@ interface UserPlanProps {
 }
 
 const UserPlan = ({ subscriptionPlan, replies }: UserPlanProps) => {
+
+  const percentage = replies / (subscriptionPlan.repliesPerMonth as number || 3) * 100
+
   return (
     <Card>
         <CardHeader className="w-full">
@@ -29,11 +32,11 @@ const UserPlan = ({ subscriptionPlan, replies }: UserPlanProps) => {
         <CardContent>
             <Button variant={'outline'} className="bg-transparent flex items-center gap-x-3">
                {subscriptionPlan.name} Plan
-               <ChevronDownIcon className="w-4 h-4"/>
+               {/* <ChevronDownIcon className="w-4 h-4"/> */}
             </Button>
             <div className="mt-4">
                 <p className="text-xl font-bold">
-                    {(replies / (subscriptionPlan.repliesPerMonth as number || 3)) * 100}% <span className="text-sm text-muted-foreground font-medium ml-3">Plan used</span>
+                    {percentage.toFixed()}% <span className="text-sm text-muted-foreground font-medium ml-3">Plan used</span>
                 </p>
                 <p className="text-muted-foreground text-sm mt-2">{replies} Replies</p>
                 <div className="mt-2">

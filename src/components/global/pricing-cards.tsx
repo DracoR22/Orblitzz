@@ -8,13 +8,15 @@ import Link from "next/link"
 import { useState } from "react"
 import axios from "axios"
 import { toast } from "sonner"
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 
 interface PricingCardProps {
     isDashboard?: boolean
     projectId?: string
+    currentPlan?: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
 }
 
-const PricingCards = ({ isDashboard, projectId }: PricingCardProps) => {
+const PricingCards = ({ isDashboard, projectId, currentPlan }: PricingCardProps) => {
 
   const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
 
@@ -62,17 +64,26 @@ const PricingCards = ({ isDashboard, projectId }: PricingCardProps) => {
                     <h4 className="mt-10 font-display text-5xl font-semibold flex justify-center">${item.price.amount}</h4>
                     <p className="text-gray-500 flex justify-center text-sm mt-5">per month</p>
 
-                    {!isDashboard ? (
+                    {currentPlan && currentPlan.name === item.name && (
+                      <Button onClick={() => onClick(item.price.priceIds.test, i)} variant={'outline'} className="w-full dark:bg-[#242424] bg-[#fafafa] mt-4 dark:hover:bg-[#1e1e1e] hover:bg-white border-blue-500 shadow-blue-500 shadow-sm">
+                       {loadingIndex === i ? <Loader2Icon className="w-5 h-4 animate-spin"/> : `Manage Plan`}
+                     </Button>
+                    )}
+
+                    {isDashboard && currentPlan && currentPlan.name !== item.name && (
+                        <Button onClick={() => onClick(item.price.priceIds.test, i)} variant={'outline'} className="w-full dark:bg-[#242424] bg-[#fafafa] mt-4 dark:hover:bg-[#1e1e1e] hover:bg-white">
+                          {loadingIndex === i ? <Loader2Icon className="w-5 h-4 animate-spin"/> : `Upgrade to ${item.name}`}
+                        </Button>
+                    )}
+
+                    {!isDashboard && (
                       <Button asChild variant={'outline'} className="w-full dark:bg-[#242424] bg-[#fafafa] mt-4 dark:hover:bg-[#1e1e1e] hover:bg-white">
                       <Link href={`/login?plan=${item.name}`}>
                          Select {item.name}
                       </Link>
                     </Button>
-                    ) : (
-                      <Button onClick={() => onClick(item.price.priceIds.test, i)} variant={'outline'} className="w-full dark:bg-[#242424] bg-[#fafafa] mt-4 dark:hover:bg-[#1e1e1e] hover:bg-white">
-                        {loadingIndex === i ? <Loader2Icon className="w-5 h-4 animate-spin"/> : `Upgrade to ${item.name}`}
-                      </Button>
-                    )}
+                    )}  
+                    
                   </div>
 
                   <ul className="my-4 space-y-5 px-8 mb-14">

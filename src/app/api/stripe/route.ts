@@ -40,7 +40,7 @@ export async function POST(req: Request) {
          return_url: dashboardUrl
       })
 
-      return { url: stripeSession.url }
+      return new NextResponse(JSON.stringify({ url: stripeSession.url }))
     }
 
     // If The User Is Not Subscribed
@@ -59,7 +59,8 @@ export async function POST(req: Request) {
         }
       ],
       metadata: {
-        userId: user.id
+        userId: user.id,
+        email: user.email,
       }
     })
 

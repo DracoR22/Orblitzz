@@ -26,7 +26,7 @@ const LastTwoMonthsOverview = ({ data, percentageDifference }: LastTwoMonthsOver
       </div>
      </div>
      <div className="text-xl font-bold mt-1 ">
-      {percentageDifference}%
+      {percentageDifference.toFixed()}%
      </div>
      <div className="text-sm text-muted-foreground font-medium">
       vs last month
