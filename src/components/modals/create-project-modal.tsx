@@ -1,6 +1,6 @@
 'use client'
 
-import { useCreateProjectModal } from "@/hooks/use-create-project-modal"
+import { useCreateProjectModal } from "@/hooks/modals/use-create-project-modal"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
 import DashboardSetup from "../dashboard/dashboard-setup"
 import { ScrollArea } from "../ui/scroll-area"

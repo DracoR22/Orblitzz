@@ -19,12 +19,12 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={cn("hidden z-[99999] bg-transparent fixed top-0 md:flex w-full p-2 transition-all md:px-20 " ,
+      <nav className={cn("hidden z-[99999] bg-transparent fixed top-0 md:flex w-full p-2 pt-2 transition-all md:px-20 " ,
     scrolled && "border-b shadow-sm bg-white/75 dark:bg-[#1e1e1e] dark:bg-opacity-50 backdrop-blur-md")}>
       {/* LOGO */}
        <Link href={'/'} className="hidden md:flex items-center cursor-pointer">
          <Image draggable="false" quality={100} src="/logo-bg.png" height={55} width={55} alt="Logo" className="rounded-full object-cover"/>
-         <p className={cn("font-semibold text-2xl transition ml-2", poppins.className)}>
+         <p className={cn("font-semibold text-2xl transition ml-4", poppins.className)}>
            Orblitzz
          </p>
        </Link>
@@ -35,7 +35,7 @@ const Navbar = () => {
              <NavigationMenu>
                <NavigationMenuList>
                  <NavigationMenuItem>
-                   <NavigationMenuTrigger className="font-semibold">
+                   <NavigationMenuTrigger className="font-semibold bg-none">
                        Features
                    </NavigationMenuTrigger>
                    <NavigationMenuContent className="dark:bg-[#1e1e1e] bg-white">
@@ -94,7 +94,7 @@ const Navbar = () => {
                           
                         </div>
                           <p className="text-sm text-muted-foreground mt-3">
-                            Write posts with AI help <span className="text-xs font-semibold">(Comming Soon)</span>
+                            Write posts with AI help 
                           </p>
                        </div>
                     </div>

@@ -4,7 +4,7 @@ import PricingCards from "@/components/global/pricing-cards";
 import SubTitleSection from "@/components/landing-page/subtitle-section";
 import TitleSection from "@/components/landing-page/title-section"
 import { Button } from "@/components/ui/button";
-import { ArrowRightIcon, Check, ChevronRightIcon, RocketIcon, StepForwardIcon, ZapIcon } from "lucide-react";
+import { ArrowRightIcon, Check, ChevronRightIcon, MoonIcon, RocketIcon, StepForwardIcon, ZapIcon } from "lucide-react";
 import Image from "next/image";
 
 import "@/styles/landing-page-styles.css";
@@ -17,6 +17,7 @@ import { TracingBeam } from "@/components/global/animations/tracing-beam-animati
 import { Spotlight } from "@/components/global/animations/spotlight-animation";
 import { CardContainer, CardItem } from "@/components/global/animations/3d-card-animation";
 import FooterSection from "@/components/landing-page/footer-section";
+import { EvervaultCard, Icon } from "@/components/global/animations/evervault-card-animation";
 
 const Home = () => {
   
@@ -38,14 +39,21 @@ const Home = () => {
 
       <div className="absolute top-[200px] right-[200px] h-[500px] w-[300px] blur-3xl bg-blue-500 rounded-full opacity-30"/>
          <div className='flex my-10 justify-center md:justify-start'>
-          <CardContainer>
-            <div className='glass-container '>
-              <CardItem className="h-[300px] w-[500px]">
-              <Image src='/landing-page/hero.png' fill alt=""
-               draggable={false} className='rounded-md shadow-2xl w-full h-full dark:bg-black bg-white bg-cover'/>
-               </CardItem>
-            </div>
-            </CardContainer>
+         <div className="border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start max-w-[500px] mx-auto p-4 relative h-[330px]">
+      <MoonIcon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
+      <MoonIcon className="absolute h-6 w-6 -bottom-3 -left-3 dark:text-white text-black" />
+      <MoonIcon className="absolute h-6 w-6 -top-3 -right-3 dark:text-white text-black" />
+      <MoonIcon className="absolute h-6 w-6 -bottom-3 -right-3 dark:text-white text-black" />
+ 
+      <EvervaultCard text="AI Replies" />
+ 
+      <h2 className="dark:text-white text-black mt-4 text-sm font-light">
+        We make use of advanced machine learning algorithms to search for the best posts to reply to.
+      </h2>
+      <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
+        Task 100% Automated
+      </p>
+    </div>
          </div>
           </div>
       </section>

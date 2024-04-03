@@ -7,7 +7,7 @@ import { trpc } from "@/server/trpc/client";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ZodError } from "zod";
-import { useMonthlyReplies } from "./use-monthly-replies";
+import { useMonthlyReplies } from "./states/use-monthly-replies";
 import { checkPlanReplyLimit } from "@/lib/utils";
 import { RedditCampaignType } from "@/lib/db/schema/reddit";
 

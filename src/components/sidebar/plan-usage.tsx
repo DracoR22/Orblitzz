@@ -6,8 +6,8 @@ import { Progress } from "../ui/progress"
 import { useParams } from "next/navigation"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { getMonthlyReplies } from "@/server/actions/reddit-actions"
-import { useMonthlyReplies } from "../../hooks/use-monthly-replies"
-import { useActiveKeywords } from "@/hooks/use-keywords-available"
+import { useMonthlyReplies } from "../../hooks/states/use-monthly-replies"
+import { useActiveKeywords } from "@/hooks/states/use-keywords-available"
 import { ZapIcon } from "lucide-react"
 
 interface PlanUsageProps {

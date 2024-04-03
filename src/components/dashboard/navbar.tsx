@@ -15,7 +15,7 @@ import { Button } from "../ui/button"
 import { useAutoRedditReply } from "@/hooks/use-auto-reddit-reply"
 import { checkPlanReplyLimit } from "@/lib/utils"
 import { RedditCampaignType } from "@/lib/db/schema/reddit"
-import { useActiveKeywords } from "@/hooks/use-keywords-available"
+import { useActiveKeywords } from "@/hooks/states/use-keywords-available"
 
 interface NavbarProps {
   projectId: string

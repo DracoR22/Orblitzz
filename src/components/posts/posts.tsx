@@ -2,7 +2,7 @@
 
 import Hint from "@/components/global/hint"
 import { Button } from "@/components/ui/button"
-import { useMonthlyReplies } from "@/hooks/use-monthly-replies"
+import { useMonthlyReplies } from "@/hooks/states/use-monthly-replies"
 import { RedditReplyType } from "@/lib/db/schema/reddit"
 import { getActiveKeywords } from "@/server/actions/keyword-actions"
 import { trpc } from "@/server/trpc/client"

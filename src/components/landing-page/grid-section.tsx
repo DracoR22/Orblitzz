@@ -15,6 +15,7 @@ import {
 } from "@tabler/icons-react";
 
 import { motion } from "framer-motion";
+import { GlowingStarsBackgroundCard } from "../global/animations/glowing-stars-animation"
 
 const GridSection = () => {
   return (
@@ -280,7 +281,7 @@ const SkeletonFour = () => {
         <p className="sm:text-sm text-xs text-center font-semibold text-neutral-500 mt-4">
           Reddit marketing automation
         </p>
-        <p className="border border-red-500 bg-red-100 dark:bg-red-900/20 text-red-600 text-xs rounded-full px-2 py-0.5 mt-4">
+        <p className="border border-blue-500 bg-red-100 dark:bg-blue-900/20 text-blue-600 text-xs rounded-full px-2 py-0.5 mt-4">
           Be more productive
         </p>
       </motion.div>
@@ -344,7 +345,7 @@ const SkeletonFive = () => {
         backgroundSize: "400% 400%",
       }}
     >
-      <motion.div className="h-full w-full rounded-lg"></motion.div>
+    <GlowingStarsBackgroundCard></GlowingStarsBackgroundCard>
     </motion.div>
   );
 };
@@ -395,10 +396,10 @@ const items = [
   },
  
   {
-    title: "AI Powered Text Editor",
+    title: "AI Powered Text Editor (comming soon)",
     description: (
       <span className="text-sm">
-        You can also use a smooth AI text editor to write any social media post
+        You can also our AI text editor to write any social media post
       </span>
     ),
     header: <SkeletonFive />,

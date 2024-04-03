@@ -16,8 +16,7 @@ const LoginForm = () => {
          </p>
         </Link>
         <span className="text-foreground/60">
-          {/* TODO: Do this shit */}
-           ggrg4544g
+           The AI that casually mentions your product in social media conversations
         </span>
 
         <div>
