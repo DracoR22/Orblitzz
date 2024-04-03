@@ -20,7 +20,7 @@ const BillingPage = async ({ params }: { params: { projectId: string }}) => {
     </div>
     {/* BILLING */}
     <div className="flex justify-center dark:bg-neutral-800 bg-neutral-100 mx-10 rounded-md py-6 px-6">
-      <PricingCards isDashboard={true} projectId={params.projectId}/>
+      <PricingCards currentPlan={currentPlan} isDashboard={true} projectId={params.projectId}/>
     </div>
     </ScrollArea>
   </>
