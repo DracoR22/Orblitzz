@@ -10,7 +10,7 @@ import { trpc } from "@/server/trpc/client"
 import { toast } from 'sonner'
 import { ZodError } from 'zod'
 import { KeywordType } from '@/lib/db/schema/keyword'
-import { useActiveKeywords } from '@/hooks/use-keywords-available'
+import { useActiveKeywords } from '@/hooks/states/use-keywords-available'
 import { getUserSubscriptionPlan } from '@/lib/stripe/stripe'
 import { Skeleton } from '../ui/skeleton'
 import { RedditCampaignType } from '@/lib/db/schema/reddit'

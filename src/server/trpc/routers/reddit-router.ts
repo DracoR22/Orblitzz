@@ -119,6 +119,21 @@ export const redditRouter = router({
         const { userId } = ctx
         const { autoReply, description, title, tone, url, image, autoReplyLimit } = input
 
+        const subscriptionPlan = await getUserSubscriptionPlan()
+
+        const userProjects = await db.query.redditCampaigns.findMany({
+          columns: {
+            id: true
+          },
+          where: and(
+            eq(redditCampaigns.userId, userId)
+        )
+        })
+
+        if (subscriptionPlan.name !== 'Pro' &&  userProjects.length >= subscriptionPlan.projects!) {
+           throw new TRPCError({ message: 'Upgrade your plan for creating more projects', code: 'UNAUTHORIZED' })
+        }
+
         const projectId = v4()
 
         // TODO: check for user subscription
@@ -384,7 +399,7 @@ export const redditRouter = router({
           createdAt: redditReplies.id
         })
 
-        // Save reply to database
+        // Return database reply
          return { dbReply }
     }),
 
@@ -424,18 +439,30 @@ export const redditRouter = router({
           throw new TRPCError({ message: 'Insufficient keywords', code: 'UNPROCESSABLE_CONTENT'}) // Exit the function early if the condition is not met
       }
    
-      const userCredentials = {
-        userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
-        clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
-        clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
-        username: process.env.FIRST_REDDIT_USERNAME!,
-        password: process.env.FIRST_REDDIT_PASSWORD!
-      }
+      const userCredentials = [
+        {
+          userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
+          clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
+          clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
+          username: process.env.FIRST_REDDIT_USERNAME!,
+          password: process.env.FIRST_REDDIT_PASSWORD!
+        },
+        {
+          userAgent: process.env.SECOND_REDDIT_USER_AGENT!,
+          clientId: process.env.SECOND_REDDIT_CLIENT_ID!,
+          clientSecret: process.env.SECOND_REDDIT_CLIENT_SECRET!,
+          username: process.env.SECOND_REDDIT_USERNAME!,
+          password: process.env.SECOND_REDDIT_PASSWORD!
+        }
+      ];
 
       const subscriptionPlan = await getUserSubscriptionPlan()
 
+      // Randomly choose between the first and second user
+      const selectedUser = userCredentials[Math.floor(Math.random() * userCredentials.length)];
+
       // Function to count words in a string
-      const countWords = (text: string) => text.split(/\s+/).filter((word) => word.length > 0).length;
+      // const countWords = (text: string) => text.split(/\s+/).filter((word) => word.length > 0).length;
 
       // Get the Reddit project
       const project = await db.query.redditCampaigns.findFirst({
@@ -477,7 +504,13 @@ export const redditRouter = router({
       }
 
       // Create Reddit instance
-      const reddit = createRedditInstance({ clientId: userCredentials.clientId, clientSecret: userCredentials.clientSecret, userAgent: userCredentials.userAgent, username: userCredentials.username, password: userCredentials.password })
+      const reddit = createRedditInstance({
+         clientId: selectedUser.clientId,
+         clientSecret: selectedUser.clientSecret,
+         userAgent: selectedUser.userAgent,
+         username: selectedUser.username,
+         password: selectedUser.password 
+      })
 
       // Array of latest posts
       const latestPosts = [];
@@ -558,81 +591,82 @@ export const redditRouter = router({
       // OpenAI reponse
  
       // const response = await replyOutput({ 
-      //   postContent: randomPost.posts[0].content,
+      //   postContent: randomPost.content,
       //   projectDescription: project.description,
       //   projectTitle: project.title,
       //   projectUrl: project.url,
       //   projectTone: project.tone
       // })
 
-    //   const response = await openai.createChatCompletion({
-    //     model: 'gpt-3.5-turbo',
-    //     messages: [
-    //         {
-    //             role: 'system',
-    //             content: `You are a ${project.tone} Reddit user. You are actively involved
-    //              in diverse communities, providing helpful and insightful responses.
-    //              Incorporate mentions of a specific product, [${project.title}](${project.url}), into your
-    //              replies. Here's a brief description of the product: ${project.description}.
-    //              Your objective is to share valuable information while subtly promoting
-    //              this product.`,
-    //         },
-    //         {
-    //             role: 'user',
-    //             content: `You come across this Reddit post: ${randomPost.posts[0].content}. 
-    //             Respond to it as you typically would, providing relevant and insightful
-    //             information. Also, feel free to incorporate your thoughts on different aspects
-    //             and mention [${project.title}](${project.url}) if it fits naturally.`
-    //         }
-    //     ]
-    // });
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: [
+            {
+                role: 'system',
+                content: `You are a ${project.tone} Reddit user. You are actively involved
+                 in diverse communities, providing helpful and insightful responses.
+                 Incorporate mentions of a specific product, [${project.title}](${project.url}), into your
+                 replies. Here's a brief description of the product: ${project.description}.
+                 Your objective is to share valuable information while subtly promoting
+                 this product.`,
+            },
+            {
+                role: 'user',
+                content: `You come across this Reddit post: ${randomPost.content}. 
+                Respond to it as you typically would, providing relevant and insightful
+                information. Also, feel free to incorporate your thoughts on different aspects
+                and mention [${project.title}](${project.url}) if it fits naturally.`
+            }
+        ]
+    });
     
-    // if (!response) {
-    //   return new TRPCError({ message: 'No Openai response', code: 'BAD_REQUEST' })
-    // }
+    if (!response) {
+      throw new TRPCError({ message: 'No Openai response', code: 'BAD_REQUEST' })
+    }
 
     // // Check if the response status is 429 (Rate limit exceeded)
-    // if (response.status === 429) {
-    //   return new TRPCError({ message: 'OpenAI rate limit exceeded', code: 'TOO_MANY_REQUESTS' });
-    // }
+    if (response.status === 429) {
+      throw new TRPCError({ message: 'OpenAI rate limit exceeded', code: 'TOO_MANY_REQUESTS' });
+    }
 
-    // const responseData = (await response.json() as ResponseTypes["createChatCompletion"])
-    // const cleanedAiResponse = responseData.choices[0].message?.content
+    const responseData = (await response.json() as ResponseTypes["createChatCompletion"])
+    const cleanedAiResponse = responseData.choices[0].message?.content
 
-    // if (!cleanedAiResponse) {
-    //    return new TRPCError({ message: 'Could not clean the AI response', code: 'BAD_REQUEST' })
-    // }
+    if (!cleanedAiResponse) {
+       throw new TRPCError({ message: 'Could not clean the AI response', code: 'BAD_REQUEST' })
+    }
 
     // Get the post to reply
-    // const post = reddit.getSubmission(randomPost.posts[0].postId)
+    const post = reddit.getSubmission(randomPost.postId)
 
-    // if (!post) {
-    //   return new TRPCError({ message: 'Could not find the post to reply', code: 'BAD_REQUEST' })
-    // }
+    if (!post) {
+      throw new TRPCError({ message: 'Could not find the post to reply', code: 'BAD_REQUEST' })
+    }
 
     // console.log(cleanedAiResponse)
 
     // Reply to the post
-    // const redditReply = post.reply(cleanedAiResponse)
+    const redditReply = post.reply(cleanedAiResponse)
 
-    //   if (!redditReply) {
-    //       return new TRPCError({ message: 'Could not reply to post', code: 'BAD_REQUEST' })
-    //   }
+    if (!redditReply) {
+       throw new TRPCError({ message: 'Could not reply to post', code: 'BAD_REQUEST' })
+    }
 
     //   // Extract the first 100 letters of the cleanedAiResponse
-    //    const limitedReply = cleanedAiResponse.slice(0, 100);
+       const limitedReply = cleanedAiResponse.slice(0, 100);
 
      // Save reply into database
      const newReply = await db.insert(redditReplies).values({
-          projectId,
-          title: 'test',
-          postAuthor: 'test',
-          postId: randomPost.postId,
-          postUrl: 'test',
-          reply: randomPost.content
-      }).returning({
-        createdAt: redditReplies.id
-      })
+      projectId,
+      title: randomPost.title,
+      postAuthor: randomPost.author,
+      postId: randomPost.postId,
+      postUrl: randomPost.url,
+      reply: limitedReply
+    }).returning({
+      createdAt: redditReplies.id
+     })
+
 
       // Save reply to database
        return { newReply }

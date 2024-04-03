@@ -5,10 +5,32 @@ import { Separator } from "@/components/ui/separator"
 import { db } from "@/lib/db"
 import { keywords } from "@/lib/db/schema/keyword"
 import { redditReplies } from "@/lib/db/schema/reddit"
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
+import { checkPlanReplyLimit } from "@/lib/utils"
 import { getActiveKeywords } from "@/server/actions/keyword-actions"
+import { getMonthlyReplies } from "@/server/actions/reddit-actions"
 import { and, eq } from "drizzle-orm"
 
 const PostsPage = async ({ params }: { params: { projectId: string }}) => {
+
+    const userSubscription = await getUserSubscriptionPlan()
+
+    if (!userSubscription.name) {
+      return null
+    }
+
+    const repliesCreatedThisMonth = await getMonthlyReplies(params.projectId)
+
+    const { isReplyPossible } = checkPlanReplyLimit({ planName: userSubscription.name, repliesCreatedThisMonth })
+
+    // TODO: Check if this works
+    if (!isReplyPossible) {
+      return (
+        <div>
+          Plan limit exceeded
+        </div>
+      )
+    }
 
     // Check if already replied to the same post
     const alreadyReplied = await db.query.redditReplies.findMany({

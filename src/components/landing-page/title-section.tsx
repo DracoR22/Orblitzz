@@ -25,7 +25,7 @@ const TitleSection = ({ subheading, pill }: TitleSectionProps) => {
           
            {subheading ? (
             <>
-              <h2 className={cn("text-left text-3xl sm:text-5xl sm:max-w-[500px] md:text-left font-bold md:mb-4 z-[999]", poppins.className)}>
+              <h2 className={cn("text-left text-3xl sm:text-5xl sm:max-w-[500px] md:text-left font-extrabold md:mb-4 z-[999]", poppins.className)}>
               Get <span className="text-blue-500">more people </span>to know your product
               </h2>
              <div className="">

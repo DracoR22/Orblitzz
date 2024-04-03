@@ -3,6 +3,7 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { PLANS } from "./stripe/plans"
 import { CheckPlanKeywordsLimitProps, CheckPlanLimitProps } from "@/types/types"
+import { Metadata } from "next"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -10,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function absoluteUrl(path: string) {
   if (typeof window !== "undefined") return path
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}${path}`
+  if (process.env.VERCEL_URL) return `https://orblitzz.com${path}`
   return `http://localhost:${process.env.PORT ?? 3000}${path}`
 }
 
@@ -113,3 +114,55 @@ export const calculateCosineSimilarity = (text1: string, text2: string): number 
 
   return cosineSimilarity(vector1, vector2);
 };
+
+type IconDescriptor = {
+  href: string;
+  sizes: string;
+  type: string;
+};
+
+export function constructMetadata({
+  title = "The AI that promotes your product online - Orblitzz",
+  description = "Orblitzz is an AI platform that increases product visibility through automated replies in social media conversations.",
+  image = "/showcase/thumbnail.png",
+  icons = "/favicon.ico",
+  noIndex = false,
+  keywords = "AI, Startups, Marketing, Visibility, Automation"
+}: {
+  title?: string
+  description?: string
+  image?: string
+  icons?: string
+  noIndex?: boolean
+  keywords?: string
+} = {}): Metadata {
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: image
+        }
+      ]
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+      creator: "@draco"
+    },
+    icons,
+    metadataBase: new URL('https://orblitzz.com'),
+    ...(noIndex && {
+      robots: {
+        index: true,
+        follow: true
+      }
+    })
+  }
+}

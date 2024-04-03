@@ -13,5 +13,5 @@ export const sendSubscriptionReceiptEmail = async ({ userEmail }: { userEmail: s
         }),
       });
 
-      return null
+    return null
 }

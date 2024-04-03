@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { cn } from "@/lib/utils"
 import Hint from "../global/hint"
 import { Button } from "../ui/button";
-import { useCreateProjectModal } from "@/hooks/use-create-project-modal";
+import { useCreateProjectModal } from "@/hooks/modals/use-create-project-modal";
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe";
 import { RedditCampaignType } from "@/lib/db/schema/reddit";
 import { Label } from "../ui/label";
