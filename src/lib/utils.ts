@@ -115,12 +115,6 @@ export const calculateCosineSimilarity = (text1: string, text2: string): number 
   return cosineSimilarity(vector1, vector2);
 };
 
-type IconDescriptor = {
-  href: string;
-  sizes: string;
-  type: string;
-};
-
 export function constructMetadata({
   title = "The AI that promotes your product online - Orblitzz",
   description = "Orblitzz is an AI platform that increases product visibility through automated replies in social media conversations.",
