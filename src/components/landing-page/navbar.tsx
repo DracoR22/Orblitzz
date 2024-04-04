@@ -19,8 +19,8 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={cn("hidden z-[99999] bg-transparent fixed top-0 md:flex w-full p-2 pt-2 transition-all md:px-20 " ,
-    scrolled && "border-b shadow-sm bg-white/75 dark:bg-[#1e1e1e] dark:bg-opacity-50 backdrop-blur-md")}>
+      <nav className={cn("hidden z-[99999] bg-transparent fixed top-0 md:flex w-full p-2 pt-2 transition-all md:px-20 border-b" ,
+    scrolled && "border-b shadow-sm bg-white/75 dark:bg-transparent dark:bg-opacity-50 backdrop-blur-md")}>
       {/* LOGO */}
        <Link href={'/'} className="hidden md:flex items-center cursor-pointer">
          <Image draggable="false" quality={100} src="/logo-bg.png" height={55} width={55} alt="Logo" className="rounded-full object-cover"/>
