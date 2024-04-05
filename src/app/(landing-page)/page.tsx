@@ -29,7 +29,7 @@ const Home = () => {
        <div className="flex flex-col lg:flex-row lg:justify-center lg:items-center lg:gap-x-[100px]">
        <div className="mb-[100px] md:mb-0">
         <TitleSection
-         subheading="Orblitzz is an AI that casually mentions your product in social media conversations"
+         subheading="Made by rdraco039@gmail.com (draco R)"
          pill="🦨 How many people know your product?"/>
         <Button className="w-[200px] text-white bg-blue-500 clear-start mt-5 flex items-center gap-x-2">
          <RocketIcon/>
