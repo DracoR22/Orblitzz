@@ -7,6 +7,7 @@ const LoginPage = async () => {
   return (
     <div className="w-full flex sm:justify-center items-center h-full">
       {/* <LoginForm/> */}
+      <p>Login is disabled until official launch</p>
     </div>
   )
 }

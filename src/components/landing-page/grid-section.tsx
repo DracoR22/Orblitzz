@@ -396,7 +396,7 @@ const items = [
   },
  
   {
-    title: "AI Powered Text Editor (comming soon)",
+    title: "AI Powered Text Editor (coming soon)",
     description: (
       <span className="text-sm">
         You can also our AI text editor to write any social media post
