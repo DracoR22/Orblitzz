@@ -78,6 +78,7 @@ export const redditReplies = pgTable("redditReplies", {
   postAuthor: text("postAuthor"),
   reply: text("reply"),
   postUrl: text("postUrl"),
+  accountClientId: text("accountClientId"),
 
   createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 

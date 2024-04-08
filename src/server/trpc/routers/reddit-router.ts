@@ -1,4 +1,4 @@
-import { createRedditInstance } from "@/lib/reddit/reddit";
+import { createRedditInstance, userCredentials } from "@/lib/reddit/reddit";
 import { privateProcedure, publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { Submission } from "snoowrap";
@@ -21,26 +21,19 @@ export const redditRouter = router({
 //--------------------------------------------------------//GET POSTS ON KEYWORDS//---------------------------------------------------------//
     getSubredditsAndPosts: privateProcedure.input(GetPostsSchema).query(async({ input }) => {
 
-        const { allKeywords } = input
-
-        const userCredentials = [
-          {
-            userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
-            clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
-            clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
-            username: process.env.FIRST_REDDIT_USERNAME!,
-            password: process.env.FIRST_REDDIT_PASSWORD!
-          },
-          {
-            userAgent: process.env.SECOND_REDDIT_USER_AGENT!,
-            clientId: process.env.SECOND_REDDIT_CLIENT_ID!,
-            clientSecret: process.env.SECOND_REDDIT_CLIENT_SECRET!,
-            username: process.env.SECOND_REDDIT_USERNAME!,
-            password: process.env.SECOND_REDDIT_PASSWORD!
-          }
-        ];
+        const { allKeywords, projectId } = input
         
         const subscriptionPlan = await getUserSubscriptionPlan();
+
+        if (!subscriptionPlan.repliesPerMonth) {
+          throw new TRPCError({ message: 'No plan provided', code: 'UNAUTHORIZED' })
+        }
+
+        const monthlyReplies = await getMonthlyReplies(projectId)
+
+        if (monthlyReplies.length >= subscriptionPlan.repliesPerMonth) {
+          throw new TRPCError({ message: 'Monthly reply limit reached', code: 'UNAUTHORIZED' })
+        }
         
         // Randomly choose between the first and second user
         const selectedUser = userCredentials[Math.floor(Math.random() * userCredentials.length)];
@@ -274,13 +267,8 @@ export const redditRouter = router({
         const { postId, projectId, postContent, postAuthor, postUrl, postTitle } = input
         const { userId } = ctx
 
-        const userCredentials = {
-          userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
-          clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
-          clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
-          username: process.env.FIRST_REDDIT_USERNAME!,
-          password: process.env.FIRST_REDDIT_PASSWORD!
-       }
+       // Randomly choose between the first and second user
+       const selectedUser = userCredentials[Math.floor(Math.random() * userCredentials.length)];
 
        const subscriptionPlan = await getUserSubscriptionPlan()
 
@@ -333,7 +321,12 @@ export const redditRouter = router({
         }
 
         // Create Reddit instance
-        const reddit = createRedditInstance({ clientId: userCredentials.clientId, clientSecret: userCredentials.clientSecret, userAgent: userCredentials.userAgent, username: userCredentials.username, password: userCredentials.password })
+        const reddit = createRedditInstance({ 
+          clientId: selectedUser.clientId,
+          clientSecret: selectedUser.clientSecret,
+          userAgent: selectedUser.userAgent,
+          username: selectedUser.username,
+          password: selectedUser.password })
 
         // OpenAI reponse
         const response = await openai.createChatCompletion({
@@ -394,7 +387,8 @@ export const redditRouter = router({
             postAuthor: postAuthor,
             postId,
             postUrl: postUrl,
-            reply: limitedReply
+            reply: limitedReply,
+            accountClientId: selectedUser.clientId
         }).returning({
           createdAt: redditReplies.id
         })
@@ -439,23 +433,6 @@ export const redditRouter = router({
           throw new TRPCError({ message: 'Insufficient keywords', code: 'UNPROCESSABLE_CONTENT'}) // Exit the function early if the condition is not met
       }
    
-      const userCredentials = [
-        {
-          userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
-          clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
-          clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
-          username: process.env.FIRST_REDDIT_USERNAME!,
-          password: process.env.FIRST_REDDIT_PASSWORD!
-        },
-        {
-          userAgent: process.env.SECOND_REDDIT_USER_AGENT!,
-          clientId: process.env.SECOND_REDDIT_CLIENT_ID!,
-          clientSecret: process.env.SECOND_REDDIT_CLIENT_SECRET!,
-          username: process.env.SECOND_REDDIT_USERNAME!,
-          password: process.env.SECOND_REDDIT_PASSWORD!
-        }
-      ];
-
       const subscriptionPlan = await getUserSubscriptionPlan()
 
       // Randomly choose between the first and second user
@@ -558,16 +535,23 @@ export const redditRouter = router({
       const alreadyReplied = await db.query.redditReplies.findFirst({
         columns: {
           postId: true,
-          createdAt: true
+          createdAt: true,
+          projectId: true,
+          accountClientId: true
         },
         where: and(
             eq(redditReplies.postId, randomPost.postId),
-            eq(redditReplies.projectId, projectId)
+            // eq(redditReplies.projectId, projectId)
         )
       })
 
-      if (alreadyReplied) {
+      // TODO
+      if (alreadyReplied && alreadyReplied.projectId === projectId) {
         throw new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
+      }
+
+      if (alreadyReplied && alreadyReplied.accountClientId === selectedUser.clientId) {
+        throw new TRPCError({ message: 'This account already replied to this post', code: 'FORBIDDEN' })
       }
 
       // try {
@@ -662,7 +646,8 @@ export const redditRouter = router({
       postAuthor: randomPost.author,
       postId: randomPost.postId,
       postUrl: randomPost.url,
-      reply: ''
+      reply: '',
+      accountClientId: selectedUser.clientId
     }).returning({
       createdAt: redditReplies.id
      })

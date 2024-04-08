@@ -105,8 +105,9 @@ const Navbar = () => {
           </div>
 
           <div>
-             <Button variant='ghost' className="font-semibold" onClick={() => router.push('/log-in')}>
-               How it Works?
+             <Button asChild variant='ghost' className="font-semibold">
+               <Link href={'#explanation'}>
+               </Link>
              </Button>
           </div>
 

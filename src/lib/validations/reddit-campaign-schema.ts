@@ -37,4 +37,5 @@ export const CreateAutoReplySchema = z.object({
 
 export const GetPostsSchema = z.object({
     allKeywords: z.array(z.string()),
+    projectId: z.string().min(1, { message: 'ProjectId is required' }),
 })

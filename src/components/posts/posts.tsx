@@ -36,7 +36,7 @@ const Posts = ({ projectId, alreadyReplied, activeKeywordData }: Props) => {
     
     const allKeywords = activeKeywordData.map((k) => k.content)
     // console.log(allKeywords)
-    const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ allKeywords })
+    const { data: subredditData, isPending } = trpc.reddit.getSubredditsAndPosts.useQuery({ allKeywords, projectId })
 
     const { mutate, isPending: isReplyPending } = trpc.reddit.createReply.useMutation({
         onError: (err) => {
