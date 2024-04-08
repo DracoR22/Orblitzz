@@ -37,7 +37,7 @@ const Home = () => {
          </Button>
        </div>
 
-      <div className="absolute top-[200px] right-[200px] h-[500px] w-[300px] blur-3xl bg-blue-500 rounded-full opacity-30"/>
+      <div className="hidden md:flex absolute top-[200px] right-[200px] h-[500px] w-[300px] blur-3xl bg-blue-500 rounded-full opacity-30"/>
          <div className='flex my-10 justify-center md:justify-start'>
          <div className="border border-black/[0.2] dark:border-white/[0.2] flex flex-col items-start max-w-[500px] mx-auto p-4 relative h-[330px]">
       <MoonIcon className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black" />
@@ -74,7 +74,7 @@ const Home = () => {
        </section>
 
        {/* FOOTER */}
-       <div className="mt-20">
+       <div id="pricing" className="mt-20">
          <FooterSection/>
        </div>
     </div>

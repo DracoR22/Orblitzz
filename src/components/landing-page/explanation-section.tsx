@@ -57,7 +57,7 @@ const ExplanationSection = () => {
 
       
       {/* GRID SECTION  2*/}
-      <section className="">
+      <section id="explanation" className="">
         <div className="grid lg:grid-cols-2 md:mx-[90px]">
           <div className="flex items-center justify-center flex-col ">
            <div>

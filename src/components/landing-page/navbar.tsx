@@ -107,6 +107,7 @@ const Navbar = () => {
           <div>
              <Button asChild variant='ghost' className="font-semibold">
                <Link href={'#explanation'}>
+                How it works?
                </Link>
              </Button>
           </div>
@@ -120,7 +121,7 @@ const Navbar = () => {
          </div>
 
           <div>
-             <Button variant='ghost' className="font-semibold" onClick={() => router.push('/')}>
+             <Button variant='ghost' className="font-semibold">
                Contact
              </Button>
           </div>
