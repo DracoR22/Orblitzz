@@ -3,6 +3,7 @@ import PricingCards from "@/components/global/pricing-cards"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
+import { format } from "date-fns"
 
 const BillingPage = async ({ params }: { params: { projectId: string }}) => {
 
@@ -10,11 +11,18 @@ const BillingPage = async ({ params }: { params: { projectId: string }}) => {
 
   return (
     <>
-     <ScrollArea className="h-[650px] w-full px-10">
+     <ScrollArea className="h-[90%] w-full px-10">
     <div className="flex-1 space-y-4 p-8 pt-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col">
          <Heading title='Billing' description="In this page you can upgrade or cancel your Orblitzz
          plan at anytime" item={`Current plan: ${currentPlan.name} Plan`}/>
+
+          {currentPlan.isSubscribed ? (
+                <p className='rounded-md bg-green-400/20 text-green-500 p-1 w-fit mt-4 text-xs font-medium'>
+                  {currentPlan.isCanceled ? 'Your plan will be canceled on ' : 'Your plan renews on '}
+                  {format(currentPlan.stripeCurrentPeriodEnd!, 'dd.MM.yyyy')}
+                </p>
+          ) : null}
       </div>
       <Separator/>
     </div>

@@ -13,6 +13,8 @@ import Hint from "../global/hint"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { RedditCampaignType } from "@/lib/db/schema/reddit"
 import { getMonthlyReplies } from "@/server/actions/reddit-actions"
+import { useCreateProjectModal } from "@/hooks/modals/use-create-project-modal"
+import { useUpdatePlanModal } from "@/hooks/modals/use-update-plan-modal"
 
 interface SidebarProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
@@ -32,12 +34,16 @@ const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth, allProjec
   const extraRoutes = useExtraRoutes()
   const marketingRoutes = useMarketingRoutes()
 
+  const { onOpen } = useCreateProjectModal()
+  const { onOpen: onOpenUpdate } = useUpdatePlanModal()
+
   const sidebarRef = useRef<ElementRef<"aside">>(null)
   const navbarRef = useRef<ElementRef<"div">>(null)
-  const isResizingRef = useRef(false)
+  const isResizingRef = useRef<boolean>(false)
 
-  const [isCollapsed, setIsCollapsed] = useState(isMobile)
-  const [isResetting, setIsResetting] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile)
+  const [isResetting, setIsResetting] = useState<boolean>(false)
+
   useEffect(() => {
     if(isMobile) {
       collapse()
@@ -119,9 +125,17 @@ const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth, allProjec
                 <div className="flex-1">
                   <p className="text-xs text-muted-foreground mb-1 mt-4 font-medium">PROJECT</p>
                 </div>
-               <Hint description="New Project">
-                 <Plus className="h-4 mt-[8px] w-4 text-blue-500 rounded-sm cursor-pointer hover:bg-[#e3e3e3] dark:hover:bg-neutral-600 transition"/>
-               </Hint>
+                {allProjects?.length! >= subscriptionPlan.projects! ? (
+                <Hint description="New Project">
+                 <Plus onClick={() => onOpenUpdate()}
+                  className="h-4 mt-[8px] w-4 text-blue-500 rounded-sm cursor-pointer hover:bg-[#e3e3e3] dark:hover:bg-neutral-600 transition"/>
+                </Hint>
+               ) : (
+                <Hint description="New Project">
+                 <Plus onClick={() => onOpen({ subscriptionPlan, isModal: true })}
+                  className="h-4 mt-[8px] w-4 text-blue-500 rounded-sm cursor-pointer hover:bg-[#e3e3e3] dark:hover:bg-neutral-600 transition"/>
+                </Hint>
+               )}
               </div>
               
               <div className="mt-2">

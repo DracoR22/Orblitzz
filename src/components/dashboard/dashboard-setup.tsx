@@ -20,41 +20,23 @@ import { RedditCampaignType } from '@/lib/db/schema/reddit'
 import { Slider } from '../ui/slider'
 import { cn } from '@/lib/utils'
 import { getUserSubscriptionPlan } from '@/lib/stripe/stripe'
+import { useState } from 'react'
+import { useCreateProjectModal } from '@/hooks/modals/use-create-project-modal'
 
 interface Props {
    data?: Partial<RedditCampaignType>
    projectId?: string
    subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
+   isModal?: boolean
 }
 
-const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
+const DashboardSetup = ({ data, projectId, subscriptionPlan, isModal }: Props) => {
 
    const router = useRouter()
 
-   const { mutate: keywordMutation } = trpc.keyword.createKeywords.useMutation({
-      onError: (err) => {
-         if (err.data?.code === "UNAUTHORIZED") {
-           return toast.error('Please Login to do this action')
-         }
+   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-         if (err instanceof ZodError) {
-           return toast.error(err.issues[0].message)
-         }
-
-        toast.error('Something went wrong while generating keywords. Please try again later.')
-    },
-    onSuccess: ({ projectId }) => {
-      // Redirect or perform other actions as needed
-     router.push(`/dashboard/${projectId}/keywords`);
-     toast.success('Your project has been created')
-     router.refresh()
-    }
-   })
-
-   const handleCreateKeywordSuccess = async ({ projectId, projectDescription }: { projectId: string, projectDescription: string }) => {
-         // Call the keyword mutation here with the projectId
-        return await keywordMutation({ projectId, projectDescription });
-    };
+   const { onClose } = useCreateProjectModal()
 
    const { mutate: createMutation, isPending: isCreatePending } = trpc.reddit.createRedditProject.useMutation({
         onError: (err) => {
@@ -62,16 +44,28 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
                return toast.error('Please Login to do this action')
              }
 
+             if (err.data?.code === "FORBIDDEN") {
+               onClose()
+               return toast.error('Project creation limit reached')
+             }
+
+             if (err.data?.code === "UNPROCESSABLE_CONTENT") {
+               onClose()
+               return toast.error('Error while creating keywords. Try providing a better description')
+             }
+
              if (err instanceof ZodError) {
                return toast.error(err.issues[0].message)
              }
 
             toast.error('Something went wrong while creating your project. Please try again later.')
+            onClose()
         },
         onSuccess: ({ projectId, projectDescription }) => {
          router.push(`/dashboard/${projectId}/keywords`);
          toast.success('Your project has been created')
          router.refresh()
+         onClose()
         }
    })
 
@@ -90,6 +84,7 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
     onSuccess: () => {
        router.refresh()
        toast.success('Project updated!')
+       setIsLoading(false)
     }
    })
 
@@ -107,14 +102,14 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
     },
   })
 
-  const isLoading = form.formState.isSubmitting
 
   const handleSubmit = (values: z.infer<typeof RedditCampaignSchema>) => {
-     if (data && projectId) {
-      return updateMutation({ id: projectId, autoReply: values.autoReply, autoReplyLimit: values.autoReplyLimit, description: values.description, title: values.title, tone: values.tone, url: values.url, image: values.image })
-     } else {
-      return createMutation(values)
-     } 
+   setIsLoading(true)
+      if (data && projectId) {
+         return updateMutation({ id: projectId, autoReply: values.autoReply, autoReplyLimit: values.autoReplyLimit, description: values.description, title: values.title, tone: values.tone, url: values.url, image: values.image })
+         } else {
+          return createMutation(values)
+         } 
   }
 
   return (
@@ -240,8 +235,8 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan }: Props) => {
                     )}
                     </FormItem>
                   )}/>
-                  <Button type='submit' disabled={isLoading || isCreatePending || isUpdatePending} className='text-white w-full'>
-                      {isLoading || isCreatePending || isUpdatePending && <Loader2Icon className='mr-2 h-4 w-4 animate-spin'/>}
+                  <Button type='submit' disabled={isLoading} className='text-white w-full'>
+                      {isLoading && <Loader2Icon className='mr-2 h-4 w-4 animate-spin'/>}
                        {data ? 'Update' : 'Create'}
                   </Button>
                </form>
