@@ -94,7 +94,7 @@ export const PLANS = [
           text: 'Unlimited AI post editor',
         },
         {
-          text: '1 project',
+          text: '2 projects',
         },
         {
           text: 'Priority support',

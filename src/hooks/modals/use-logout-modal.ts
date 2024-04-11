@@ -1,4 +1,3 @@
-import { getUserSubscriptionPlan } from '@/lib/stripe/stripe'
 import { create } from 'zustand'
 
 type LogoutModalStore = {
@@ -7,7 +6,7 @@ type LogoutModalStore = {
     onClose: () => void
 }
 
-export const useCreateProjectModal = create<LogoutModalStore>((set) => ({
+export const useLogoutModal = create<LogoutModalStore>((set) => ({
     isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false })

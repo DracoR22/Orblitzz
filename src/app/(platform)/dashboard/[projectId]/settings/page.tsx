@@ -12,7 +12,7 @@ const SettingsPage = async ({ params }: { params: { projectId: string }}) => {
    const subscriptionPlan = await getUserSubscriptionPlan()
 
   return (
-    <ScrollArea className="h-[650px] w-full px-10">
+    <ScrollArea className="h-[90%] w-full px-10">
       <div className="pb-2 pt-6">
        <Heading title="Settings" description="Below is a list of all the social media posts that 
          best matches your project description" item={data?.title}/>

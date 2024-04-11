@@ -123,29 +123,29 @@ export const redditRouter = router({
         )
         })
 
-        if (subscriptionPlan.name !== 'Pro' &&  userProjects.length >= subscriptionPlan.projects!) {
-           throw new TRPCError({ message: 'Upgrade your plan for creating more projects', code: 'UNAUTHORIZED' })
+        if (userProjects.length >= subscriptionPlan.projects!) {
+           throw new TRPCError({ message: 'Upgrade your plan for creating more projects', code: 'FORBIDDEN' })
         }
 
         const projectId = v4()
 
-        // TODO: check for user subscription
         const project = await db.insert(redditCampaigns).values({
-            id: projectId,
-            image,
-            title,
-            tone,
-            description,
-            autoReply,
-            url,
-            userId,
-            autoReplyLimit
-        }).returning({
-            insertedId: redditCampaigns.id,
-            description: redditCampaigns.description
-        })
+          id: projectId,
+          image,
+          title,
+          tone,
+          description,
+          autoReply,
+          url,
+          userId,
+          autoReplyLimit
+      }).returning({
+          insertedId: redditCampaigns.id,
+          description: redditCampaigns.description
+      })  
 
-         // Create Keywords
+        try {
+           // Create Keywords
          const response = await openai.createChatCompletion({
           model: 'gpt-3.5-turbo',
           messages: [
@@ -171,7 +171,6 @@ export const redditRouter = router({
 
         const keywordsOpenai = Array.from(matches, (match: any) => match[1].trim());
 
-        // TODO: This is probably the worst way of doing this
         const trimmedFirstKeyword = keywordsOpenai[0].trim();
         const trimmedSecondKeyword = keywordsOpenai[1].trim();
         const trimmedThirdKeyword = keywordsOpenai[2].trim();
@@ -183,11 +182,16 @@ export const redditRouter = router({
         const trimmedNinthKeyword = keywordsOpenai[8].trim();
         const trimmedTenthKeyword = keywordsOpenai[9].trim();
 
-        console.log(trimmedFirstKeyword)
-        console.log(trimmedSecondKeyword)
-        console.log(trimmedThirdKeyword)
-        console.log(trimmedFourthKeyword)
-        console.log(trimmedFifthKeyword)
+        // console.log(trimmedFirstKeyword)
+        // console.log(trimmedSecondKeyword)
+        // console.log(trimmedThirdKeyword)
+        // console.log(trimmedFourthKeyword)
+        // console.log(trimmedFifthKeyword)
+        // console.log(trimmedSixthKeyword)
+        // console.log(trimmedSeventhKeyword)
+        // console.log(trimmedEightKeyword)
+        // console.log(trimmedNinthKeyword)
+        // console.log(trimmedTenthKeyword)
 
        const insertedKeyword = await db.insert(keywords).values({
             redditCampaignId: projectId,
@@ -231,35 +235,38 @@ export const redditRouter = router({
       content: trimmedSixthKeyword,
    })
 
-    const insertedKeywordSe = await db.insert(keywords).values({
-     redditCampaignId: projectId,
-     columnId: '2',
-     order: 6,
-     content: trimmedSeventhKeyword,
-    })
+     const insertedKeywordSe = await db.insert(keywords).values({
+      redditCampaignId: projectId,
+      columnId: '2',
+      order: 6,
+      content: trimmedSeventhKeyword,
+     })
 
-    const insertedKeywordEi = await db.insert(keywords).values({
-     redditCampaignId: projectId,
-     columnId: '2',
-     order: 7,
-     content: trimmedEightKeyword,
-    })
+     const insertedKeywordEi = await db.insert(keywords).values({
+      redditCampaignId: projectId,
+      columnId: '2',
+      order: 7,
+      content: trimmedEightKeyword,
+     })
 
-    const insertedKeywordNi = await db.insert(keywords).values({
-     redditCampaignId: projectId,
-     columnId: '2',
-     order: 8,
-     content: trimmedNinthKeyword,
-    })
+     const insertedKeywordNi = await db.insert(keywords).values({
+      redditCampaignId: projectId,
+      columnId: '2',
+      order: 8,
+      content: trimmedNinthKeyword,
+     })
 
-    const insertedKeywordTh = await db.insert(keywords).values({
-     redditCampaignId: projectId,
-     columnId: '2',
-     order: 9,
-     content: trimmedTenthKeyword,
-    })
+     const insertedKeywordTh = await db.insert(keywords).values({
+      redditCampaignId: projectId,
+      columnId: '2',
+      order: 9,
+      content: trimmedTenthKeyword,
+      })
 
-    return { projectId: project[0].insertedId, projectDescription: project[0].description }
+        return { projectId: project[0].insertedId, projectDescription: project[0].description }
+      } catch (error) {
+         throw new TRPCError({ message: 'Something went wrong while creating your project. Please try again later.', code: 'UNPROCESSABLE_CONTENT' })
+      }
     }),
 
     //--------------------------------------------------------------//CREATE REPLY//-------------------------------------------------------------//

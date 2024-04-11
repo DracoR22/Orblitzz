@@ -65,7 +65,7 @@ const PricingCards = ({ isDashboard, projectId, currentPlan }: PricingCardProps)
                     <p className="text-gray-500 flex justify-center text-sm mt-5">per month</p>
 
                     {currentPlan && currentPlan.name === item.name && (
-                      <Button onClick={() => onClick(item.price.priceIds.test, i)} variant={'outline'} className="w-full dark:bg-[#242424] bg-[#fafafa] mt-4 dark:hover:bg-[#1e1e1e] hover:bg-white border-blue-500 shadow-blue-500 shadow-sm">
+                      <Button onClick={() => onClick(item.price.priceIds.test, i)} variant={'default'} className="w-full  mt-4 text-white">
                        {loadingIndex === i ? <Loader2Icon className="w-5 h-4 animate-spin"/> : `Manage Plan`}
                      </Button>
                     )}

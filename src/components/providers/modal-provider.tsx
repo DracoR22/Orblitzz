@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 import CreateProjectModal from "../modals/create-project-modal"
+import UpdatePlanModal from "../modals/update-plan-modal"
+import LogoutModal from "../modals/logout-modal"
 
 const ModalProvider = () => {
 
@@ -18,6 +20,8 @@ const ModalProvider = () => {
   return (
     <>
       <CreateProjectModal/>
+      <UpdatePlanModal/>
+      <LogoutModal/>
     </>
   )
 }

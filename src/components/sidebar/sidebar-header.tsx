@@ -9,6 +9,7 @@ import { RedditCampaignType } from "@/lib/db/schema/reddit";
 import { Label } from "../ui/label";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { useUpdatePlanModal } from "@/hooks/modals/use-update-plan-modal";
 
 interface SidebarHeaderProps {
   collapse: () => void;
@@ -21,6 +22,7 @@ interface SidebarHeaderProps {
 const SidebarHeader = ({ collapse, isMobile, projectTitle, subscriptionPlan, allProjects }: SidebarHeaderProps) => {
 
    const { onOpen } = useCreateProjectModal()
+   const { onOpen: onOpenUpdate } = useUpdatePlanModal()
 
    const params = useParams()
 
@@ -58,9 +60,15 @@ const SidebarHeader = ({ collapse, isMobile, projectTitle, subscriptionPlan, all
          </DropdownMenuItem>
           ))}
            <DropdownMenuItem className="w-full dark:bg-[#1e1e1e] bg-[#ffffff] text-xs font-medium text-black dark:text-neutral-400 space-y-[2px] hover:bg-[#e3e3e3] dark:hover:bg-[#242424] mt-10">
-                <Button className="w-full text-white gap-x-2 text-sm" size={'icon'} onClick={() => onOpen({ subscriptionPlan})}>
+                {allProjects?.length! >= subscriptionPlan.projects! ? (
+                   <Button className="w-full text-white gap-x-2 text-sm" size={'icon'} onClick={() => onOpenUpdate()}>
+                      <PlusCircleIcon className="w-4 h-4"/> Create new project
+                   </Button>
+                ) : (
+                  <Button className="w-full text-white gap-x-2 text-sm" size={'icon'} onClick={() => onOpen({ subscriptionPlan })}>
                    <PlusCircleIcon className="w-4 h-4"/> Create new project
-                </Button>
+                  </Button>
+                )}
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

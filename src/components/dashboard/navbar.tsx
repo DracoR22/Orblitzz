@@ -16,6 +16,7 @@ import { useAutoRedditReply } from "@/hooks/use-auto-reddit-reply"
 import { checkPlanReplyLimit } from "@/lib/utils"
 import { RedditCampaignType } from "@/lib/db/schema/reddit"
 import { useActiveKeywords } from "@/hooks/states/use-keywords-available"
+import Link from "next/link"
 
 interface NavbarProps {
   projectId: string
@@ -44,9 +45,11 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
       <div className="flex flex-1 justify-end items-center">
         {/* SUBSCRIPTION BUTTON */}
       <div className="mx-6">
-        <Button size='sm' className="text-white">
-          Need more replies?
+        <Button asChild size='sm' className="text-white">
+        <Link href={`/dashboard/${projectId}/billing`}>
+           Need more replies?
           <SparklesIcon className="w-4 h-4 ml-2"/>
+        </Link>
         </Button>
       </div>
         {projectAutoReplyLimit?.autoReply && activeKeywords.length < 5 && isReplyPossible && (

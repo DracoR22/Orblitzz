@@ -3,6 +3,7 @@ import { create } from 'zustand'
 
 type CreateProjectModalData = {
     subscriptionPlan?: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
+    isModal?: boolean
 }
 
 type CreateProjectModalStore = {

@@ -8,6 +8,7 @@ import { Skeleton } from "../ui/skeleton"
 import { CreditCardIcon, LogOutIcon, UserIcon } from "lucide-react"
 import { signOut } from "next-auth/react"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
+import { useLogoutModal } from "@/hooks/modals/use-logout-modal"
 
 interface UserMenuProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
@@ -16,6 +17,8 @@ interface UserMenuProps {
 const UserMenu = ({ subscriptionPlan }: UserMenuProps) => {
 
    const user = useCurrentUser()
+
+   const { onOpen } = useLogoutModal()
 
   return (
     <DropdownMenu>
@@ -36,7 +39,7 @@ const UserMenu = ({ subscriptionPlan }: UserMenuProps) => {
                  <span className="font-semibold">{subscriptionPlan.name}</span>Plan
              </DropdownMenuItem>
              <DropdownMenuSeparator/>
-             <DropdownMenuItem className="flex items-center gap-x-2 cursor-pointer" onClick={() => signOut()}>
+             <DropdownMenuItem className="flex items-center gap-x-2 cursor-pointer" onClick={() => onOpen()}>
               <LogOutIcon className="w-5 h-5"/>
                 Sign Out
              </DropdownMenuItem>
