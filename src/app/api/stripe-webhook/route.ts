@@ -24,19 +24,6 @@ export async function OPTIONS(req: Request) {
 export async function POST(req: Request) {
     const body = await req.text();
     const signature = headers().get("Stripe-Signature") as string;
-
-    // const user = await currentUser()
-
-    // if (!user || !user.email) {
-    //   return new NextResponse ("Unauthorized", { status: 401 });
-    // }
-
-    // const dbUser = await db.query.users.findFirst({
-    //   columns: {
-    //     name: true,
-    //     email: true
-    //   }
-    // })
   
     let event: Stripe.Event;
   
@@ -85,9 +72,8 @@ export async function POST(req: Request) {
         eq(subscriptions.stripeSubscriptionId, subscription.id,)
       )
 
-      await sendSubscriptionReceiptEmail({ userEmail: session.customer_email || '', price: session.amount_total!})
+      // await sendSubscriptionReceiptEmail({ userEmail: session.customer_email || '', price: session.amount_total!})
 
-    
     }
   
     return new NextResponse(null, { status: 200, headers: corsHeaders }, );

@@ -6,6 +6,7 @@ import { ArrowUpDown, ArrowUpLeftFromSquare, MoreHorizontal } from "lucide-react
 import { formatDistanceToNow } from 'date-fns'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export type Replies = {
     id?: string | null
@@ -14,6 +15,7 @@ export type Replies = {
     postAuthor?: string | null
     reply?: string | null
     projectId?: string | null
+    postUrl?: string | null
     createdAt?: any
   }
   
@@ -78,8 +80,10 @@ export type Replies = {
     {
       id: "actions",
       cell: ({ row }) => {
-        const { id } = row.original
-  
+         const { id } = row.original
+         const link = row.getValue("postUrl")
+
+         
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -88,13 +92,15 @@ export type Replies = {
                 <MoreHorizontal className="h-4 w-4"/>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" >
-              <a>
-                 <DropdownMenuItem className="cursor-pointer">
-                   <ArrowUpLeftFromSquare className="h-4 w-4 mr-2"/>
+            <DropdownMenuContent align="end" className="dark:bg-black bg-white">
+             
+                 <DropdownMenuItem asChild className="cursor-pointer">
+                  <a href={`${row.original.postUrl}`} target="_blank">
+                  <ArrowUpLeftFromSquare className="h-4 w-4 mr-2"/>
                      See post
+                  </a>
                  </DropdownMenuItem>
-              </a>
+            
             </DropdownMenuContent>
           </DropdownMenu>
         )

@@ -158,11 +158,15 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan, isModal }: Props) =
                            <FormLabel>
                               Project Description  <span className='text-xs text-red-500'> *</span>
                             </FormLabel>
+                            <div className='flex justify-between'>
                             <small className='text-xs text-muted-foreground'>
-                              We will generate some keywords based on the description you provided
+                              We will generate some keywords based on the description you provided  
                             </small>
+                            <small className='font-medium text-xs text-muted-foreground'> ({field.value.length} / 500)</small>
+                            </div>
                             <FormControl>
-                               <Textarea readOnly={!!data} placeholder='Type a short description of your project' {...field}/>
+                               <Textarea readOnly={!!data} placeholder='Type a short description of your project' {...field}
+                               className={cn(!!data && 'cursor-not-allowed')}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -174,7 +178,7 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan, isModal }: Props) =
                          <FormLabel>Auto Replies</FormLabel>
                          <FormDescription>
                             If you turn on autoreplies mode, you can go to the settings tab
-                            to limit the amount of the daily replies the AI can make.
+                            to change the amount of the daily replies the AI can make.
                          </FormDescription>
                          <FormControl className='mt-4'>
                           <Switch checked={field.value} onCheckedChange={field.onChange}/>

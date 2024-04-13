@@ -1,5 +1,6 @@
 import Heading from "@/components/global/heading"
 import Posts from "@/components/posts/posts"
+import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { db } from "@/lib/db"
@@ -10,6 +11,8 @@ import { checkPlanReplyLimit } from "@/lib/utils"
 import { getActiveKeywords } from "@/server/actions/keyword-actions"
 import { getMonthlyReplies } from "@/server/actions/reddit-actions"
 import { and, eq } from "drizzle-orm"
+import { SparklesIcon } from "lucide-react"
+import Link from "next/link"
 
 const PostsPage = async ({ params }: { params: { projectId: string }}) => {
 
@@ -26,8 +29,21 @@ const PostsPage = async ({ params }: { params: { projectId: string }}) => {
     // TODO: Check if this works
     if (!isReplyPossible) {
       return (
-        <div>
-          Plan limit exceeded
+        <div className="flex items-center h-[90%] w-full justify-center">
+          <div className="flex-col text-center">
+            <h2 className="font-semibold text-2xl mb-4">
+              You ran out of replies!
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              If you want more replies you can upgrade your current plan
+            </p>
+            <Button asChild className="text-white font-medium mt-4">
+              <Link href={`/dashboard/${params.projectId}/billing`}>
+                Upgrade your plan
+                <SparklesIcon className="ml-2 w-4 h-4"/>
+              </Link>
+            </Button>
+          </div>
         </div>
       )
     }

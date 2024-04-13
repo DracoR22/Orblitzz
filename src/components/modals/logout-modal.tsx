@@ -26,8 +26,8 @@ const LogoutModal = () => {
             You can always sign back in at any time.
          </p>
       </div>
-      <DialogFooter>
-      <div className="p-6">
+      
+       <div className="p-6 -mt-8">
         <Button onClick={() => onClose()} variant={'outline'} className="text-white mr-6 bg-transparent dark:hover:bg-neutral-700">
           Cancel
         </Button>
@@ -35,7 +35,7 @@ const LogoutModal = () => {
           Sign Out
         </Button>
         </div>
-      </DialogFooter>
+     
     </DialogContent>
   </Dialog>
   )
