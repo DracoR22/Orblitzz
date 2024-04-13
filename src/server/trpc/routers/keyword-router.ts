@@ -127,11 +127,13 @@ export const keywordRouter = router({
          
          try {
             const updatedKeywords = await Promise.all(items.map(async (keyword: any) => {
+                const currentDate = new Date().toISOString();
                 // Update the keyword
                 await db.update(keywords)
                     .set({ 
                         order: keyword.order,
-                        columnId: keyword.columnId
+                        columnId: keyword.columnId,
+                        updatedAt: currentDate
                     })
                     .where(
                         and(
@@ -141,7 +143,7 @@ export const keywordRouter = router({
                     );
         
                 // Fetch the updated keyword data
-                const updatedKeyword = await db.select({ columnId: keywords.columnId }).from(keywords).where(
+                const updatedKeyword = await db.select({ columnId: keywords.columnId, updatedAt: keywords.updatedAt }).from(keywords).where(
                     and(
                         eq(keywords.id, keyword.id),
                         eq(keywords.redditCampaignId, projectId)
@@ -166,7 +168,8 @@ export const keywordRouter = router({
                 id: true,
                 columnId: true,
                 order: true,
-                content: true
+                content: true,
+                updatedAt: true
               },
               where: eq(keywords.redditCampaignId, projectId),
               orderBy: (keywords, { asc }) => [asc(keywords.order)]

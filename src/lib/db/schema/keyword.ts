@@ -8,6 +8,7 @@ export const keywords = pgTable("keyword", {
     columnId: text('columnId').notNull(),
 
     createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }),
 
     redditCampaignId: uuid("redditCampaignId").notNull().references(() => redditCampaigns.id, { onDelete: 'cascade' })
 })

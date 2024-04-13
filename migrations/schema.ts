@@ -52,6 +52,7 @@ import { timestamp, pgTable, text, primaryKey, integer, uuid, boolean } from "dr
     columnId: text('columnId').notNull(),
 
     createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }),
 
     redditCampaignId: uuid("redditCampaignId").notNull().references(() => redditCampaigns.id, { onDelete: 'cascade' })
 })

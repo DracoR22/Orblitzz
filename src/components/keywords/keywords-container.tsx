@@ -16,6 +16,7 @@ import { Skeleton } from '../ui/skeleton'
 import { RedditCampaignType } from '@/lib/db/schema/reddit'
 import { getMonthlyReplies } from '@/server/actions/reddit-actions'
 import { useAutoRedditReply } from '@/hooks/use-auto-reddit-reply'
+import { isToday } from 'date-fns'
 
 interface Props {
   columns: {
@@ -41,15 +42,17 @@ function reorder<T>(column: T[], startIndex: number, endIndex: number) {
 const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoReplyLimit, repliesCreatedThisMonth, repliesCreatedToday }: Props) => {
 
   const [orderedData, setOrderedData] = useState<any>(null)
+  // const [todayUpdatedKeywords, setTodayUpdatedKeywords] = useState<number | undefined>(0)
 
   const { data } = trpc.keyword.getAllKeywords.useQuery({ projectId })
 
-  const { addKeyword, setActiveKeywords, activeKeywords } = useActiveKeywords()
+  const { setActiveKeywords } = useActiveKeywords()
 
   const columnIds = data && data.allKeywords.map(keyword => keyword.columnId);
   const filterKeywords = data && data.allKeywords.filter(keyword => keyword.columnId === "1");
-  const keywordsContent = filterKeywords && filterKeywords.map(keyword => keyword.content);
-
+  
+  const keywordsUpdatedToday = data && data.allKeywords.filter(keyword => isToday(keyword.updatedAt as string))
+  
   const { isAddedKeywordPossible } = checkPlanKeywordsLimitClient({ activeKeywords: columnIds?.filter((columnId) => columnId === '1') as string[], planName: subscriptionPlan.name as string})
 
    const { mutate: updateKeywordMutation } = trpc.keyword.updateKeywordOrder.useMutation({
@@ -68,7 +71,6 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
     // YOU CAN REMOVE THE CONDITIONAL AND IT WILL STILL WORK
     onSuccess: ({ updatedKeyword }) => {
        console.log(updatedKeyword)
-
       //  if (updatedKeyword.columnId === '1') {
       //   addKeyword(updatedKeyword.columnId)
       //  } else {
@@ -79,13 +81,12 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
  
    useEffect(() => {
     if (data) {
-      setOrderedData(data.allKeywords); // Assuming data structure contains allKeywords
+      setOrderedData(data.allKeywords)
+      // setTodayUpdatedKeywords(keywordsUpdatedToday?.length)
     }
   }, [data]);
 
   const { handleAutoReply } = useAutoRedditReply({ repliesCreatedThisMonth, allKeywords: data?.allKeywords.filter((d) => d.columnId === "1").map((d) => d.content) as string[], subscriptionPlan, projectAutoReplyLimit, repliesCreatedToday, projectId })
-  // console.log(orderedData)
-  // console.log( data?.allKeywords.filter((d) => d.columnId === "1").map((d) => d.content))
   
 
    const onDragEnd = (result: DropResult) => {
@@ -153,6 +154,8 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
 
          // Update keywords global state
          setActiveKeywords(orderedData.filter((o: any) => o.columnId === "1").map((o: any) => o.createdAt) as string[])
+        //  setTodayUpdatedKeywords((prevCount: any) => prevCount + 1);
+
       }
     }
 
@@ -164,7 +167,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
 
    if (orderedData === null) {
     return (
-      <div >
+      <div>
         <Skeleton className='flex w-[700px] h-[1000px] p-4 rounded-md'/>
       </div>
     )
@@ -172,6 +175,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
+      {/* {todayUpdatedKeywords ? todayUpdatedKeywords : 0} */}
         <div className="flex w-[700px] h-fit border p-4 rounded-md">
         {columns.map((column) => {
           const columnKeywords = orderedData.filter((keyword:  Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId'>) => keyword.columnId === column.id);

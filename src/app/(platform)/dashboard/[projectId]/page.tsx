@@ -24,7 +24,7 @@ const ProjectIdPage = async ({ params }: Props) => {
   const currentProject = allUserProjectsCount.find((project) => project.id === params.projectId)
   
   return (
-   <ScrollArea className="h-[90%] w-full">
+    <ScrollArea className="h-[90%] w-full">
      <section className="pb-2 p-8 pt-6">
       <Heading title="Overview" item={currentProject?.title} description="You can manage your plan usage and reply creation from this dashboard"/>
       <Separator className="my-3"/>

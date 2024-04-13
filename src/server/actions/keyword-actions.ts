@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db"
 import { keywords } from "@/lib/db/schema/keyword"
+import { subDays } from "date-fns"
 import { and, asc, eq } from "drizzle-orm"
 
 //----------------------------------------------------------//GET PROJECT ACTIVE KEYWORDS//--------------------------------------------------//
@@ -33,3 +34,17 @@ export const getAllKeywords = async (projectId: string) => {
 
     return allKeywords
 }
+
+// export const getKeywordsUpdatedToday = async (projectId: string) => {
+//     const startOfToday = subDays(new Date(), 1); 
+
+//     const todayKeywords = await db.query.keywords.findMany({
+//         columns: {
+//             id: true
+//         },
+//         where: and(
+//             eq(keywords.redditCampaignId, projectId),
+//             eq(keywords.updatedAt, )
+//         )
+//     })
+// }

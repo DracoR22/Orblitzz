@@ -18,11 +18,13 @@ import { Spotlight } from "@/components/global/animations/spotlight-animation";
 import { CardContainer, CardItem } from "@/components/global/animations/3d-card-animation";
 import FooterSection from "@/components/landing-page/footer-section";
 import { EvervaultCard, Icon } from "@/components/global/animations/evervault-card-animation";
+import CrispChat from "@/components/global/crisp-chat";
 
 const Home = () => {
   
   return (
     <div>
+      <CrispChat/>
       {/* HEADING */}
        <section className="overflow-hidden px-4 sm:px-6 sm:flex sm:flex-col md:justify-start ">
        <Spotlight className="-top-40 left-0 md:left-40 md:-top-20" fill="white"/>
