@@ -10,6 +10,7 @@ import { Inter, DM_Sans } from "next/font/google";
 import { auth } from "@/lib/auth/auth";
 import { Toaster } from "@/components/ui/sonner";
 import ModalProvider from "@/components/providers/modal-provider";
+import CrispChat from "@/components/global/crisp-chat";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default async function RootLayout({ children }: Readonly<{children: React
     <SessionProvider session={session}>
     <html lang="en" suppressHydrationWarning>
       <TrpcProviders>
+      <CrispChat/>
       <body className={cn('dark:bg-[#1e1e1e] bg-[#ffffff]', inter.className)}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <ModalProvider/>
