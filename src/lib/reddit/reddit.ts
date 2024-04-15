@@ -37,5 +37,12 @@ export const userCredentials = [
       clientSecret: process.env.SECOND_REDDIT_CLIENT_SECRET!,
       username: process.env.SECOND_REDDIT_USERNAME!,
       password: process.env.SECOND_REDDIT_PASSWORD!
+    },
+    {
+      userAgent: process.env.THIRD_REDDIT_USER_AGENT!,
+      clientId: process.env.THIRD_REDDIT_CLIENT_ID!,
+      clientSecret: process.env.THIRD_REDDIT_CLIENT_SECRET!,
+      username: process.env.THIRD_REDDIT_USERNAME!,
+      password: process.env.THIRD_REDDIT_PASSWORD!
     }
   ];
