@@ -399,7 +399,7 @@ const items = [
     title: "AI Powered Text Editor (coming soon)",
     description: (
       <span className="text-sm">
-        You can also our AI text editor to write any social media post
+        You can also use our AI text editor to write any social media post
       </span>
     ),
     header: <SkeletonFive />,

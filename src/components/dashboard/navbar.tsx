@@ -34,8 +34,6 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
 
   const { handleAutoReply } = useAutoRedditReply({ repliesCreatedThisMonth, allKeywords, subscriptionPlan, projectAutoReplyLimit, repliesCreatedToday, projectId })
   
-  
-  
   useEffect(() => {
     handleAutoReply();
   }, [repliesCreatedToday, projectAutoReplyLimit, subscriptionPlan]);

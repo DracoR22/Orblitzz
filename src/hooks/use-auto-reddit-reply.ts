@@ -57,8 +57,8 @@ export const useAutoRedditReply = ({ repliesCreatedThisMonth, allKeywords, subsc
   
       const handleAutoReply = async () => {
       // Check if activeKeywords.length is less than 5
-       if (allKeywords.length < 4) {
-        console.log('Insufficient keywords')
+       if (allKeywords.length < 5) {
+        console.log('Insufficient keywords', allKeywords.length)
            return; // Exit the function early if the condition is not met
         }
    

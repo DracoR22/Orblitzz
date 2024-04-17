@@ -19,6 +19,7 @@ import { CardContainer, CardItem } from "@/components/global/animations/3d-card-
 import FooterSection from "@/components/landing-page/footer-section";
 import { EvervaultCard, Icon } from "@/components/global/animations/evervault-card-animation";
 import CrispChat from "@/components/global/crisp-chat";
+import Link from "next/link";
 
 const Home = () => {
   
@@ -33,9 +34,11 @@ const Home = () => {
         <TitleSection
          subheading="Orblitzz is an AI that casually mentions your product in social media conversations"
          pill="🦨 How many people know your product?"/>
-        <Button className="w-[200px] text-white bg-blue-500 clear-start mt-5 flex items-center gap-x-2">
-         <RocketIcon/>
+        <Button asChild className="w-[200px] text-white bg-blue-500 clear-start mt-5 flex items-center gap-x-2">
+          <Link href={'/login'}>
+          <RocketIcon/>
            Get Started Free
+          </Link>
          </Button>
        </div>
 

@@ -435,39 +435,40 @@ export const redditRouter = router({
     createAutoReply: privateProcedure.input(CreateAutoReplySchema).mutation(async ({ ctx, input }) => {
       const { projectId, allKeywords } = input
       const { userId } = ctx
-
-      if (allKeywords.length < 4) {
-          throw new TRPCError({ message: 'Insufficient keywords', code: 'UNPROCESSABLE_CONTENT'}) // Exit the function early if the condition is not met
-      }
    
       const subscriptionPlan = await getUserSubscriptionPlan()
 
+       // Get the Reddit project
+       const project = await db.query.redditCampaigns.findFirst({
+        columns: {
+          id: true, 
+          tone: true, 
+          title: true,
+          description: true,
+          url: true,
+          autoReply: true,
+          autoReplyLimit: true,
+        },
+        where: and(
+            eq(redditCampaigns.id, projectId),
+            eq(redditCampaigns.userId, userId)
+        )
+    })
+
+    if (!project) {
+        throw new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
+    }
+
+    if (project.autoReplyLimit >= 20 && allKeywords.length < 5) {
+      throw new TRPCError({ message: 'Insufficient keywords', code: 'UNPROCESSABLE_CONTENT'}) // Exit the function early if the condition is not met
+    }
+
+    if (project.autoReplyLimit < 20 && allKeywords.length < 2) {
+      throw new TRPCError({ message: 'Insufficient keywords', code: 'UNPROCESSABLE_CONTENT'}) // Exit the function early if the condition is not met
+    }
+
       // Randomly choose between the first and second user
       const selectedUser = userCredentials[Math.floor(Math.random() * userCredentials.length)];
-
-      // Function to count words in a string
-      // const countWords = (text: string) => text.split(/\s+/).filter((word) => word.length > 0).length;
-
-      // Get the Reddit project
-      const project = await db.query.redditCampaigns.findFirst({
-          columns: {
-            id: true, 
-            tone: true, 
-            title: true,
-            description: true,
-            url: true,
-            autoReply: true,
-            autoReplyLimit: true,
-          },
-          where: and(
-              eq(redditCampaigns.id, projectId),
-              eq(redditCampaigns.userId, userId)
-          )
-      })
-
-      if (!project) {
-          throw new TRPCError({ message: 'No project found', code: 'UNAUTHORIZED' })
-      }
 
       // Replies created this month
       const repliesCreatedThisMonth = await getMonthlyReplies(projectId)
