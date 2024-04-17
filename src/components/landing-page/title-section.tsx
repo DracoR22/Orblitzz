@@ -1,9 +1,10 @@
 import { cn } from "@/lib/utils"
-import { Check } from "lucide-react"
+import { Check, ClockIcon, EyeIcon, WindIcon } from "lucide-react"
 import Image from "next/image"
 import React from "react"
 import { poppins } from "../fonts/fonts"
 import { Spotlight } from "../global/animations/spotlight-animation"
+import { AnimatedTooltip } from "../global/animations/animated-tooltip-animation"
 
 interface TitleSectionProps {
   
@@ -12,6 +13,44 @@ interface TitleSectionProps {
 }
 
 const TitleSection = ({ subheading, pill }: TitleSectionProps) => {
+  const people = [
+    {
+      id: 1,
+      name: "Open AI's",
+      designation: "Most capable model",
+      image:
+        "/landing-page/openai-dark.svg",
+    },
+    {
+      id: 2,
+      name: "AI Redit Replies",
+      designation: "Automatic replies",
+      image:
+        "/sidebar/reddit-logo.svg",
+    },
+    {
+      id: 3,
+      name: "AI Text Editor",
+      designation: "For any social media platform",
+      image:
+        "/landing-page/twitter.svg",
+    },
+    {
+      id: 4,
+      name: "Improve visibility",
+      designation: "In just a minute!",
+      image:
+        "/sidebar/gmail-logo.svg",
+    },
+    {
+      id: 5,
+      name: "0 Spammy Replies",
+      designation: "Soap Developer",
+      image:
+        "/landing-page/adfree.svg",
+    },
+  ];
+   
   return (
     <React.Fragment>
         <section className="flex flex-col gap-4 md:justify-start items-start">
@@ -49,22 +88,29 @@ const TitleSection = ({ subheading, pill }: TitleSectionProps) => {
                 </div>
               </div>
              </div>
-              <p className="dark:text-neutral-400 text-sm sm:max-w-[450px] mt-3">
+              <p className="text-muted-foreground text-sm sm:max-w-[450px] mt-3">
                  {subheading}
               </p>
 
               <div className="flex items-center gap-x-2">
-                <Image draggable={false} src={'/landing-page/openai-dark.svg'} alt="" width={28} height={28}/>
+              <AnimatedTooltip items={people} />
+                {/* <Image draggable={false} src={'/landing-page/openai-dark.svg'} alt="" width={28} height={28}/>
                 <Image draggable={false} src={'/sidebar/reddit-logo.svg'} alt="" width={28} height={28}/>
                 <Image draggable={false} src={'/landing-page/twitter.svg'} alt="" width={33} height={33}/>
                 <Image draggable={false} src={'/sidebar/gmail-logo.svg'} alt="" width={28} height={28}/>
                 <Image draggable={false} src={'/landing-page/adfree.svg'} alt="" width={28} height={28}/>
-                <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
-                {/* <div>
-                  <small className="text-muted-foreground ">
-                     Bring new customers to your app
+                 */}
+                 <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
+                <div className="h-full ml-2">
+                  <small className="text-muted-foreground">
+                     Save countless hours of post searching
                   </small>
-                </div> */}
+                  <small className="flex itens-center gap-x-2 justify-center mt-1">
+                    <EyeIcon className="w-8 h-8 bg-indigo-400/90 rounded-md p-1"/>
+                    <ClockIcon className="w-8 h-8 bg-green-400/90 rounded-md p-1"/>
+                    <WindIcon className="w-8 h-8 bg-orange-400/90 rounded-md p-1"/>
+                  </small>
+                </div>
                 {/* <div className="border-r dark:border-neutral-600 border-neutral-400 h-[40px] px-1"/>
                 <div>
                   <small className="text-muted-foreground ">

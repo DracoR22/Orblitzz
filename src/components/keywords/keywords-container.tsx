@@ -54,6 +54,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
   const keywordsUpdatedToday = data && data.allKeywords.filter(keyword => isToday(keyword.updatedAt as string))
   
   const { isAddedKeywordPossible } = checkPlanKeywordsLimitClient({ activeKeywords: columnIds?.filter((columnId) => columnId === '1') as string[], planName: subscriptionPlan.name as string})
+  const { handleAutoReply } = useAutoRedditReply({ repliesCreatedThisMonth, allKeywords: data?.allKeywords.filter((d) => d.columnId === "1").map((d) => d.content) as string[], subscriptionPlan, projectAutoReplyLimit, repliesCreatedToday, projectId })
 
    const { mutate: updateKeywordMutation } = trpc.keyword.updateKeywordOrder.useMutation({
     onError: (err) => {
@@ -70,12 +71,10 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
     },
     // YOU CAN REMOVE THE CONDITIONAL AND IT WILL STILL WORK
     onSuccess: ({ updatedKeyword }) => {
-       console.log(updatedKeyword)
-      //  if (updatedKeyword.columnId === '1') {
-      //   addKeyword(updatedKeyword.columnId)
-      //  } else {
-      //   setActiveKeywords(columnIds?.filter((columnId) => columnId === '1') as string[])
-      //  }
+      //  console.log(updatedKeyword)
+       if (updatedKeyword.columnId === '1') {
+        handleAutoReply()
+       } 
     }
    })
  
@@ -86,7 +85,6 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
     }
   }, [data]);
 
-  const { handleAutoReply } = useAutoRedditReply({ repliesCreatedThisMonth, allKeywords: data?.allKeywords.filter((d) => d.columnId === "1").map((d) => d.content) as string[], subscriptionPlan, projectAutoReplyLimit, repliesCreatedToday, projectId })
   
 
    const onDragEnd = (result: DropResult) => {
@@ -159,11 +157,13 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
       }
     }
 
-    if (destination.droppableId === "1") {
-      // console.log("calling auto reply function")
-     handleAutoReply()
-    }
+    // if (destination.droppableId === "1") {
+    //   console.log(orderedData.filter((o: any) => o.columnId === "1").length)
+    //   // console.log("calling auto reply function")
+    //  handleAutoReply()
+    // }
    }
+
 
    if (orderedData === null) {
     return (

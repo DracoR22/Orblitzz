@@ -6,6 +6,9 @@ import { getActiveKeywords } from "@/server/actions/keyword-actions"
 import { getAllUserProjects, getMonthlyReplies, getProjectAutoreplyLimit } from "@/server/actions/reddit-actions"
 import { isToday } from "date-fns"
 
+
+import "@/styles/dashboard-styles.css";
+
 interface DashboardLayoutProps {
   children: React.ReactNode,
   params: { projectId: string }

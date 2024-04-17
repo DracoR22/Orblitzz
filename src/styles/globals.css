@@ -75,10 +75,7 @@ body {
   color: #fff; /* Text color for Firefox */
 }
 
-/* Dont show scrollbar */
-::-webkit-scrollbar {
-  display: none;
-}
+
 
 .custom-mouse {
   position: absolute;
