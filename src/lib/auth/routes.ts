@@ -22,6 +22,7 @@ export const publicRoutes = [
    * @type {string}
    */
   export const apiAuthPrefix = "/api/auth";
+  export const apiStripeWebhookPrefix = "/api/stripe-webhook";
   
   /**
    * The default redirect path after logging in

@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import authConfig from "./lib/auth/auth.config"
-import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from "./lib/auth/routes"
+import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, apiStripeWebhookPrefix, authRoutes, publicRoutes } from "./lib/auth/routes"
 
 const { auth } = NextAuth(authConfig)
 
@@ -9,10 +9,11 @@ export default auth((req) => {
     const isLoggedIn = !!req.auth
   
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
+    const isApiStripeWebhook = nextUrl.pathname.startsWith(apiStripeWebhookPrefix)
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
     const isAuthRoute = authRoutes.includes(nextUrl.pathname)
   
-    if (isApiAuthRoute) {
+    if (isApiAuthRoute || isApiStripeWebhook) {
       return 
     }
   
