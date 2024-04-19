@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       success_url: dashboardUrl,
       cancel_url: dashboardUrl,
       customer_email: user.email,
-      payment_method_types: ["card", "paypal"],
+      payment_method_types: ["card"],
       mode: "subscription",
       billing_address_collection: "auto",
       line_items: [

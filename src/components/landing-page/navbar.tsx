@@ -11,11 +11,14 @@ import { HoverBorderGradient } from "../global/animations/hover-border-gradient-
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet"
 import { BarChart, BotIcon, Clock1Icon, Link2, MenuIcon, ReplyIcon, RocketIcon, SquarePenIcon } from "lucide-react"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from "../ui/navigation-menu"
+import { useCurrentUser } from "@/hooks/use-current-user"
 
 const Navbar = () => {
 
     const scrolled = UseScrollTop()
     const router = useRouter()  
+
+    // const user = useCurrentUser();
 
   return (
     <>

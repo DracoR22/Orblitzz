@@ -27,7 +27,7 @@ const LogoutModal = () => {
          </p>
       </div>
       
-       <div className="p-6 -mt-8">
+       <div className="p-6 -mt-8 w-full flex justify-between">
         <Button onClick={() => onClose()} variant={'outline'} className="text-white mr-6 bg-transparent dark:hover:bg-neutral-700">
           Cancel
         </Button>

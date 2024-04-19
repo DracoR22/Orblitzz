@@ -57,10 +57,15 @@ export const useAutoRedditReply = ({ repliesCreatedThisMonth, allKeywords, subsc
   
       const handleAutoReply = async () => {
       // Check if activeKeywords.length is less than 5
-       if (allKeywords.length < 5) {
+       if (projectAutoReplyLimit.autoReplyLimit! >= 20 && allKeywords.length < 5) {
         console.log('Insufficient keywords', allKeywords.length)
            return; // Exit the function early if the condition is not met
         }
+
+        if (projectAutoReplyLimit.autoReplyLimit! < 20 && allKeywords.length < 2) {
+          console.log('Insufficient keywords', allKeywords.length)
+             return; // Exit the function early if the condition is not met
+          }
    
        if ((replyLimitReached === false) && (projectAutoReplyLimit?.autoReply) && (repliesCreatedToday.length < projectAutoReplyLimit.autoReplyLimit!) && (isReplyPossible)) {
          await autoReplyMutation({ projectId, allKeywords });

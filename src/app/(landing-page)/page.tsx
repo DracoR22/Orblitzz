@@ -4,20 +4,17 @@ import PricingCards from "@/components/global/pricing-cards";
 import SubTitleSection from "@/components/landing-page/subtitle-section";
 import TitleSection from "@/components/landing-page/title-section"
 import { Button } from "@/components/ui/button";
-import { ArrowRightIcon, Check, ChevronRightIcon, MoonIcon, RocketIcon, StepForwardIcon, ZapIcon } from "lucide-react";
-import Image from "next/image";
+import { MoonIcon, RocketIcon } from "lucide-react";
 
 import "@/styles/landing-page-styles.css";
 import GridSection from "@/components/landing-page/grid-section";
 import StarsSection from "@/components/landing-page/stars-section";
 import VideosSection from "@/components/landing-page/videos-section";
 import ExplanationSection from "@/components/landing-page/explanation-section";
-import { LampContainer } from "@/components/global/animations/lamp-animation";
 import { TracingBeam } from "@/components/global/animations/tracing-beam-animation";
 import { Spotlight } from "@/components/global/animations/spotlight-animation";
-import { CardContainer, CardItem } from "@/components/global/animations/3d-card-animation";
 import FooterSection from "@/components/landing-page/footer-section";
-import { EvervaultCard, Icon } from "@/components/global/animations/evervault-card-animation";
+import { EvervaultCard } from "@/components/global/animations/evervault-card-animation";
 import CrispChat from "@/components/global/crisp-chat";
 import Link from "next/link";
 
