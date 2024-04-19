@@ -60,7 +60,6 @@ export async function POST(req: Request) {
       ],
       metadata: {
         userId: user.id,
-        email: user.email,
       }
     })
 
