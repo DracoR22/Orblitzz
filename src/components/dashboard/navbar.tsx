@@ -50,10 +50,17 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
         </Link>
         </Button>
       </div>
-        {projectAutoReplyLimit?.autoReply && activeKeywords.length < 5 && isReplyPossible && (
+        {projectAutoReplyLimit?.autoReply && projectAutoReplyLimit.autoReplyLimit! >= 20 && activeKeywords.length < 5 && isReplyPossible && (
           <div className="mr-6">
             <ColoredText variant="alert" icon={AlertTriangleIcon}>
               You need at least 5 active keywords in order to use the auto-reply functionality. This way AI will have more posts to reply to.
+            </ColoredText>
+          </div>
+        )}
+         {projectAutoReplyLimit?.autoReply && projectAutoReplyLimit.autoReplyLimit! < 20 && activeKeywords.length < 2 && isReplyPossible && (
+          <div className="mr-6">
+            <ColoredText variant="alert" icon={AlertTriangleIcon}>
+              You need at least 2 active keywords in order to use the auto-reply functionality. This way AI will have more posts to reply to.
             </ColoredText>
           </div>
         )}
