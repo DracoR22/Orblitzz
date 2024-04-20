@@ -48,6 +48,17 @@ export const redditRouter = router({
               password: selectedUser.password
             });
 
+             // Check if already replied to post
+      const alreadyReplied = await db.query.redditReplies.findMany({
+        columns: {
+          postId: true,
+          createdAt: true,
+          projectId: true,
+          accountClientId: true
+        },
+ 
+      })
+
             const postIdsSet = new Set();
             // Array of latest posts
             const latestPosts = [];
@@ -76,13 +87,17 @@ export const redditRouter = router({
                       createdAt: new Date(post.created_utc * 1000).toLocaleString(),
                     }))
                     .filter((post) => {
-                      // Check if the post ID is not already in the set
-                      if (!postIdsSet.has(post.postId)) {
-                        // Add the post ID to the set and return true to include the post
-                        postIdsSet.add(post.postId);
-                        return true;
-                      }
-                      return false;
+                        // Check if the post ID is not already in the set
+                       if (!postIdsSet.has(post.postId)) {
+                      // Check if the post has been replied by current user
+                      const repliedByCurrentUser = alreadyReplied.some(reply => reply.postId === post.postId && reply.accountClientId === selectedUser.clientId);
+                      // Add the post ID to the set and return true to include the post if it's not replied by current user
+                      if (!repliedByCurrentUser) {
+                       postIdsSet.add(post.postId);
+                       return true;
+                    }
+                  }
+                    return false;
                     });
               
                   // Only add the keyword if there are unique posts with content
