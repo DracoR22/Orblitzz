@@ -17,6 +17,11 @@ const columns = [
     id: '2',
     title: 'Suggested Keywords',
     isAdded: false,
+  },
+  {
+    id: '3',
+    title: 'Create Your Keywords',
+    isAdded: false,
   }
 ]
 
@@ -48,7 +53,7 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
         <Separator/>
       </div>
       {/* DRAG AND DROP */}
-      <div className="flex justify-center mx-10 rounded-md py-6">
+      <div className="flex justify-center mx-4 rounded-md py-6">
         <KeywordsContainer projectAutoReplyLimit={projectAutoReplyLimit!}
          repliesCreatedThisMonth={repliesCreatedThisMonth} repliesCreatedToday={repliesCreatedToday} subscriptionPlan={subscriptionPlan} columns={columns} projectId={params.projectId}/>
       </div>

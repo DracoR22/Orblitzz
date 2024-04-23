@@ -22,6 +22,7 @@ const ProjectIdPage = async ({ params }: Props) => {
 
   const repliesCreatedToday = repliesCreatedThisMonth.filter(reply => isToday(reply.createdAt));
   const currentProject = allUserProjectsCount.find((project) => project.id === params.projectId)
+
   
   return (
     <ScrollArea className="h-[90%] w-full">

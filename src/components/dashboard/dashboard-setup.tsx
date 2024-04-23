@@ -118,7 +118,7 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan, isModal }: Props) =
         <CardHeader>
           <CardTitle>Create A Project</CardTitle>
            <CardDescription className="dark:text-neutral-400">
-            Lets create a project to get you started. You can create
+            Let&apos;s create a project to get you started. You can create
             more projects later on.
            </CardDescription>
         </CardHeader>

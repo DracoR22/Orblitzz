@@ -3,7 +3,7 @@
 import { checkPlanKeywordsLimitClient, cn } from '@/lib/utils'
 import { DragDropContext, DropResult, Droppable } from '@hello-pangea/dnd'
 import KeywordItem from './keyword-item'
-import { BotIcon, InfoIcon, UserIcon } from 'lucide-react'
+import { BotIcon, BriefcaseIcon, FlagIcon, InfoIcon, PlayIcon, PlusIcon, UserIcon } from 'lucide-react'
 import Hint from '../global/hint'
 import { useEffect, useState } from 'react'
 import { trpc } from "@/server/trpc/client"
@@ -17,6 +17,8 @@ import { RedditCampaignType } from '@/lib/db/schema/reddit'
 import { getMonthlyReplies } from '@/server/actions/reddit-actions'
 import { useAutoRedditReply } from '@/hooks/use-auto-reddit-reply'
 import { isToday } from 'date-fns'
+import { Button } from '../ui/button'
+import { useCreateManualKeywordModal } from '@/hooks/modals/use-create-manual-keyword-modal'
 
 interface Props {
   columns: {
@@ -46,6 +48,8 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
 
   const { data } = trpc.keyword.getAllKeywords.useQuery({ projectId })
 
+  const { onOpen } = useCreateManualKeywordModal()
+
   const { setActiveKeywords } = useActiveKeywords()
 
   const columnIds = data && data.allKeywords.map(keyword => keyword.columnId);
@@ -69,7 +73,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
      toast.error('Something went wrong while updating keywords. Please try again later.')
      console.log(err)
     },
-    // YOU CAN REMOVE THE CONDITIONAL AND IT WILL STILL WORK
+ 
     onSuccess: ({ updatedKeyword }) => {
       //  console.log(updatedKeyword)
        if (updatedKeyword.columnId === '1') {
@@ -87,28 +91,28 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
 
   
 
-   const onDragEnd = (result: DropResult) => {
-    const { destination, source, type } = result
-
-    if (!destination) return
-
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source, type } = result;
+  
+    if (!destination) return;
+  
     // If dropped in the same position
-    if (destination.droppableId === source.droppableId && destination.index === source.index) return
-
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+  
     // Return if user has reached its keyword limit
-    if (destination.droppableId === '1' && !isAddedKeywordPossible) return
-
+    if (destination.droppableId === '1' && !isAddedKeywordPossible) return;
+  
     if (type === 'keyword') {
-       let newOrderedData = [...orderedData]
-
-       // Source and destination keyword
-       let sourceColumn = newOrderedData.filter(keyword => keyword.columnId === source.droppableId)
-       let destColumn = newOrderedData.filter(keyword => keyword.columnId === destination.droppableId)
-
-       if (!sourceColumn || !destColumn) return
-
-       // Moving the keyword in the same column
-       if (source.droppableId === destination.droppableId) {
+      let newOrderedData = [...orderedData];
+  
+      // Source and destination keyword
+      let sourceColumn = newOrderedData.filter(keyword => keyword.columnId === source.droppableId);
+      let destColumn = newOrderedData.filter(keyword => keyword.columnId === destination.droppableId);
+  
+      if (!sourceColumn || !destColumn) return;
+  
+      // Moving the keyword in the same column
+      if (source.droppableId === destination.droppableId) {
         const reorderedKeywords = reorder(sourceColumn, source.index, destination.index);
 
         // Combine reorderedKeywords and newOrderedData
@@ -118,11 +122,8 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
         const uniqueKeywords = Array.from(new Set(updatedOrderedData.map(keyword => keyword.id))).map(id => updatedOrderedData.find(keyword => keyword.id === id));
 
         setOrderedData(uniqueKeywords);
-
-        // Trigger Backend
-        // updateKeywordMutation({ projectId, items: reorderedKeywords })
-
-       } else { // User moves keyword to another column
+  
+      } else { // User moves keyword to another column
         const [movedKeyword] = sourceColumn.splice(source.index, 1);
       
         // Assign the new ColumnId to the keyword
@@ -135,6 +136,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
       
         // Update order for the destination column
         destColumn.splice(destination.index, 0, movedKeyword);
+        
         destColumn.forEach((keyword, idx) => {
           keyword.order = idx;
         });
@@ -143,32 +145,28 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
         const updatedColumns = [...sourceColumn, ...destColumn];
       
         // Sort the combined array based on order
-        updatedColumns.sort((a, b) => a.order - b.order);
+       const sorted = newOrderedData.sort((a, b) => a.order - b.order);
       
-        setOrderedData(updatedColumns);
+        setOrderedData(sorted);
 
          // Trigger backend
          updateKeywordMutation({ projectId, items: destColumn })
 
          // Update keywords global state
          setActiveKeywords(orderedData.filter((o: any) => o.columnId === "1").map((o: any) => o.createdAt) as string[])
-        //  setTodayUpdatedKeywords((prevCount: any) => prevCount + 1);
 
+      // Trigger backend update if necessary
+      // updateKeywordMutation({ projectId, items: newOrderedData });
       }
     }
-
-    // if (destination.droppableId === "1") {
-    //   console.log(orderedData.filter((o: any) => o.columnId === "1").length)
-    //   // console.log("calling auto reply function")
-    //  handleAutoReply()
-    // }
-   }
+  };
+  
 
 
    if (orderedData === null) {
     return (
       <div>
-        <Skeleton className='flex w-[700px] h-[1000px] p-4 rounded-md'/>
+        <Skeleton className='flex w-[1100px] h-[1000px] p-4 rounded-md'/>
       </div>
     )
   }
@@ -176,17 +174,17 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       {/* {todayUpdatedKeywords ? todayUpdatedKeywords : 0} */}
-        <div className="flex w-[700px] h-fit border p-4 rounded-md">
+        <div className="flex w-[1100px] h-fit border p-4 rounded-md">
         {columns.map((column) => {
           const columnKeywords = orderedData.filter((keyword:  Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId'>) => keyword.columnId === column.id);
           return (
           <div key={column.id} className="flex-1">
           <div className='flex items-center gap-x-4 ml-4'>
-            <div className={cn("w-4 h-4 mb-2 rounded-full", column.id === '1' ? 'bg-blue-500' : 'bg-red-500 ')}/>
+            <div className={cn("w-4 h-4 mb-2 rounded-full", column.id === '1' && 'bg-blue-500', column.id === '2' && 'bg-red-500 ', column.id === '3' && 'bg-green-500 ')}/>
              <h2 className=" font-bold mb-2">{column.title}</h2>
               {column.id === '1' && (
                 <div className='flex items-center gap-x-6'>
-                  <small className='mb-3 bg-blue-400/10 text-blue-500 p-2 rounded-full'><UserIcon className='w-5 h-5'/></small>
+                  <small className='mb-3 bg-blue-400/10 text-blue-500 p-2 rounded-full'><BriefcaseIcon className='w-5 h-5'/></small>
                   <Hint description='Drag and drop the generated keywords here to add them to your project.'>
                   <InfoIcon className='h-4 w-4 text-muted-foreground dark:text-neutral-400 mb-6'/>
                 </Hint>
@@ -201,9 +199,18 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
                  </Hint>
                 </div>
               )}
+
+             {column.id === '3' && (
+                <div className='flex items-center gap-x-2'>
+                  <small className='mb-3 bg-green-400/10 text-green-500 p-2 rounded-full'><UserIcon className='w-5 h-5'/></small>
+                 <Button onClick={() => onOpen({ setOrderedData })} variant={'outline'} size={'sm'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700'>
+                  <PlusIcon/>
+                 </Button>
+                </div>
+              )}
           </div>
             <div className='border-t w-full'/>
-             <div className={cn('', column.id === '1' && 'border-r h-[480px]')}>
+             <div className={cn('', column.id === '1' && 'border-r h-[480px]', column.id=== '2' && 'border-r  h-[480px]')}>
                <Droppable droppableId={column.id} type='keyword' direction='vertical'>
                   {(provided) => (
                     <ol ref={provided.innerRef} {...provided.droppableProps}
@@ -213,6 +220,15 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
                        {columnKeywords.map((keyword:  Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId'>, index: number) => (
                          <KeywordItem key={keyword.id} index={index} keyword={keyword}/>
                        ))}
+                      {/* Conditionally render message if there are no keywords in column 3 */}
+                     {column.id === '3' && columnKeywords.length === 0 && (
+                         <div className="flex items-center justify-center flex-col mt-10">
+                         <div className="opacity-100">
+                            <FlagIcon className="text-muted-foreground w-[80px] h-[80px]"/>
+                            {/* TODO: Add the create button here and something for non subscribed users, remember this is a premium feature */}
+                         </div>
+                      </div>
+                       )}
                        {provided.placeholder}
                     </ol>
                   )}
