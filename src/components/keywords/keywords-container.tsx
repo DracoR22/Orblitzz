@@ -142,7 +142,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
         });
       
         // Concatenate the updated source and destination columns
-        const updatedColumns = [...sourceColumn, ...destColumn];
+        // const updatedColumns = [...sourceColumn, ...destColumn];
       
         // Sort the combined array based on order
        const sorted = newOrderedData.sort((a, b) => a.order - b.order);
