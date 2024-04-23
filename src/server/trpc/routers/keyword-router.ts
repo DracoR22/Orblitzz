@@ -104,26 +104,6 @@ export const keywordRouter = router({
 
        // TODO: Cap the amount of keywords per plan
 
-       const allKeywords = await db.query.keywords.findMany({
-        columns: {
-            id: true,
-            columnId: true,
-            order: true,
-            content: true,
-            updatedAt: true,
-            manual: true
-        },
-        where: and(
-            eq(keywords.redditCampaignId, projectId),
-        ),
-        orderBy: (keywords, { desc }) => [desc(keywords.order)]
-       })
-
-       const manualKeywords = allKeywords.filter(keyword => keyword.manual === true)
-
-       if (manualKeywords.length >= 5) {
-          throw new TRPCError({ message: 'You can only create up to 5 keywords', code: 'TOO_MANY_REQUESTS' })
-       }
 
        const lastKeyword = await db.query.keywords.findFirst({
         columns: {
@@ -136,7 +116,8 @@ export const keywordRouter = router({
         orderBy: (keywords, { desc }) => [desc(keywords.order)]
        })
 
-       const newOrder = lastKeyword ? lastKeyword.order + 1 : 1
+    //    console.log('last keyword order is:' + lastKeyword?.order)
+       const newOrder = lastKeyword ? lastKeyword.order + 1 : 0
 
        // Create The Keyword
        const newKeyword = await db.insert(keywords).values({
@@ -146,7 +127,28 @@ export const keywordRouter = router({
         content,
         manual: true
        })
-       
+
+       const allKeywords = await db.query.keywords.findMany({
+        columns: {
+            id: true,
+            columnId: true,
+            order: true,
+            content: true,
+            updatedAt: true,
+            manual: true
+        },
+        where: and(
+            eq(keywords.redditCampaignId, projectId),
+        ),
+        // orderBy: (keywords, { asc }) => [asc(keywords.order)]
+       })
+
+       const manualKeywords = allKeywords.filter(keyword => keyword.manual === true)
+
+       // TODO: Right now user can create all the keywords they want, fix that
+       if (manualKeywords.length >= 5) {
+          throw new TRPCError({ message: 'You can only create up to 5 keywords', code: 'TOO_MANY_REQUESTS' })
+       }
       
        return { allKeywords }
     }),
