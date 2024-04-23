@@ -32,8 +32,27 @@ const DashboardHeader = ({ repliesMonth, repliesToday, userProjects, lastReply }
 
    const lastProjectReply = lastReply?.createdAt
 
+
+
+   const clickProfanity = async () => {
+    const message = 'Hello my nigas'
+     const res = await fetch('https://vector.profanity.dev', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ message })
+     })
+
+     const json = await res.json()
+
+     console.log(json)
+     return json
+   }
+
   return (
     <>
+     {/* <button onClick={clickProfanity}>
+        Calculate profanity
+      </button> */}
      <RepliesCountMonth replies={repliesMonth}/>
      <RepliesCreatedToday replies={repliesToday}/>
      <LastReply lastReply={lastProjectReply}/>

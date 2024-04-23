@@ -1,4 +1,4 @@
-import { integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { redditCampaigns } from "./reddit";
 
 export const keywords = pgTable("keyword", {
@@ -6,9 +6,10 @@ export const keywords = pgTable("keyword", {
     content: text('content').notNull(),
     order: integer('order').notNull(),
     columnId: text('columnId').notNull(),
+    manual: boolean('manual').default(false),
 
     createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }),
+    updatedAt: timestamp('updatedAt', { withTimezone: true, mode: 'string' }),
 
     redditCampaignId: uuid("redditCampaignId").notNull().references(() => redditCampaigns.id, { onDelete: 'cascade' })
 })

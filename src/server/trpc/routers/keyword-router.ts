@@ -8,7 +8,7 @@ import { and, eq } from "drizzle-orm";
 import { redditCampaigns } from "@/lib/db/schema/reddit";
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe";
 import { checkPlanKeywordsLimitServer } from "@/lib/utils";
-import { UpdateKeywordOrderInputSchema } from "@/lib/validations/campaign-keywords-schema";
+import { CreateManualKeywordSchema, UpdateKeywordOrderInputSchema } from "@/lib/validations/campaign-keywords-schema";
 
 export const keywordRouter = router({
 //--------------------------------------------------------------------------------//CREATE KEYWORDS WITH AI//-----------------------------------------------------------------------//
@@ -90,6 +90,65 @@ export const keywordRouter = router({
        })
 
           return { projectId }
+    }),
+
+//--------------------------------------------------------------------------------//CREATE MANUAL KEYWORD//-----------------------------------------------------------------------//
+    createManualKeyword: privateProcedure.input(CreateManualKeywordSchema).mutation(async ({ ctx, input }) => {
+       const { content, projectId } = input
+
+       const subscriptionPlan = await getUserSubscriptionPlan()
+
+       if (subscriptionPlan.name === 'Free') {
+         throw new TRPCError({ message: 'Upgrade your plan to create your own keywords', code: 'UNAUTHORIZED' })
+       }
+
+       // TODO: Cap the amount of keywords per plan
+
+       const allKeywords = await db.query.keywords.findMany({
+        columns: {
+            id: true,
+            columnId: true,
+            order: true,
+            content: true,
+            updatedAt: true,
+            manual: true
+        },
+        where: and(
+            eq(keywords.redditCampaignId, projectId),
+        ),
+        orderBy: (keywords, { desc }) => [desc(keywords.order)]
+       })
+
+       const manualKeywords = allKeywords.filter(keyword => keyword.manual === true)
+
+       if (manualKeywords.length >= 5) {
+          throw new TRPCError({ message: 'You can only create up to 5 keywords', code: 'TOO_MANY_REQUESTS' })
+       }
+
+       const lastKeyword = await db.query.keywords.findFirst({
+        columns: {
+            order: true
+        },
+        where: and(
+            eq(keywords.redditCampaignId, projectId),
+            eq(keywords.columnId, '3')
+        ),
+        orderBy: (keywords, { desc }) => [desc(keywords.order)]
+       })
+
+       const newOrder = lastKeyword ? lastKeyword.order + 1 : 1
+
+       // Create The Keyword
+       const newKeyword = await db.insert(keywords).values({
+        redditCampaignId: projectId,
+        columnId: '3',
+        order: newOrder,
+        content,
+        manual: true
+       })
+       
+      
+       return { allKeywords }
     }),
 
 //-------------------------------------------------------------------------//UPDATE KEYWORD ORDER AND POSITION//-----------------------------------------------------------------//

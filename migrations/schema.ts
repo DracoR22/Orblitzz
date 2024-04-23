@@ -50,9 +50,10 @@ import { timestamp, pgTable, text, primaryKey, integer, uuid, boolean } from "dr
     content: text('content').notNull(),
     order: integer('order').notNull(),
     columnId: text('columnId').notNull(),
+    manual: boolean('manual').default(false),
 
     createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }),
+    updatedAt: timestamp('updatedAt', { withTimezone: true, mode: 'string' }),
 
     redditCampaignId: uuid("redditCampaignId").notNull().references(() => redditCampaigns.id, { onDelete: 'cascade' })
 })
