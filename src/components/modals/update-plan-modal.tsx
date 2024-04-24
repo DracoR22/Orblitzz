@@ -23,7 +23,7 @@ const UpdatePlanModal = () => {
       <DialogContent className="max-w-md p-0 overflow-hidden dark:bg-[#1e1e1e]">
         <div className="mx-auto space-y-4 p-6">
           <h2 className="font-semibold text-xl">
-            Upgrade for more projects 🚀
+            Upgrade your plan now 🚀
           </h2>
           <p className="text-sm font-semibold text-muted-foreground">
             No contracts / cancel anytime
@@ -33,7 +33,7 @@ const UpdatePlanModal = () => {
               <li>More replies per month</li>
               <li>Up to 2 projects</li>
               <li>Increase visibility with more keywords</li>
-           
+              <li>Create your own custom keywords</li>
             </ul>
           </div>
           <Button onClick={handleClick} className="text-white w-full">

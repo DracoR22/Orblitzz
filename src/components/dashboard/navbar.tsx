@@ -17,6 +17,7 @@ import { checkPlanReplyLimit } from "@/lib/utils"
 import { RedditCampaignType } from "@/lib/db/schema/reddit"
 import { useActiveKeywords } from "@/hooks/states/use-keywords-available"
 import Link from "next/link"
+import { useUpdatePlanModal } from "@/hooks/modals/use-update-plan-modal"
 
 interface NavbarProps {
   projectId: string
@@ -30,7 +31,9 @@ interface NavbarProps {
 const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedThisMonth, repliesCreatedToday, subscriptionPlan }: NavbarProps) => {
   
   const { isReplyPossible } = checkPlanReplyLimit({ planName: subscriptionPlan.name!, repliesCreatedThisMonth });
-   const { activeKeywords } = useActiveKeywords()
+  const { activeKeywords } = useActiveKeywords()
+
+   const { onOpen: onOpenUpgrade } = useUpdatePlanModal()
 
   const { handleAutoReply } = useAutoRedditReply({ repliesCreatedThisMonth, allKeywords, subscriptionPlan, projectAutoReplyLimit, repliesCreatedToday, projectId })
   
@@ -43,11 +46,9 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
       <div className="flex flex-1 justify-end items-center">
         {/* SUBSCRIPTION BUTTON */}
       <div className="mx-6">
-        <Button asChild size='sm' className="text-white">
-        <Link href={`/dashboard/${projectId}/billing`}>
+        <Button onClick={onOpenUpgrade} size='sm' className="text-white">
            Need more replies?
           <SparklesIcon className="w-4 h-4 ml-2"/>
-        </Link>
         </Button>
       </div>
         {projectAutoReplyLimit?.autoReply && projectAutoReplyLimit.autoReplyLimit! >= 20 && activeKeywords.length < 5 && isReplyPossible && (

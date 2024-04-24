@@ -51,6 +51,7 @@ import { timestamp, pgTable, text, primaryKey, integer, uuid, boolean } from "dr
     order: integer('order').notNull(),
     columnId: text('columnId').notNull(),
     manual: boolean('manual').default(false),
+    originalColumnId: text('originalColumnId').notNull(),
 
     createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updatedAt', { withTimezone: true, mode: 'string' }),

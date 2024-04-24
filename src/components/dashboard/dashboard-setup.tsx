@@ -62,7 +62,11 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan, isModal }: Props) =
             onClose()
         },
         onSuccess: ({ projectId, projectDescription }) => {
-         router.push(`/dashboard/${projectId}/keywords`);
+         if (!isModal) {
+            router.push(`/dashboard/${projectId}/keywords`);
+         } else {
+            router.push(`/dashboard/${projectId}/keywords?welcome=true`); 
+         }
          toast.success('Your project has been created')
          router.refresh()
          onClose()
@@ -109,7 +113,7 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan, isModal }: Props) =
          return updateMutation({ id: projectId, autoReply: values.autoReply, autoReplyLimit: values.autoReplyLimit, description: values.description, title: values.title, tone: values.tone, url: values.url, image: values.image })
          } else {
           return createMutation(values)
-         } 
+         }
   }
 
   return (

@@ -67,6 +67,9 @@ const CreateManualKeywordModal = () => {
            <CardTitle>Create A Keyword</CardTitle>
            <CardDescription className="dark:text-neutral-400">
              Here you can create your own keywords to have a more personalized post seaching.
+             <span className="text-sx text-muted-foreground">
+              (You can only create up to 5 keywords)
+             </span>
            </CardDescription>
          </CardHeader>
          <CardContent>

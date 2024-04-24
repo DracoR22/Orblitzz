@@ -172,7 +172,7 @@ export const redditRouter = router({
               },
               {
                   role: 'user',
-                  content: `Generate a list of 10 RELEVANT and UNIQUE keywords based on '${description}'`
+                  content: `Generate a list of 5 RELEVANT and UNIQUE keywords based on '${description}'`
               }
           ]
       })
@@ -191,11 +191,11 @@ export const redditRouter = router({
         const trimmedThirdKeyword = keywordsOpenai[2].trim();
         const trimmedFourthKeyword = keywordsOpenai[3].trim();
         const trimmedFifthKeyword = keywordsOpenai[4].trim();
-        const trimmedSixthKeyword = keywordsOpenai[5].trim();
-        const trimmedSeventhKeyword = keywordsOpenai[6].trim();
-        const trimmedEightKeyword = keywordsOpenai[7].trim();
-        const trimmedNinthKeyword = keywordsOpenai[8].trim();
-        const trimmedTenthKeyword = keywordsOpenai[9].trim();
+        // const trimmedSixthKeyword = keywordsOpenai[5].trim();
+        // const trimmedSeventhKeyword = keywordsOpenai[6].trim();
+        // const trimmedEightKeyword = keywordsOpenai[7].trim();
+        // const trimmedNinthKeyword = keywordsOpenai[8].trim();
+        // const trimmedTenthKeyword = keywordsOpenai[9].trim();
 
         // console.log(trimmedFirstKeyword)
         // console.log(trimmedSecondKeyword)
@@ -213,6 +213,7 @@ export const redditRouter = router({
             columnId: '2',
             order: 0,
             content: trimmedFirstKeyword,
+            originalColumnId: '2'
        })
 
        const insertedKeywordS = await db.insert(keywords).values({
@@ -220,6 +221,7 @@ export const redditRouter = router({
           columnId: '2',
           order: 1,
           content: trimmedSecondKeyword,
+          originalColumnId: '2'
       })
 
        const insertedKeywordT = await db.insert(keywords).values({
@@ -227,6 +229,7 @@ export const redditRouter = router({
           columnId: '2',
           order: 2,
           content: trimmedThirdKeyword,
+          originalColumnId: '2'
       })
 
       const insertedKeywordF = await db.insert(keywords).values({
@@ -234,6 +237,7 @@ export const redditRouter = router({
           columnId: '2',
           order: 3,
           content: trimmedFourthKeyword,
+          originalColumnId: '2'
       })
 
      const insertedKeywordFi = await db.insert(keywords).values({
@@ -241,42 +245,43 @@ export const redditRouter = router({
         columnId: '2',
         order: 4,
         content: trimmedFifthKeyword,
+        originalColumnId: '2'
      })
 
-     const insertedKeywordSi = await db.insert(keywords).values({
-      redditCampaignId: projectId,
-      columnId: '2',
-      order: 5,
-      content: trimmedSixthKeyword,
-   })
+  //    const insertedKeywordSi = await db.insert(keywords).values({
+  //     redditCampaignId: projectId,
+  //     columnId: '2',
+  //     order: 5,
+  //     content: trimmedSixthKeyword,
+  //  })
 
-     const insertedKeywordSe = await db.insert(keywords).values({
-      redditCampaignId: projectId,
-      columnId: '2',
-      order: 6,
-      content: trimmedSeventhKeyword,
-     })
+  //    const insertedKeywordSe = await db.insert(keywords).values({
+  //     redditCampaignId: projectId,
+  //     columnId: '2',
+  //     order: 6,
+  //     content: trimmedSeventhKeyword,
+  //    })
 
-     const insertedKeywordEi = await db.insert(keywords).values({
-      redditCampaignId: projectId,
-      columnId: '2',
-      order: 7,
-      content: trimmedEightKeyword,
-     })
+  //    const insertedKeywordEi = await db.insert(keywords).values({
+  //     redditCampaignId: projectId,
+  //     columnId: '2',
+  //     order: 7,
+  //     content: trimmedEightKeyword,
+  //    })
 
-     const insertedKeywordNi = await db.insert(keywords).values({
-      redditCampaignId: projectId,
-      columnId: '2',
-      order: 8,
-      content: trimmedNinthKeyword,
-     })
+  //    const insertedKeywordNi = await db.insert(keywords).values({
+  //     redditCampaignId: projectId,
+  //     columnId: '2',
+  //     order: 8,
+  //     content: trimmedNinthKeyword,
+  //    })
 
-     const insertedKeywordTh = await db.insert(keywords).values({
-      redditCampaignId: projectId,
-      columnId: '2',
-      order: 9,
-      content: trimmedTenthKeyword,
-      })
+  //    const insertedKeywordTh = await db.insert(keywords).values({
+  //     redditCampaignId: projectId,
+  //     columnId: '2',
+  //     order: 9,
+  //     content: trimmedTenthKeyword,
+  //     })
 
         return { projectId: project[0].insertedId, projectDescription: project[0].description }
       } catch (error) {

@@ -59,6 +59,7 @@ export const keywordRouter = router({
               columnId: '2',
               order: 0,
               content: trimmedFirstKeyword,
+              originalColumnId: '2'
          })
 
          const insertedKeywordS = await db.insert(keywords).values({
@@ -66,6 +67,7 @@ export const keywordRouter = router({
             columnId: '2',
             order: 1,
             content: trimmedSecondKeyword,
+            originalColumnId: '2'
         })
 
          const insertedKeywordT = await db.insert(keywords).values({
@@ -73,6 +75,7 @@ export const keywordRouter = router({
             columnId: '2',
             order: 2,
             content: trimmedThirdKeyword,
+            originalColumnId: '2'
         })
 
         const insertedKeywordF = await db.insert(keywords).values({
@@ -80,6 +83,7 @@ export const keywordRouter = router({
             columnId: '2',
             order: 3,
             content: trimmedFourthKeyword,
+            originalColumnId: '2'
         })
 
        const insertedKeywordFi = await db.insert(keywords).values({
@@ -87,6 +91,7 @@ export const keywordRouter = router({
           columnId: '2',
           order: 4,
           content: trimmedFifthKeyword,
+          originalColumnId: '2'
        })
 
           return { projectId }
@@ -125,7 +130,8 @@ export const keywordRouter = router({
         columnId: '3',
         order: newOrder,
         content,
-        manual: true
+        manual: true,
+        originalColumnId: '3'
        })
 
        const allKeywords = await db.query.keywords.findMany({
@@ -135,7 +141,8 @@ export const keywordRouter = router({
             order: true,
             content: true,
             updatedAt: true,
-            manual: true
+            manual: true,
+            originalColumnId: true
         },
         where: and(
             eq(keywords.redditCampaignId, projectId),
@@ -230,7 +237,8 @@ export const keywordRouter = router({
                 columnId: true,
                 order: true,
                 content: true,
-                updatedAt: true
+                updatedAt: true,
+                originalColumnId: true
               },
               where: eq(keywords.redditCampaignId, projectId),
               orderBy: (keywords, { asc }) => [asc(keywords.order)]
