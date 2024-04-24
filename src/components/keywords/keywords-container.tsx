@@ -19,6 +19,9 @@ import { useAutoRedditReply } from '@/hooks/use-auto-reddit-reply'
 import { isToday } from 'date-fns'
 import { Button } from '../ui/button'
 import { useCreateManualKeywordModal } from '@/hooks/modals/use-create-manual-keyword-modal'
+import { useUpdatePlanModal } from '@/hooks/modals/use-update-plan-modal'
+import { useSearchParams } from 'next/navigation'
+import WelcomeModal from '../modals/welcome-modal'
 
 interface Props {
   columns: {
@@ -49,6 +52,10 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
   const { data } = trpc.keyword.getAllKeywords.useQuery({ projectId })
 
   const { onOpen } = useCreateManualKeywordModal()
+  const { onOpen: onOpenUpgrade } = useUpdatePlanModal()
+
+  const searchParams = useSearchParams()
+  const isNewUser = searchParams.get('welcome')
 
   const { setActiveKeywords } = useActiveKeywords()
 
@@ -101,6 +108,12 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
   
     // Return if user has reached its keyword limit
     if (destination.droppableId === '1' && !isAddedKeywordPossible) return;
+
+    // if (destination.droppableId === '2' && source.droppableId === '3') return
+
+    // if (destination.droppableId === '3' && source.droppableId === '2') return
+
+    
   
     if (type === 'keyword') {
       let newOrderedData = [...orderedData];
@@ -172,6 +185,8 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
   }
 
   return (
+    <>
+    {isNewUser && <WelcomeModal/>}
     <DragDropContext onDragEnd={onDragEnd}>
       {/* {todayUpdatedKeywords ? todayUpdatedKeywords : 0} */}
         <div className="flex w-[1100px] h-fit border p-4 rounded-md">
@@ -203,9 +218,15 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
              {column.id === '3' && (
                 <div className='flex items-center gap-x-2'>
                   <small className='mb-3 bg-green-400/10 text-green-500 p-2 rounded-full'><UserIcon className='w-5 h-5'/></small>
-                 <Button onClick={() => onOpen({ setOrderedData })} variant={'outline'} size={'sm'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700'>
+                 {subscriptionPlan.name === 'Free' ? (
+                  <Button onClick={onOpenUpgrade} variant={'outline'} size={'sm'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700'>
                   <PlusIcon/>
                  </Button>
+                 ) : (
+                  <Button onClick={() => onOpen({ setOrderedData })} variant={'outline'} size={'sm'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700'>
+                  <PlusIcon/>
+                 </Button>
+                 )}
                 </div>
               )}
           </div>
@@ -217,7 +238,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
                     className={cn(`px-4 py-0.5 flex flex-col gap-y-2`, 
                     columnKeywords && columnKeywords.length > 0 ? 'mt-2' : 'mt-0',
                     )}>
-                       {columnKeywords.map((keyword:  Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId'>, index: number) => (
+                       {columnKeywords.map((keyword:  Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId' | 'originalColumnId'>, index: number) => (
                          <KeywordItem key={keyword.id} index={index} keyword={keyword}/>
                        ))}
                       {/* Conditionally render message if there are no keywords in column 3 */}
@@ -225,8 +246,18 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
                          <div className="flex items-center justify-center flex-col mt-10">
                          <div className="opacity-100">
                             <FlagIcon className="text-muted-foreground w-[80px] h-[80px]"/>
-                            {/* TODO: Add the create button here and something for non subscribed users, remember this is a premium feature */}
-                         </div>
+                         </div>  
+                         {subscriptionPlan.name === 'Free' ? (
+                            <Button onClick={onOpenUpgrade}
+                            variant={'outline'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700 mt-3'>
+                              Create your own Keyword <PlusIcon className='ml-2'/>
+                            </Button>
+                         ) : (
+                          <Button onClick={() => onOpen({ setOrderedData })}
+                           variant={'outline'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700 mt-4'>
+                            Create your own Keyword <PlusIcon className='ml-2'/>
+                         </Button>
+                         )}
                       </div>
                        )}
                        {provided.placeholder}
@@ -238,6 +269,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
          )})}
       </div>
     </DragDropContext>
+    </>
   )
 }
 

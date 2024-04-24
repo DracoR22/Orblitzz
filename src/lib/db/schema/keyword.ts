@@ -7,6 +7,7 @@ export const keywords = pgTable("keyword", {
     order: integer('order').notNull(),
     columnId: text('columnId').notNull(),
     manual: boolean('manual').default(false),
+    originalColumnId: text('originalColumnId').notNull(),
 
     createdAt: timestamp("createdAt", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updatedAt', { withTimezone: true, mode: 'string' }),
