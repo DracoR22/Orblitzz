@@ -23,7 +23,7 @@ const ModalProvider = () => {
       <CreateProjectModal/>
       <UpdatePlanModal/>
       <LogoutModal/>
-      <CreateManualKeywordModal/>
+      {/* <CreateManualKeywordModal/> */}
     </>
   )
 }

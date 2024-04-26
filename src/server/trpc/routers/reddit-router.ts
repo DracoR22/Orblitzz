@@ -591,7 +591,7 @@ export const redditRouter = router({
        const similarityScore = calculateCosineSimilarity(processedPostContent, processedProjectDescription);
        console.log(`Similarity score for: //  ${randomPost.content} is ${similarityScore}`)
 
-       if (similarityScore < 0.09) {
+       if (similarityScore < 0.07) {
         throw new TRPCError({ message: 'Post is not suitable to reply', code: 'FORBIDDEN' })
        }
       // } catch (error) {

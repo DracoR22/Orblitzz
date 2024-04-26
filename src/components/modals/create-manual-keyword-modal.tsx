@@ -1,7 +1,6 @@
 'use client'
 
-import { useCreateManualKeywordModal } from "@/hooks/modals/use-create-manual-keyword-modal"
-import { Dialog, DialogContent } from "../ui/dialog"
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { useForm } from "react-hook-form"
 import { ZodError, z } from "zod"
@@ -13,16 +12,34 @@ import { trpc } from "@/server/trpc/client"
 import { toast } from "sonner"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
-import { Loader2Icon } from "lucide-react"
+import { Loader2Icon, PlusIcon, TrashIcon } from "lucide-react"
+import { KeywordType } from "@/lib/db/schema/keyword"
+import { ScrollArea } from "../ui/scroll-area"
+import { cn } from "@/lib/utils"
 
-const CreateManualKeywordModal = () => {
+interface Props {
+  orderedData: any
+  setOrderedData: any
+  secondary?: boolean
+}
 
-  const { isOpen, onClose, onOpen, data } = useCreateManualKeywordModal()
+const CreateManualKeywordModal = ({ orderedData, setOrderedData, secondary }: Props) => {
 
-  const { setOrderedData } = data
+  // const { isOpen, onClose, onOpen, data } = useCreateManualKeywordModal()
+
+  // const { setOrderedData, orderedData } = data
 
   const params = useParams()
   const router = useRouter()
+
+  const { mutate: deleteMutation, isPending: isDeletePending } = trpc.keyword.deleteManualKeyword.useMutation({
+    onError: (err) => {
+      toast.error('Something went wrong while deleting the keyword. Please try again later.')
+    },
+    onSuccess: ({ allKeywords }) => {
+      setOrderedData(allKeywords)
+    }
+  })
 
   const { mutate, isPending } = trpc.keyword.createManualKeyword.useMutation({
     onError: (err) => {
@@ -38,7 +55,7 @@ const CreateManualKeywordModal = () => {
          return toast.error(err.issues[0].message)
        }
 
-      toast.error('Something went wrong while updating your project. Please try again later.')
+      toast.error('Something went wrong while creating the keyword. Please try again later.')
   },
   onSuccess: ({ allKeywords }) => {
      setOrderedData(allKeywords)
@@ -59,8 +76,25 @@ const CreateManualKeywordModal = () => {
     mutate({ content: values.content, projectId: params.projectId as string })
  }
 
+ const handleDelete = (keywordId: string) => {
+    deleteMutation({ projectId: params.projectId as string, keywordId })
+ }
+
+ const manualKeywords = orderedData.filter((keyword: Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId' | 'manual' | 'originalColumnId'>) => keyword.originalColumnId === '3');
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog>
+      <DialogTrigger>
+       {!secondary ? (
+         <Button variant={'outline'} size={'sm'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700'>
+          <PlusIcon/>
+        </Button>
+       ) : (
+        <Button  variant={'outline'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700 mt-4'>
+            Create your own Keyword <PlusIcon className='ml-2'/>
+       </Button>
+       )}
+      </DialogTrigger>
       <DialogContent className="dark:bg-[#1e1e1e] max-w-lg">
         <Card>
          <CardHeader>
@@ -73,9 +107,34 @@ const CreateManualKeywordModal = () => {
            </CardDescription>
          </CardHeader>
          <CardContent>
+          {/* TODO: Add manual keywords here */}
+          <div>
+         <div className="flex items-center justify-between">
+          <small className=' bg-green-400/20 text-green-500 p-1 font-medium rounded-md'>
+            Keywords
+          </small>
+          <small className="font-medium text-xs text-muted-foreground">
+            {manualKeywords.length} / 5
+          </small>
+         </div>
+          <ScrollArea className={cn("h-[135px] mt-2", manualKeywords.length <= 1 && 'h-[80px]')}>
+            {manualKeywords.length > 0 ? manualKeywords.map((k: Pick<KeywordType, 'id' | 'content' | 'order' | 'columnId' | 'originalColumnId' | 'manual'>, index: number) => (
+                <div key={index} className="truncate border-2 dark:border-transparent border-neutral-200 py-2 mt-3 px-4 text-sm bg-white dark:bg-[#363636] rounded-md shadow-sm font-medium">
+                 <div className="flex items-center justify-between">
+                   {k.content}
+                   <Button disabled={isDeletePending} onClick={() => handleDelete(k.id as string)} size={'sm'} className="bg-red-400/20 text-red-500 border-2 border-red-500 hover:bg-red-400/40"><TrashIcon className='w-5 h-5'/></Button>
+                 </div>
+              </div>
+            )) : (
+              <div>
+
+              </div>
+            )}
+            </ScrollArea>
+          </div>
            <div>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4 mt-4'>
             <FormField disabled={isPending} control={form.control} name='content' render={({ field }) => (
                 <FormItem className='flex-1'>
                     <FormLabel>
