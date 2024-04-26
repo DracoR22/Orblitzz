@@ -6,6 +6,7 @@ import { Button } from "../ui/button"
 import { useLogoutModal } from "@/hooks/modals/use-logout-modal"
 import { Separator } from "../ui/separator"
 import { signOut } from "next-auth/react"
+import { LogOutIcon } from "lucide-react"
 
 const LogoutModal = () => {
 
@@ -22,7 +23,7 @@ const LogoutModal = () => {
         <h2 className="font-semibold text-xl">
           Are you sure you want to sign out?
         </h2>
-         <p className="text-sm text-muted-foreground text-center">
+         <p className="text-sm text-muted-foreground">
             You can always sign back in at any time.
          </p>
       </div>
@@ -32,6 +33,7 @@ const LogoutModal = () => {
           Cancel
         </Button>
         <Button onClick={() => signOut()} className="text-white ">
+          <LogOutIcon className="mr-2"/>
           Sign Out
         </Button>
         </div>

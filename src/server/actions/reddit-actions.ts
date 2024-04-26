@@ -3,6 +3,7 @@
 import { currentUser } from "@/lib/auth/get-server-session"
 import { db } from "@/lib/db"
 import { redditCampaigns, redditReplies } from "@/lib/db/schema/reddit"
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { subMonths } from "date-fns"
 import { and, asc, eq } from "drizzle-orm"
 
@@ -102,7 +103,7 @@ export const getAllUserProjects = async () => {
 }
 
 //---------------------------------------------------//GET PROJECT THIS MONTH REPLIES COUNT//------------------------------------------//
-export const getMonthlyReplies = async (projectId: string) => {
+export const getMonthlyReplies = async (projectId: string, subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>) => {
     // Validate user
     const user = await currentUser()
 
@@ -121,18 +122,22 @@ export const getMonthlyReplies = async (projectId: string) => {
         orderBy: (redditReplies, { desc }) => [desc(redditReplies.createdAt)]
       })
 
-      const repliesCreatedThisMonth = allProjectReplies.filter(reply => {
-        const replyDate = new Date(reply.createdAt);
-        const currentDate = new Date();
-      
-        return (
-          replyDate.getMonth() === currentDate.getMonth() &&
-          replyDate.getFullYear() === currentDate.getFullYear()
-        );
-      });
+      if (subscriptionPlan.name === 'Free') {
 
+        return allProjectReplies
+      } else {
+        const repliesCreatedThisMonth = allProjectReplies.filter(reply => {
+          const replyDate = new Date(reply.createdAt);
+          const currentDate = new Date();
+        
+          return (
+            replyDate.getMonth() === currentDate.getMonth() &&
+            replyDate.getFullYear() === currentDate.getFullYear()
+          );
+        });
 
-      return repliesCreatedThisMonth
+        return repliesCreatedThisMonth
+      }     
 }
 
 //-----------------------------------------//GET COUNT OF ALL USER PROJECTS//---------------------------------------------------------------------//

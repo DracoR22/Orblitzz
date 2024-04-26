@@ -16,14 +16,16 @@ import { Loader2Icon, PlusIcon, TrashIcon } from "lucide-react"
 import { KeywordType } from "@/lib/db/schema/keyword"
 import { ScrollArea } from "../ui/scroll-area"
 import { cn } from "@/lib/utils"
+import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 
 interface Props {
   orderedData: any
   setOrderedData: any
   secondary?: boolean
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>> 
 }
 
-const CreateManualKeywordModal = ({ orderedData, setOrderedData, secondary }: Props) => {
+const CreateManualKeywordModal = ({ orderedData, setOrderedData, secondary, subscriptionPlan }: Props) => {
 
   // const { isOpen, onClose, onOpen, data } = useCreateManualKeywordModal()
 
@@ -101,20 +103,20 @@ const CreateManualKeywordModal = ({ orderedData, setOrderedData, secondary }: Pr
            <CardTitle>Create A Keyword</CardTitle>
            <CardDescription className="dark:text-neutral-400">
              Here you can create your own keywords to have a more personalized post seaching.
-             <span className="text-sx text-muted-foreground">
+             {/* <span className="text-sx text-muted-foreground">
               (You can only create up to 5 keywords)
-             </span>
+             </span> */}
            </CardDescription>
          </CardHeader>
          <CardContent>
-          {/* TODO: Add manual keywords here */}
+         
           <div>
          <div className="flex items-center justify-between">
           <small className=' bg-green-400/20 text-green-500 p-1 font-medium rounded-md'>
             Keywords
           </small>
           <small className="font-medium text-xs text-muted-foreground">
-            {manualKeywords.length} / 5
+            {orderedData.length} / {subscriptionPlan.keywords}
           </small>
          </div>
           <ScrollArea className={cn("h-[135px] mt-2", manualKeywords.length <= 1 && 'h-[80px]')}>
@@ -146,7 +148,7 @@ const CreateManualKeywordModal = ({ orderedData, setOrderedData, secondary }: Pr
                     <FormMessage/>
                  </FormItem>
                 )}/>
-                  <Button type='submit' disabled={isPending} className='text-white w-full'>
+                  <Button type='submit' disabled={isPending || orderedData.length >= subscriptionPlan.keywords!} className='text-white w-full'>
                       {isPending && <Loader2Icon className='mr-2 h-4 w-4 animate-spin'/>}
                       Create
                   </Button>

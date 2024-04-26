@@ -14,7 +14,7 @@ export const PLANS = [
       },
       features: [
         {
-          text: '2 AI replies per month',
+          text: '2 AI replies',
         },
         {
           text: 'Automatic replies',
@@ -98,6 +98,9 @@ export const PLANS = [
         },
         {
           text: 'Priority support',
+        },
+        {
+          text: 'Create your own keywords',
         },
       ],
     },

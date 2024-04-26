@@ -29,7 +29,7 @@ export const redditRouter = router({
           throw new TRPCError({ message: 'No plan provided', code: 'UNAUTHORIZED' })
         }
 
-        const monthlyReplies = await getMonthlyReplies(projectId)
+        const monthlyReplies = await getMonthlyReplies(projectId, subscriptionPlan)
 
         if (monthlyReplies.length >= subscriptionPlan.repliesPerMonth) {
           throw new TRPCError({ message: 'Monthly reply limit reached', code: 'UNAUTHORIZED' })
@@ -300,7 +300,7 @@ export const redditRouter = router({
        const subscriptionPlan = await getUserSubscriptionPlan()
 
        // Replies created this month
-       const repliesCreatedThisMonth = await getMonthlyReplies(projectId)
+       const repliesCreatedThisMonth = await getMonthlyReplies(projectId, subscriptionPlan)
 
        console.log(repliesCreatedThisMonth)
 
@@ -491,7 +491,7 @@ export const redditRouter = router({
       const selectedUser = userCredentials[Math.floor(Math.random() * userCredentials.length)];
 
       // Replies created this month
-      const repliesCreatedThisMonth = await getMonthlyReplies(projectId)
+      const repliesCreatedThisMonth = await getMonthlyReplies(projectId, subscriptionPlan)
 
       // Replies created today
       const repliesCreatedToday = repliesCreatedThisMonth.filter(reply => isToday(reply.createdAt));
