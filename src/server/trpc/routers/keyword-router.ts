@@ -150,7 +150,7 @@ export const keywordRouter = router({
         // orderBy: (keywords, { asc }) => [asc(keywords.order)]
        })
 
-       const manualKeywords = allKeywords.filter(keyword => keyword.manual === true)
+       const manualKeywords = allKeywords.filter(keyword => keyword.originalColumnId === '3')
 
        // TODO: Right now user can create all the keywords they want, fix that
        if (manualKeywords.length >= 5) {
@@ -175,7 +175,7 @@ export const keywordRouter = router({
         //  console.log(activeKeywords)
 
         if (columnIds.includes('1') && !isAddedKeywordPossible) {
-            console.log('Active keyword limit reached')
+            // console.log('Active keyword limit reached')
           throw new TRPCError({ message: 'Active keyword limit reached', code: 'TOO_MANY_REQUESTS' })
         }
 
@@ -243,6 +243,50 @@ export const keywordRouter = router({
               where: eq(keywords.redditCampaignId, projectId),
               orderBy: (keywords, { asc }) => [asc(keywords.order)]
         })
+
+        return { allKeywords }
+    }),
+
+    deleteManualKeyword: privateProcedure.input(z.object({ projectId: z.string(), keywordId: z.string() })).mutation(async ({ ctx, input }) => {
+        const { projectId, keywordId } = input
+
+        const selectedKeyword = await db.query.keywords.findFirst({
+            columns: {
+              id: true,
+              originalColumnId: true
+            },
+            where: and(
+                eq(keywords.redditCampaignId, projectId),
+                eq(keywords.id, keywordId)
+            )
+        })
+
+        if (!selectedKeyword) {
+            throw new TRPCError({ message: 'No keyword found', code: 'BAD_REQUEST' })
+        }
+
+        if (selectedKeyword.originalColumnId !== '3') {
+            throw new TRPCError({ message: 'You can only delete keywords created manually', code: 'BAD_REQUEST' })
+        }
+
+        await db.delete(keywords).where(eq(keywords.id, selectedKeyword.id))
+
+        const allKeywords = await db.query.keywords.findMany({
+            columns: {
+                id: true,
+                columnId: true,
+                order: true,
+                content: true,
+                updatedAt: true,
+                manual: true,
+                originalColumnId: true
+            },
+            where: and(
+                eq(keywords.redditCampaignId, projectId),
+            ),
+            // orderBy: (keywords, { asc }) => [asc(keywords.order)]
+           })
+    
 
         return { allKeywords }
     })

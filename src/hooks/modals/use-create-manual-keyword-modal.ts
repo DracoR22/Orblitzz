@@ -2,6 +2,7 @@ import { create } from 'zustand'
 
 type CreateManualKeywordModalData = {
     setOrderedData?: any
+    orderedData?: any
 }
 
 

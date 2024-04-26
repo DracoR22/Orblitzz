@@ -62,7 +62,7 @@ const DashboardSetup = ({ data, projectId, subscriptionPlan, isModal }: Props) =
             onClose()
         },
         onSuccess: ({ projectId, projectDescription }) => {
-         if (!isModal) {
+         if (isModal) {
             router.push(`/dashboard/${projectId}/keywords`);
          } else {
             router.push(`/dashboard/${projectId}/keywords?welcome=true`); 

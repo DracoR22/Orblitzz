@@ -18,10 +18,10 @@ import { getMonthlyReplies } from '@/server/actions/reddit-actions'
 import { useAutoRedditReply } from '@/hooks/use-auto-reddit-reply'
 import { isToday } from 'date-fns'
 import { Button } from '../ui/button'
-import { useCreateManualKeywordModal } from '@/hooks/modals/use-create-manual-keyword-modal'
 import { useUpdatePlanModal } from '@/hooks/modals/use-update-plan-modal'
 import { useSearchParams } from 'next/navigation'
 import WelcomeModal from '../modals/welcome-modal'
+import CreateManualKeywordModal from '../modals/create-manual-keyword-modal'
 
 interface Props {
   columns: {
@@ -51,7 +51,6 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
 
   const { data } = trpc.keyword.getAllKeywords.useQuery({ projectId })
 
-  const { onOpen } = useCreateManualKeywordModal()
   const { onOpen: onOpenUpgrade } = useUpdatePlanModal()
 
   const searchParams = useSearchParams()
@@ -184,6 +183,8 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
     )
   }
 
+  console.log(orderedData)
+
   return (
     <>
     {isNewUser && <WelcomeModal/>}
@@ -223,9 +224,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
                   <PlusIcon/>
                  </Button>
                  ) : (
-                  <Button onClick={() => onOpen({ setOrderedData })} variant={'outline'} size={'sm'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700'>
-                  <PlusIcon/>
-                 </Button>
+                  <CreateManualKeywordModal orderedData={orderedData} setOrderedData={setOrderedData}/>
                  )}
                 </div>
               )}
@@ -253,10 +252,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
                               Create your own Keyword <PlusIcon className='ml-2'/>
                             </Button>
                          ) : (
-                          <Button onClick={() => onOpen({ setOrderedData })}
-                           variant={'outline'} className='bg-transparent mb-2 ml-3 hover:bg-neutral-700 mt-4'>
-                            Create your own Keyword <PlusIcon className='ml-2'/>
-                         </Button>
+                          <CreateManualKeywordModal orderedData={orderedData} setOrderedData={setOrderedData} secondary/>
                          )}
                       </div>
                        )}

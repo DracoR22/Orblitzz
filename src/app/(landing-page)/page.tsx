@@ -50,7 +50,7 @@ const Home = () => {
       <EvervaultCard text="AI Replies" />
  
       <h2 className="dark:text-white text-black mt-4 text-sm font-light">
-        We make use of advanced machine learning algorithms to search for the best posts to reply to.
+      Save up to 30 to 60 hours per month on social media promotion for your product.
       </h2>
       <p className="text-sm border font-light dark:border-white/[0.2] border-black/[0.2] rounded-full mt-4 text-black dark:text-white px-2 py-0.5">
         Task 100% Automated
