@@ -22,7 +22,7 @@ const PostsPage = async ({ params }: { params: { projectId: string }}) => {
       return null
     }
 
-    const repliesCreatedThisMonth = await getMonthlyReplies(params.projectId)
+    const repliesCreatedThisMonth = await getMonthlyReplies(params.projectId, userSubscription)
 
     const { isReplyPossible } = checkPlanReplyLimit({ planName: userSubscription.name, repliesCreatedThisMonth })
 

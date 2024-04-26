@@ -49,7 +49,7 @@ export const useMarketingRoutes = () => {
   const routes = useMemo(() => [
         {
           name: 'Text Editor',
-          href: `/dashboard/${params.projectId}/editor`,
+          href: ``,
           icon: SquarePenIcon,
           isActive: pathname === `/dashboard/${params.projectId}/editor`
         },
@@ -69,12 +69,12 @@ export const useExtraRoutes = () => {
           icon: CreditCardIcon,
           isActive: pathname === `/dashboard/billing`,
         },
-        {
-          name: 'Contact',
-          href: '/dashboard/contact',
-          icon: MailIcon,
-          isActive: pathname === `/dashboard/contact`,
-        },
+        // {
+        //   name: 'Contact',
+        //   href: '/dashboard/contact',
+        //   icon: MailIcon,
+        //   isActive: pathname === `/dashboard/contact`,
+        // },
   ], [pathname])
 
   return routes

@@ -183,8 +183,6 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
     )
   }
 
-  console.log(orderedData)
-
   return (
     <>
     {isNewUser && <WelcomeModal/>}
@@ -224,7 +222,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
                   <PlusIcon/>
                  </Button>
                  ) : (
-                  <CreateManualKeywordModal orderedData={orderedData} setOrderedData={setOrderedData}/>
+                  <CreateManualKeywordModal subscriptionPlan={subscriptionPlan} orderedData={orderedData} setOrderedData={setOrderedData}/>
                  )}
                 </div>
               )}
@@ -252,7 +250,7 @@ const KeywordsContainer = ({ columns, projectId, subscriptionPlan, projectAutoRe
                               Create your own Keyword <PlusIcon className='ml-2'/>
                             </Button>
                          ) : (
-                          <CreateManualKeywordModal orderedData={orderedData} setOrderedData={setOrderedData} secondary/>
+                          <CreateManualKeywordModal subscriptionPlan={subscriptionPlan} orderedData={orderedData} setOrderedData={setOrderedData} secondary/>
                          )}
                       </div>
                        )}

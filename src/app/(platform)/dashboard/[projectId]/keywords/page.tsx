@@ -30,7 +30,7 @@ const KeywordsPage = async ({ params }: { params: { projectId: string }}) => {
    const subscriptionPlan = await getUserSubscriptionPlan()
 
   // Replies created this month
-  const repliesCreatedThisMonth = await getMonthlyReplies(params.projectId)
+  const repliesCreatedThisMonth = await getMonthlyReplies(params.projectId, subscriptionPlan)
 
   // Replies created today
   const repliesCreatedToday = repliesCreatedThisMonth.filter(reply => isToday(reply.createdAt));

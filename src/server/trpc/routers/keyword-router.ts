@@ -107,8 +107,19 @@ export const keywordRouter = router({
          throw new TRPCError({ message: 'Upgrade your plan to create your own keywords', code: 'UNAUTHORIZED' })
        }
 
-       // TODO: Cap the amount of keywords per plan
+       const projectKeywords = await db.query.keywords.findMany({
+        columns: {
+            id: true,
+        },
+        where: and(
+            eq(keywords.redditCampaignId, projectId),
+        ),
+        // orderBy: (keywords, { asc }) => [asc(keywords.order)]
+       })
 
+       if (projectKeywords.length >= subscriptionPlan.keywords!) {
+        throw new TRPCError({ message: 'You dont have any keywords left on your plan', code:'BAD_REQUEST' })
+       }
 
        const lastKeyword = await db.query.keywords.findFirst({
         columns: {

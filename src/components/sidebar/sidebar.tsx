@@ -144,7 +144,7 @@ const Sidebar = ({ subscriptionPlan, project, repliesCreatedThisMonth, allProjec
                 ))}
               </div>
 
-              <p className="text-xs text-muted-foreground mb-1 mt-6 font-medium">MARKETING TOOLS</p>
+              <p className="text-xs text-muted-foreground mb-1 mt-6 font-medium">COMING SOON</p>
               <div className="mt-2">
                {marketingRoutes.map((route, i) => (
                 <SidebarItem key={i} active={route.isActive} name={route.name} icon={route.icon} href={route.href}/>

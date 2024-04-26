@@ -35,7 +35,7 @@ const DashboardLayout = async ({ children, params }: DashboardLayoutProps) => {
   const allKeywords = activeKeywords.map((k) => k.content)
 
   // Replies created this month
-  const repliesCreatedThisMonth = await getMonthlyReplies(params.projectId)
+  const repliesCreatedThisMonth = await getMonthlyReplies(params.projectId, subscriptionPlan)
 
   // Replies created today
   const repliesCreatedToday = repliesCreatedThisMonth.filter(reply => isToday(reply.createdAt));
