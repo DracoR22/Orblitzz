@@ -38,7 +38,7 @@ export const PLANS = [
       slug: 'starter',
       projects: 1,
       repliesPerMonth: 20,
-      keywords: 5,
+      keywords: 7,
       price: {
         amount: 9,
         priceIds: {
@@ -54,7 +54,7 @@ export const PLANS = [
           text: 'Automatic replies',
         },
         {
-          text: 'Up to 5 keywords',
+          text: 'Up to 7 keywords',
         },
         {
           text: 'Unlimited AI post editor',
@@ -64,6 +64,9 @@ export const PLANS = [
         },
         {
           text: 'Priority support',
+        },
+        {
+          text: 'Custom keywords',
         },
       ],
     },
@@ -100,7 +103,7 @@ export const PLANS = [
           text: 'Priority support',
         },
         {
-          text: 'Create your own keywords',
+          text: 'Custom keywords',
         },
       ],
     },
