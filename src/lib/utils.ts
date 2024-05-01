@@ -116,7 +116,7 @@ export const calculateCosineSimilarity = (text1: string, text2: string): number 
 
 export function constructMetadata({
   title = "The AI that promotes your product online - Orblitzz",
-  description = "Orblitzz is an AI platform that increases product visibility through automated replies in social media conversations.",
+  description = "Orblitzz is an AI platform that increases your product visibility through automated replies in social media conversations.",
   image = "/showcase/thumbnail.png",
   icons = "/favicon.ico",
   noIndex = false,

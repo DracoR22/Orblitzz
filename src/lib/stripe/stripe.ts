@@ -40,7 +40,7 @@ export async function getUserSubscriptionPlan() {
         userPlan.stripePriceId && userPlan.stripeCurrentPeriodEnd && userPlan.stripeCurrentPeriodEnd.getTime() + 86_400_000 > Date.now()
     )
 
-    const plan = isSubscribed ? PLANS.find((plan) => plan.price.priceIds.test === userPlan.stripePriceId) : null
+    const plan = isSubscribed ? PLANS.find((plan) => plan.price.priceIds.production === userPlan.stripePriceId) : null
 
     let isCanceled = false
 

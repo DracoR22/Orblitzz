@@ -43,7 +43,7 @@ export const PLANS = [
         amount: 9,
         priceIds: {
           test: 'price_1P10MyAywmX0gCrJ1qZ0hZ26',
-          production: '',
+          production: 'price_1PBhBKAywmX0gCrJvsJgYUlA',
         },
       },
       features: [
@@ -80,7 +80,7 @@ export const PLANS = [
         amount: 49,
         priceIds: {
           test: 'price_1P10NuAywmX0gCrJns5Nj3eV',
-          production: '',
+          production: 'price_1PBhEEAywmX0gCrJJ1dmAsAa',
         },
       },
       features: [
