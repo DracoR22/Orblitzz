@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
 import { ChevronDownIcon, UserIcon } from "lucide-react"
 import Image from "next/image"
+import { useEffect, useState } from "react"
 
 interface UserPlanProps {
    subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
@@ -14,7 +16,22 @@ interface UserPlanProps {
 
 const UserPlan = ({ subscriptionPlan, replies }: UserPlanProps) => {
 
+  const [isMounted, setIsMounted] = useState<boolean>(false)
+
+  useEffect(() => {
+   setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+   return (
+         <>
+           <Skeleton className="h-[258px] w-full"/>
+        </>
+   )
+  }
+
   const percentage = replies / (subscriptionPlan.repliesPerMonth as number || 3) * 100
+
 
   return (
     <Card>

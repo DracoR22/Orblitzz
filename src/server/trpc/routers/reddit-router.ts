@@ -48,16 +48,15 @@ export const redditRouter = router({
               password: selectedUser.password
             });
 
-             // Check if already replied to post
-      const alreadyReplied = await db.query.redditReplies.findMany({
-        columns: {
-          postId: true,
-          createdAt: true,
-          projectId: true,
-          accountClientId: true
-        },
- 
-      })
+            // Check if already replied to post
+            const alreadyReplied = await db.query.redditReplies.findMany({
+             columns: {
+              postId: true,
+              createdAt: true,
+              projectId: true,
+              accountClientId: true
+              },
+            })
 
             const postIdsSet = new Set();
             // Array of latest posts
@@ -335,16 +334,22 @@ export const redditRouter = router({
         // Check if already replied to the same post
         const alreadyReplied = await db.query.redditReplies.findFirst({
             columns: {
-              postId: true
+              postId: true,
+              projectId: true,
+              accountClientId: true
             },
             where: and(
                 eq(redditReplies.postId, postId),
-                eq(redditReplies.projectId, projectId)
+                // eq(redditReplies.projectId, projectId)
             )
         })
 
-        if (alreadyReplied) {
-            throw new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
+        if (alreadyReplied && alreadyReplied.projectId === projectId) {
+          throw new TRPCError({ message: 'Already replied to this post', code: 'FORBIDDEN' })
+        }
+  
+        if (alreadyReplied && alreadyReplied.accountClientId === selectedUser.clientId) {
+          throw new TRPCError({ message: 'This account already replied to this post', code: 'FORBIDDEN' })
         }
 
         // Create Reddit instance

@@ -17,9 +17,9 @@ const UserProjectsCount = ({ projects }: UserProjectsCountProps) => {
                 <div className="flex-1">
                   <ShieldCheckIcon className="w-[35px] h-[35px] p-2 rounded-full bg-yellow-400/10 text-yellow-500"/>
                 </div>
-                <div>
+                {/* <div>
                   <Image src={'/dashboard-media/ellipsis.svg'} alt="" width={50} height={50} className="w-[38px] h-[38px] cursor-pointer hover:bg-neutral-800 transition rounded-full p-2"/>
-                </div>
+                </div> */}
             </div>
           </CardTitle>
         </CardHeader>
