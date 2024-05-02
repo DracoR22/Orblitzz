@@ -1,20 +1,21 @@
 # ORBLITZZ
 
 <p align="center">
-<img alt='/' src="/public/logo-bg.png" width="60px" height="auto"/>
+<img alt='/' src="/public/logo-bg.png" width="80px" height="auto"/>
 </p>
 
 Key Features:
 
-🤖 AI Reddit automated replies
-📈 Realtime dashboard
-🦾 AI generated keywords
-💎 Shadcn UI & Acernity UI for clean animations
-📱 Full responsiveness for all devices
-🔒 Next Auth V5 for authentication & security
-📦 DrizzleORM for database management
-📺 free Reddit posts feed
-💻 TRPC for backend type safety
+- 🤖 AI Reddit automated replies
+- 📈 Realtime dashboard
+- 🦾 AI generated keywords
+- 💎 Shadcn UI & Acernity UI for clean animations
+- 📱 Full responsiveness for all devices
+- 🔒 Next Auth V5 for authentication & security
+- 📦 DrizzleORM for database management
+- 📺 Free Reddit posts feed
+- 💻 TRPC for backend type safety
+
 
 ### Prerequisites
 
