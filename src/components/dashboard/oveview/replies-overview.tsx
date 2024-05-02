@@ -2,8 +2,10 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { GraphData } from "@/server/actions/reddit-actions"
 import { BarChart4Icon } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 interface RepliesOverviewProps {
@@ -11,6 +13,21 @@ interface RepliesOverviewProps {
 }
 
 const RepliesOverview = ({ data }: RepliesOverviewProps) => {
+
+  const [isMounted, setIsMounted] = useState<boolean>(false)
+
+  useEffect(() => {
+   setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+   return (
+         <>
+           <Skeleton className="h-[533px] col-span-4"/>
+        </>
+   )
+  }
+
   return (
     <Card className="col-span-4 h-[533px]">
     <CardHeader>

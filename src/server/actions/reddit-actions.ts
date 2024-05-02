@@ -235,7 +235,7 @@ export const getGraphProjectReplies = async (projectId: string) => {
       // Get the latest reply
       const latestReply = projectReplies[0]
 
-      return { lastTwoMonthsData, percentageDifference, allMonthsData, repliesCreatedThisMonth, latestReply }
+      return { lastTwoMonthsData, percentageDifference, allMonthsData, repliesCreatedThisMonth, latestReply, projectReplies }
     } catch (error) {
      console.error('Error fetching graph project replies:', error);
      throw error; // Re-throw the error for higher-level error handling

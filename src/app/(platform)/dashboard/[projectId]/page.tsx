@@ -18,7 +18,7 @@ const ProjectIdPage = async ({ params }: Props) => {
 
   const subscriptionPlan = await getUserSubscriptionPlan()
   const allUserProjectsCount = await getAllUserProjectsCount()
-  const { allMonthsData, lastTwoMonthsData, percentageDifference, latestReply, repliesCreatedThisMonth } = await getGraphProjectReplies(params.projectId)
+  const { allMonthsData, lastTwoMonthsData, percentageDifference, latestReply, repliesCreatedThisMonth, projectReplies } = await getGraphProjectReplies(params.projectId)
 
   const repliesCreatedToday = repliesCreatedThisMonth.filter(reply => isToday(reply.createdAt));
   const currentProject = allUserProjectsCount.find((project) => project.id === params.projectId)
@@ -41,7 +41,7 @@ const ProjectIdPage = async ({ params }: Props) => {
        <div className="relative">
          <div className="absolute inset-0 flex flex-col gap-y-4">
           <div className="flex-grow">
-            <UserPlan replies={repliesCreatedThisMonth.length} subscriptionPlan={subscriptionPlan}/>
+            <UserPlan replies={subscriptionPlan.name === 'Free' ? projectReplies.length : repliesCreatedThisMonth.length} subscriptionPlan={subscriptionPlan}/>
           </div>
           <div className="flex-grow">
             <LastTwoMonthsOverview data={lastTwoMonthsData} percentageDifference={percentageDifference}/>

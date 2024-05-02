@@ -6,6 +6,7 @@ import RepliesCreatedToday from "./replies-count-today"
 import UserProjectsCount from "./user-projects-count"
 import { RedditReplyType } from "@/lib/db/schema/reddit"
 import LastReply from "./last-reply"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface Props {
     repliesMonth: number
@@ -24,9 +25,12 @@ const DashboardHeader = ({ repliesMonth, repliesToday, userProjects, lastReply }
 
    if (!isMounted) {
     return (
-        <div>
-            loading...
-        </div>
+          <>
+            <Skeleton className="h-[175px] w-full"/>
+            <Skeleton className="h-[175px] w-full"/>
+            <Skeleton className="h-[175px] w-full"/>
+            <Skeleton className="h-[175px] w-full"/>
+         </>
     )
    }
 
@@ -34,25 +38,22 @@ const DashboardHeader = ({ repliesMonth, repliesToday, userProjects, lastReply }
 
 
 
-   const clickProfanity = async () => {
-    const message = 'Hello my nigas'
-     const res = await fetch('https://vector.profanity.dev', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ message })
-     })
+  //  const clickProfanity = async () => {
+  //   const message = 'Hello my nigas'
+  //    const res = await fetch('https://vector.profanity.dev', {
+  //     method: 'POST',
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: JSON.stringify({ message })
+  //    })
 
-     const json = await res.json()
+  //    const json = await res.json()
 
-     console.log(json)
-     return json
-   }
+  //    console.log(json)
+  //    return json
+  //  }
 
   return (
     <>
-     {/* <button onClick={clickProfanity}>
-        Calculate profanity
-      </button> */}
      <RepliesCountMonth replies={repliesMonth}/>
      <RepliesCreatedToday replies={repliesToday}/>
      <LastReply lastReply={lastProjectReply}/>

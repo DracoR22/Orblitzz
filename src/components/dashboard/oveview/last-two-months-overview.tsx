@@ -6,6 +6,8 @@ import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveCont
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { CalendarIcon } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface LastTwoMonthsOverviewProps {
     data: GraphData[]
@@ -13,6 +15,21 @@ interface LastTwoMonthsOverviewProps {
 }
 
 const LastTwoMonthsOverview = ({ data, percentageDifference }: LastTwoMonthsOverviewProps) => {
+
+  const [isMounted, setIsMounted] = useState<boolean>(false)
+
+  useEffect(() => {
+   setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+   return (
+         <>
+           <Skeleton className="h-[258px] w-full"/>
+        </>
+   )
+  }
+
   return (
     <Card className="col-span-4">
     <CardHeader>
