@@ -1,7 +1,7 @@
 # ORBLITZZ
 
 <p align="center">
-<img alt='/' src="/public/logo-bg.png" width="80px" height="auto"/>
+<img alt='/' src="/public/logo-bg.png" width="120px" height="auto"/>
 </p>
 
 Key Features:
