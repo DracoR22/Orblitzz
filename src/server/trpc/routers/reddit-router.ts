@@ -615,87 +615,87 @@ export const redditRouter = router({
       //   projectTone: project.tone
       // })
 
-    //   const response = await openai.createChatCompletion({
-    //     model: 'gpt-3.5-turbo',
-    //     messages: [
-    //         {
-    //             role: 'system',
-    //             content: `You are a ${project.tone} Reddit user. You are actively involved
-    //              in diverse communities, providing helpful and insightful responses.
-    //              Incorporate mentions of a specific product, [${project.title}](${project.url}), into your
-    //              replies. Here's a brief description of the product: ${project.description}.
-    //              Your objective is to share valuable information while subtly promoting
-    //              this product.`,
-    //         },
-    //         {
-    //             role: 'user',
-    //             content: `You come across this Reddit post: ${randomPost.content}. 
-    //             Respond to it as you typically would, providing relevant and insightful
-    //             information. Also, feel free to incorporate your thoughts on different aspects
-    //             and mention [${project.title}](${project.url}) if it fits naturally.`
-    //         }
-    //     ]
-    // });
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: [
+            {
+                role: 'system',
+                content: `You are a ${project.tone} Reddit user. You are actively involved
+                 in diverse communities, providing helpful and insightful responses.
+                 Incorporate mentions of a specific product, [${project.title}](${project.url}), into your
+                 replies. Here's a brief description of the product: ${project.description}.
+                 Your objective is to share valuable information while subtly promoting
+                 this product.`,
+            },
+            {
+                role: 'user',
+                content: `You come across this Reddit post: ${randomPost.content}. 
+                Respond to it as you typically would, providing relevant and insightful
+                information. Also, feel free to incorporate your thoughts on different aspects
+                and mention [${project.title}](${project.url}) if it fits naturally.`
+            }
+        ]
+    });
     
-    // if (!response) {
-    //   throw new TRPCError({ message: 'No Openai response', code: 'BAD_REQUEST' })
-    // }
+    if (!response) {
+      throw new TRPCError({ message: 'No Openai response', code: 'BAD_REQUEST' })
+    }
 
-    // // // // Check if the response status is 429 (Rate limit exceeded)
-    // if (response.status === 429) {
-    //   throw new TRPCError({ message: 'OpenAI rate limit exceeded', code: 'TOO_MANY_REQUESTS' });
-    // }
+    // // // Check if the response status is 429 (Rate limit exceeded)
+    if (response.status === 429) {
+      throw new TRPCError({ message: 'OpenAI rate limit exceeded', code: 'TOO_MANY_REQUESTS' });
+    }
 
-    // const responseData = (await response.json() as ResponseTypes["createChatCompletion"])
-    // const cleanedAiResponse = responseData.choices[0].message?.content
+    const responseData = (await response.json() as ResponseTypes["createChatCompletion"])
+    const cleanedAiResponse = responseData.choices[0].message?.content
 
-    // if (!cleanedAiResponse) {
-    //    throw new TRPCError({ message: 'Could not clean the AI response', code: 'BAD_REQUEST' })
-    // }
+    if (!cleanedAiResponse) {
+       throw new TRPCError({ message: 'Could not clean the AI response', code: 'BAD_REQUEST' })
+    }
 
-    // // Get the post to reply
-    // const post = reddit.getSubmission(randomPost.postId)
+    // Get the post to reply
+    const post = reddit.getSubmission(randomPost.postId)
 
-    // if (!post) {
-    //   throw new TRPCError({ message: 'Could not find the post to reply', code: 'BAD_REQUEST' })
-    // }
+    if (!post) {
+      throw new TRPCError({ message: 'Could not find the post to reply', code: 'BAD_REQUEST' })
+    }
 
-    // // console.log(cleanedAiResponse)
+    // console.log(cleanedAiResponse)
 
-    // // Reply to the post
-    // const redditReply = post.reply(cleanedAiResponse)
+    // Reply to the post
+    const redditReply = post.reply(cleanedAiResponse)
 
-    // if (!redditReply) {
-    //    throw new TRPCError({ message: 'Could not reply to post', code: 'BAD_REQUEST' })
-    // }
+    if (!redditReply) {
+       throw new TRPCError({ message: 'Could not reply to post', code: 'BAD_REQUEST' })
+    }
 
-    // // Extract the first 100 letters of the cleanedAiResponse
-    //    const limitedReply = cleanedAiResponse.slice(0, 100);
+    // Extract the first 100 letters of the cleanedAiResponse
+       const limitedReply = cleanedAiResponse.slice(0, 100);
 
-    //  // Save reply into database
-    //  const newReply = await db.insert(redditReplies).values({
-    //   projectId,
-    //   title: randomPost.title,
-    //   postAuthor: randomPost.author,
-    //   postId: randomPost.postId,
-    //   postUrl: randomPost.url,
-    //   reply: limitedReply,
-    //   accountClientId: selectedUser.clientId
-    // }).returning({
-    //   createdAt: redditReplies.id
-    //  })
-
+     // Save reply into database
      const newReply = await db.insert(redditReplies).values({
       projectId,
       title: randomPost.title,
       postAuthor: randomPost.author,
       postId: randomPost.postId,
       postUrl: randomPost.url,
-      reply: '',
+      reply: limitedReply,
       accountClientId: selectedUser.clientId
     }).returning({
       createdAt: redditReplies.id
      })
+
+    //  const newReply = await db.insert(redditReplies).values({
+    //   projectId,
+    //   title: randomPost.title,
+    //   postAuthor: randomPost.author,
+    //   postId: randomPost.postId,
+    //   postUrl: randomPost.url,
+    //   reply: '',
+    //   accountClientId: selectedUser.clientId
+    // }).returning({
+    //   createdAt: redditReplies.id
+    //  })
 
 
       // Save reply to database

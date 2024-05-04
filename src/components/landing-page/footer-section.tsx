@@ -16,12 +16,12 @@ const FooterSection = () => {
        </div>
     <div className="md:ml-auto w-full justify-between md:justify-end flex items-center gap-x-2 text-muted-foreground">
       <Button asChild variant="ghost" size="sm">
-          <a href="" target="_blank">
+          <a href="https://www.termsfeed.com/live/9af6f82c-665a-4be8-8e96-f67984bbff48" target="_blank">
             Privacy Policy
           </a>
       </Button>
       <Button asChild variant="ghost" size="sm">
-        <a href="" target="_blank">
+        <a href="https://www.termsfeed.com/live/8fa676af-6953-4ada-8c09-9f1754415622" target="_blank">
            Terms & Conditions
         </a>
       </Button>
