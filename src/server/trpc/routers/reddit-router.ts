@@ -163,12 +163,13 @@ export const redditRouter = router({
          const response = await openai.createChatCompletion({
           model: 'gpt-3.5-turbo',
           messages: [
-              { 
-                  role: 'system',
-                  content: 'You are a helpful AI embedded in a keyword generator app' +
-                  'AI can ONLY answer with keywords, NEVER reply with a non list of keywords or a message besides the keywords' + 
-                  'Always generate a list of UNIQUE keywords' 
-              },
+            {
+              role: 'system',
+              content: "You are an AI-powered keyword generator designed to assist in marketing products.\n" +
+                  "Remember, your responses should consist only of keywords, ensuring they are relevant and unique to the given product description.\n" +
+                  "Prioritize keywords that precisely convey the products solution to a problem or its unique features.\n" +
+                  "Ensure each keyword contributes distinct value and avoids vagueness or redundancy."
+          },
               {
                   role: 'user',
                   content: `Generate a list of 5 RELEVANT and UNIQUE keywords based on '${description}'`
