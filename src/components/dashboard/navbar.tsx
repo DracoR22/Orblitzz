@@ -65,7 +65,14 @@ const Navbar = ({ projectId, allKeywords, projectAutoReplyLimit, repliesCreatedT
             </ColoredText>
           </div>
         )}
-        {!isReplyPossible && (
+        {!isReplyPossible && subscriptionPlan.name === 'Free' && (
+          <div className="mr-6">
+          <ColoredText variant="alert" icon={AlertTriangleIcon}>
+            You ran out of free replies. Upgrade your plan for more replies
+          </ColoredText>
+        </div>
+        )}
+         {!isReplyPossible && subscriptionPlan.name !== 'Free' && (
           <div className="mr-6">
           <ColoredText variant="alert" icon={AlertTriangleIcon}>
             You ran out of replies for this month. Upgrade your plan for more replies
