@@ -172,7 +172,7 @@ export const redditRouter = router({
           },
               {
                   role: 'user',
-                  content: `Generate a list of 5 RELEVANT and UNIQUE keywords based on '${description}'`
+                  content: `Generate a list of 5 relevant and unique keywords based on the following product description: '${description}'`
               }
           ]
       })

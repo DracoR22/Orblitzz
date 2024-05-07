@@ -11,7 +11,7 @@ import { checkPlanReplyLimit } from "@/lib/utils"
 import { getActiveKeywords } from "@/server/actions/keyword-actions"
 import { getMonthlyReplies } from "@/server/actions/reddit-actions"
 import { and, eq } from "drizzle-orm"
-import { SparklesIcon } from "lucide-react"
+import { BotIcon, SparklesIcon } from "lucide-react"
 import Link from "next/link"
 
 const PostsPage = async ({ params }: { params: { projectId: string }}) => {
@@ -26,7 +26,7 @@ const PostsPage = async ({ params }: { params: { projectId: string }}) => {
 
     const { isReplyPossible } = checkPlanReplyLimit({ planName: userSubscription.name, repliesCreatedThisMonth })
 
-    // TODO: Check if this works
+    
     if (!isReplyPossible) {
       return (
         <div className="flex items-center h-[90%] w-full justify-center">
@@ -60,6 +60,27 @@ const PostsPage = async ({ params }: { params: { projectId: string }}) => {
 
   // Active keywords
   const activeKeywords = await getActiveKeywords(params.projectId)
+
+  if (activeKeywords.length < 1) {
+    return(
+      <div className="flex items-center h-[90%] w-full justify-center">
+          <div className="flex-col text-center">
+            <h2 className="font-semibold text-2xl mb-4">
+              Choose some keywords first!
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              You need to add at least 1 keyword to your project in order to access this page
+            </p>
+            <Button asChild className="text-white font-medium mt-4">
+              <Link href={`/dashboard/${params.projectId}/keywords`}>
+                 Choose Keywords
+                <BotIcon className="ml-2 w-4 h-4"/>
+              </Link>
+            </Button>
+          </div>
+        </div>
+    )
+  }
 
   return (
     <>
