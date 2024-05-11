@@ -10,9 +10,9 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default {
-    driver: 'pg',
+    dialect: 'postgresql',
     schema: './src/lib/db/schema/*',
     dbCredentials: {
-        connectionString: process.env.DATABASE_URL!
+        url: process.env.DATABASE_URL!
     }
 } satisfies Config
