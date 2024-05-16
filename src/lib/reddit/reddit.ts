@@ -25,31 +25,31 @@ export const createRedditInstance = ({ userAgent, clientId, clientSecret, userna
 
 export const userCredentials = [
     {
-      userAgent: process.env.FIRST_REDDIT_USER_AGENT!,
-      clientId: process.env.FIRST_REDDIT_CLIENT_ID!,
-      clientSecret: process.env.FIRST_REDDIT_CLIENT_SECRET!,
-      username: process.env.FIRST_REDDIT_USERNAME!,
-      password: process.env.FIRST_REDDIT_PASSWORD!
+      userAgent: 'first',
+      clientId: 'Fl3QTm2uojQLZ2oMFLlf9Q',
+      clientSecret: 'hOKp5qRY4s1lwdpQwgejlBnKbDZDbA',
+      username: 'NeckGood3393',
+      password: 'lunataco123'
     },
     {
-      userAgent: process.env.SECOND_REDDIT_USER_AGENT!,
-      clientId: process.env.SECOND_REDDIT_CLIENT_ID!,
-      clientSecret: process.env.SECOND_REDDIT_CLIENT_SECRET!,
-      username: process.env.SECOND_REDDIT_USERNAME!,
-      password: process.env.SECOND_REDDIT_PASSWORD!
+      userAgent: 'orblitzz',
+      clientId: 'VBSUtCtO7Ik_gV3wiaOtRQ',
+      clientSecret: 'ZHbkrshNo7y8j4qVthpMeGdhbMOpwQ',
+      username: 'Interesting_Eye3977',
+      password: 'QNmwXKkH3+edGwU'
     },
     {
-      userAgent: process.env.THIRD_REDDIT_USER_AGENT!,
-      clientId: process.env.THIRD_REDDIT_CLIENT_ID!,
-      clientSecret: process.env.THIRD_REDDIT_CLIENT_SECRET!,
-      username: process.env.THIRD_REDDIT_USERNAME!,
-      password: process.env.THIRD_REDDIT_PASSWORD!
+      userAgent: 'app3',
+      clientId: 'TSviHmBk5cz6oIPzGLvUTQ',
+      clientSecret: 'OMQHhF9mt78WWM-aenSI_cC7MUgl3Q',
+      username: 'Correct-Tennis4132',
+      password: 'rest435tgy6'
     },
     {
-      userAgent: process.env.FOURTH_REDDIT_USER_AGENT!,
-      clientId: process.env.FOURTH_REDDIT_CLIENT_ID!,
-      clientSecret: process.env.FOURTH_REDDIT_CLIENT_SECRET!,
-      username: process.env.FOURTH_REDDIT_USERNAME!,
-      password: process.env.FOURTH_REDDIT_PASSWORD!
+      userAgent: 'app4',
+      clientId: '9Ow9jyWG1YgS4g80epcSSQ',
+      clientSecret: 'zk3PD2RdJ9tGdTQHO_z63g_jnoXxMg',
+      username: 'Limitless342',
+      password: '23edr3sloi'
     }
   ];
