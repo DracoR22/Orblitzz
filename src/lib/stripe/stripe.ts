@@ -23,15 +23,6 @@ export async function getUserSubscriptionPlan() {
         }
     }
 
-    if (user.email === 'bryanvegaw@gmail.com') {
-        return {
-            ...PLANS[2],
-            isSubscribed: true,
-            isCanceled: false,
-            stripeCurrentPeriodEnd: null
-        }
-    }
-
     const userPlan = await db.query.subscriptions.findFirst({
         where: eq(subscriptions.userId, user.id)
     })
