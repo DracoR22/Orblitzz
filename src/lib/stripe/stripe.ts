@@ -23,7 +23,7 @@ export async function getUserSubscriptionPlan() {
         }
     }
 
-    if (user.email === 'bryanvegaw@gmail.com') {
+    if (user.email === process.env.ADMIN_EMAIL) {
         return {
             ...PLANS[2],
             isSubscribed: true,
