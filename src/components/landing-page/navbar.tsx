@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../u
 import { BarChart, BotIcon, Clock1Icon, Link2, MenuIcon, ReplyIcon, RocketIcon, SquarePenIcon } from "lucide-react"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from "../ui/navigation-menu"
 import { useCurrentUser } from "@/hooks/use-current-user"
+import { GithubIcon } from "../icons/github-icon"
 
 const Navbar = () => {
 
@@ -138,6 +139,13 @@ const Navbar = () => {
           </span>
         </Link>
           </div>
+          <Button variant="ghost" asChild>
+            <a href="https://github.com/DracoR22/Orblitzz" target="_blank" aria-label="GitHub repo"  title="Github repo">
+            <span className="size-6">
+            <GithubIcon/>
+            </span>
+            </a>
+          </Button>
        </div>
     </nav>
 
