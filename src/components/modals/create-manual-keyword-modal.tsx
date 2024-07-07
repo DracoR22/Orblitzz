@@ -17,7 +17,6 @@ import { KeywordType } from "@/lib/db/schema/keyword"
 import { ScrollArea } from "../ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { getUserSubscriptionPlan } from "@/lib/stripe/stripe"
-import PredictiveInput from "../global/predictive-input"
 
 interface Props {
   orderedData: any
@@ -144,9 +143,7 @@ const CreateManualKeywordModal = ({ orderedData, setOrderedData, secondary, subs
                       Your Keyword
                     </FormLabel>
                     <FormControl>
-                         {/* <Input placeholder='Write your keyword' {...field}/> */}
-                         <PredictiveInput/>
-                         {/* <PredictiveInput2/> */}
+                         <Input placeholder='Write your keyword' {...field}/>
                     </FormControl>
                     <FormMessage/>
                  </FormItem>
