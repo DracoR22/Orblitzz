@@ -139,13 +139,13 @@ const Navbar = () => {
           </span>
         </Link>
           </div>
-          <Button variant="ghost" asChild>
+          {/* <Button variant="ghost" asChild>
             <a href="https://github.com/DracoR22/Orblitzz" target="_blank" aria-label="GitHub repo"  title="Github repo">
             <span className="size-6">
             <GithubIcon/>
             </span>
             </a>
-          </Button>
+          </Button> */}
        </div>
     </nav>
 
