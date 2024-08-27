@@ -24,11 +24,11 @@ const Home = () => {
     <div>
        <CrispChat/>
       {/* HEADING */}
-       <section className="overflow-hidden px-4 sm:px-6 sm:flex sm:flex-col md:justify-start ">
+       <section className="overflow-hidden px-4 sm:px-6 sm:flex sm:flex-col md:justify-start mt-8">
        <Spotlight className="-top-40 left-0 md:left-40 md:-top-20" fill="white"/>
        <div className="flex flex-col lg:flex-row lg:justify-center lg:items-center lg:gap-x-[100px]">
-       <div className="mb-[100px] md:mb-0">
-        <TitleSection
+       <div className="mb-[100px] md:mb-0 mt-10">
+        <TitleSection 
          subheading="Orblitzz is an AI that casually mentions your product in social media conversations"
          pill="🦨 How many people know your product?"/>
         <Button asChild className="w-[200px] text-white bg-blue-500 clear-start mt-5 flex items-center gap-x-2">
